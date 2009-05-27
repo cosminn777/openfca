@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
+				xmlns:components="components.*" layout="vertical">
+	<components:ContextGrid minWidth="640" width="85%" height="95%" />
+	<mx:Spacer height="5%">
+		
+	</mx:Spacer>
+	<mx:Label text="© 2009 Gigi cu cele 2 patrupede" width="100%" textAlign="right" fontWeight="bold"/>
+</mx:Application>
