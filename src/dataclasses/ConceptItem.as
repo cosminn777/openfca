@@ -15,7 +15,6 @@ package dataclasses
 			super(id);
 			this.attributes = "{" + attributes.join(", ") + "}";
 			this.objects = "[" + objects.join(", ") + "]";
-			this.extraRepulsion = extraRepulsion;
 		}
 		
 	}
