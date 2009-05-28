@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:fc="http://www.adobe.com/2006/fc">
+	<mx:Script>
+		<![CDATA[
+			import logic.NaiveConceptProcessor;
+			import logic.BorkedConceptProcessor;
+			import logic.IConceptProcessor;
+			import dataclasses.ConceptItem;
+			import mx.collections.ArrayCollection;
+			import com.adobe.flex.extras.controls.springgraph.Item;
+			import com.adobe.flex.extras.controls.springgraph.Graph;
+
+			private var g: Graph = new Graph();
+			private var conceptProcessor: IConceptProcessor;
+			
+			private function init(): void
+			{
+				s.dataProvider = g;
+			}
+			
+			public function setContext(objects:Array, attributes:Array, data:ArrayCollection): void
+			{
+				conceptProcessor = new BorkedConceptProcessor();
+				g = conceptProcessor.computeConcept(objects, attributes, data);
+				if (s != null) {
+					s.dataProvider = g;
+				}
+			}
+		]]>
+	</mx:Script>
+	<mx:Grid width="100%">
+		<mx:GridRow width="100%" height="100%">
+			<mx:GridItem>
+				<mx:Label text="Item width"/>
+			</mx:GridItem>
+			<mx:GridItem width="100%" height="100%">
+				<mx:HSlider id="widthSlider" value="80" minimum="20" maximum="200" change="s.refresh()" liveDragging="true" width="100%"/>
+			</mx:GridItem>
+			<mx:GridItem>
+				<mx:Label text="Item height"/>
+			</mx:GridItem>
+			<mx:GridItem width="100%" height="100%">
+				<mx:HSlider id="heightSlider" value="91" minimum="20" maximum="200" change="s.refresh()" liveDragging="true" width="100%"/>
+			</mx:GridItem>
+		</mx:GridRow>
+		<mx:GridRow width="100%" height="100%">
+			<mx:GridItem>
+				<mx:Label text="Repulsion"/>
+			</mx:GridItem>
+			<mx:GridItem width="100%" height="100%">
+				<mx:HSlider id="repulsionSlider" value="1.3" minimum="0.02" maximum="3.5" change="s.refresh()" liveDragging="true" width="100%"/>
+			</mx:GridItem>
+			<mx:GridItem>
+				<mx:Label text="Font Size"/>
+			</mx:GridItem>
+			<mx:GridItem width="100%" height="100%">
+				<mx:HSlider id="fontSizeSlider" value="10" minimum="8" maximum="70" change="s.refresh()" liveDragging="true" width="100%"/>
+			</mx:GridItem>
+		</mx:GridRow>
+	</mx:Grid>
+
+	<fc:SpringGraph id="s" backgroundColor="#777777" width="100%" height="100%"
+		lineColor="#6666ff" repulsionFactor="{repulsionSlider.value}"
+		creationComplete="init()">
+		<fc:itemRenderer>
+			<mx:Component>
+				<mx:VBox backgroundAlpha="0.3" backgroundColor="0x444444" height="{outerDocument.heightSlider.value}"
+					 verticalScrollPolicy="off" horizontalScrollPolicy="off"
+					paddingBottom="2" paddingLeft="2" paddingRight="2" paddingTop="2">
+					<mx:TextArea text="{data.attributes}" fontSize="{outerDocument.fontSizeSlider.value}" backgroundAlpha="0.2"
+						textAlign="center" width="{outerDocument.widthSlider.value}" editable="false" horizontalScrollPolicy="off"
+						verticalScrollPolicy="auto" height="100%" minHeight="0"/>					
+					<mx:TextArea text="{data.objects}" fontSize="{outerDocument.fontSizeSlider.value}" backgroundAlpha="0.2"
+						textAlign="center" width="{outerDocument.widthSlider.value}" editable="false" horizontalScrollPolicy="off"
+						verticalScrollPolicy="auto" height="100%" minHeight="0"/>					
+				</mx:VBox>
+			</mx:Component>
+		</fc:itemRenderer>
+	</fc:SpringGraph>	
+</mx:VBox>

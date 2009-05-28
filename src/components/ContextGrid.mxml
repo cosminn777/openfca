@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" height="562" xmlns:components="components.*"
+	initialize="init()" horizontalAlign="center">
+	<mx:Script>
+		<![CDATA[
+			import mx.core.UIComponent;
+			import mx.core.ComponentDescriptor;
+			import mx.containers.ControlBar;
+			import events.NewContextEvent;
+			import mx.utils.StringUtil;
+			import mx.events.FlexEvent;
+			import mx.containers.Panel;
+			import mx.managers.PopUpManager;
+			import controls.CenteredCheckBox;
+			import mx.controls.TextInput;
+			import mx.controls.CheckBox;
+			import mx.controls.dataGridClasses.DataGridColumn;
+			import mx.collections.ArrayCollection;
+			
+			private var objects:Array;
+			private var attributes:Array;
+			
+			[Bindable]
+			private var rows:ArrayCollection;
+			
+			private var cols:Array;
+
+			private function init(): void
+			{
+				rows = new ArrayCollection();
+				cols = new Array();
+				objects = new Array();
+				attributes = new Array();
+			}
+			
+			private function initGrid(): void
+			{
+				if (contable != null)
+				{
+					contable.columns = cols;
+				}
+			}
+			
+			private function createAttributeColumn(attrIndex:String, attr:String): void
+			{
+				var newColumn:DataGridColumn = new DataGridColumn();
+				newColumn.dataField = attrIndex;
+				newColumn.headerText = attr;
+				newColumn.sortable = false;
+				newColumn.editable = false;
+				newColumn.draggable = false;
+				newColumn.itemRenderer = new ClassFactory(components.CenteredCheckBox);
+				cols.push(newColumn);
+			}
+			
+			private function createObject(name:String): Array
+			{
+				var newObject:Array = new Array();
+				newObject["objectName"] = name;
+				objects.push(name);
+				for (var attrIndex:String in attributes)
+					newObject[attrIndex] = false;
+				return newObject;
+			}
+			
+			private function setGrid(objects:Array, attributes:Array, rows:ArrayCollection = null): void
+			{
+				if (rows == null)
+				{
+					this.rows = rows = new ArrayCollection()
+					for each (var object:String in objects) {
+						rows.addItem(createObject(object));			
+					}
+				}
+				else
+				{
+					this.rows = rows;
+					this.objects = objects;
+					for (var row:String in rows) {
+						rows[row]["objectName"] = objects[row];			
+					}
+				}
+				this.attributes = attributes;
+				
+				var objectColumn:DataGridColumn = new DataGridColumn();
+				objectColumn.headerText = "";
+				objectColumn.dataField = "objectName";
+				objectColumn.sortable = false;
+				objectColumn.draggable = false;
+				objectColumn.rendererIsEditor = true;
+				
+				cols = new Array();
+				cols.push(objectColumn);	
+				
+				for (var attrIndex:String in attributes) {
+					createAttributeColumn(attrIndex, attributes[attrIndex]);
+				}
+				var emptyCol:DataGridColumn = new DataGridColumn("");
+				emptyCol.editable = false;
+				emptyCol.draggable = false;
+				emptyCol.sortable = false;
+				emptyCol.width = 0;
+				cols.push(emptyCol);
+				if (contable != null)
+				{
+					contable.columns = cols;
+				}
+			}
+			
+			private function setGridBySize(objectCount: int, attributeCount: int): void
+			{	
+				var objects:Array = new Array();
+				for (var i:int = 0; i < objectCount; ++i) {
+					objects.push("obj"+i.toString());
+				}
+				var attributes:Array = new Array();
+				for (i = 0; i < attributeCount; ++i) {
+					attributes.push("attr"+i.toString());
+				}
+				setGrid(objects, attributes);
+			}
+			
+			private function createContext(event:NewContextEvent): void
+			{
+				setContextGridVisibility();
+				setGrid(event.objects, event.attributes, event.rows);
+			}
+			
+			private function showCreateContext(): void
+			{
+				unsetVisibility();
+				viewStack.selectedChild = newContextPanel;
+			}
+			
+			private function unsetVisibility(): void
+			{
+				for each (var child:UIComponent in appControlBar.getChildren())
+				{
+					child.visible = false;
+					child.includeInLayout = false;
+				}
+				helpButton.visible = true;
+				helpButton.includeInLayout = true;
+			}
+			
+			private function setContextGridVisibility(): void
+			{
+				unsetVisibility();
+				viewLatticeButton.visible = true;
+				viewLatticeButton.includeInLayout = true;
+				resetButton.visible = true;
+				resetButton.includeInLayout = true;
+				gridControlBar.visible = true;
+				gridControlBar.includeInLayout = true;
+				viewStack.selectedChild = contextCanvas;
+			}
+			
+			private function cancelCreateContext(): void
+			{
+				setContextGridVisibility();
+			}
+			
+			private function showLattice(): void
+			{
+				lattice.setContext(objects, attributes, rows);
+				unsetVisibility();
+				backToGridButton.visible = true;
+				backToGridButton.includeInLayout = true;
+				viewStack.selectedChild = lattice;
+			}
+			
+			private function showAddObject(): void
+			{
+				var panel:AddObjectPanel = new AddObjectPanel();
+				PopUpManager.addPopUp(panel, this, true);
+				PopUpManager.centerPopUp(panel);
+				panel.textInput.setFocus();
+				var addObject:Function = function (event:Event): void {
+						rows.addItem(createObject(panel.textInput.text));
+						PopUpManager.removePopUp(panel);
+					};
+				panel.okButton.addEventListener(MouseEvent.CLICK, addObject);
+				panel.textInput.addEventListener(FlexEvent.ENTER, addObject);
+				panel.cancelButton.addEventListener(MouseEvent.CLICK,
+					function (event:Event): void {
+						PopUpManager.removePopUp(panel);
+					});
+			}
+			
+			private function popObject(): void
+			{
+				rows.removeItemAt(rows.length-1);
+			}
+			
+			private function popAttribute(): void
+			{
+				var emptyColumn:Object = cols.pop();
+				cols.pop();
+				cols.push(emptyColumn);
+				contable.columns = cols;
+			}
+			
+			private function showAddAttribute(): void
+			{
+				var panel:AddAttributePanel = new AddAttributePanel();
+				PopUpManager.addPopUp(panel, this, true);
+				PopUpManager.centerPopUp(panel);
+				panel.textInput.setFocus();
+				var addAttribute:Function = function (event:Event): void {
+						for each (var row:Array in rows)
+						{
+							row[panel.textInput.text] = false;
+						}
+						var emptyColumn:Object = cols.pop();
+						var newId:String = (cols.length-1).toString();
+						createAttributeColumn(newId, panel.textInput.text);
+						cols.push(emptyColumn);
+						contable.columns = cols;
+						PopUpManager.removePopUp(panel);
+					};
+				panel.okButton.addEventListener(MouseEvent.CLICK, addAttribute);
+				panel.textInput.addEventListener(FlexEvent.ENTER, addAttribute);
+				panel.cancelButton.addEventListener(MouseEvent.CLICK,
+					function (event:Event): void {
+						PopUpManager.removePopUp(panel);
+					});
+			}
+		]]>
+	</mx:Script>
+	<mx:ApplicationControlBar id="appControlBar" width="100%">
+			<mx:Button label="New Context" includeInLayout="false" visible="false" id="resetButton"  click="showCreateContext()"/>
+			<mx:HBox id="gridControlBar" includeInLayout="false" visible="false">
+				<mx:Button label="Add Object" click="showAddObject()"/>
+				<mx:Button label="Pop Object" click="popObject()"/>
+				<mx:Button label="Add Attribute" click="showAddAttribute()"/>
+				<mx:Button label="Pop Attribute" click="popAttribute()"/>
+			</mx:HBox>
+			<mx:Button id="viewLatticeButton" visible="false" includeInLayout="false" label="View Lattice" click="showLattice()"/>
+			<mx:Button id="backToGridButton" visible="false" includeInLayout="false" label="Back" click="setContextGridVisibility()"/>
+			<mx:Button id="helpButton" visible="true" includeInLayout="true" label="Help" />
+	</mx:ApplicationControlBar>
+	<mx:ViewStack id="viewStack" width="100%" height="100%">
+		<components:NewContextPanel
+			id="newContextPanel"
+			createContextClick="createContext(event)"
+			cancelCreateContextClick="cancelCreateContext()" />
+									
+
+		<mx:VBox id="contextCanvas" width="100%"  height="100%">
+			<mx:DataGrid lockedColumnCount="1" creationComplete="initGrid()" id="contable"
+					     horizontalScrollPolicy="on"
+					     verticalScrollPolicy="on"
+					     variableRowHeight="true"
+					     width="100%" height="100%"
+						 dataProvider="{rows}" editable="true">
+			</mx:DataGrid>
+		</mx:VBox>
+		
+		<components:LatticeView id="lattice" width="100%" height="100%" />
+	</mx:ViewStack>
+</mx:VBox>
