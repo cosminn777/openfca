@@ -18,10 +18,6 @@
 				s.dataProvider = g;
 			}
 			
-			private function computeB0rkedContext(objects:Array, attributes:Array, data:ArrayCollection): void
-			{
-			}
-			
 			public function setContext(objects:Array, attributes:Array, data:ArrayCollection): void
 			{
 				conceptProcessor = new NaiveConceptProcessor();
