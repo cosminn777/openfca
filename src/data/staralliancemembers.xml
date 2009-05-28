@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<context>
+<attribute>Latin America</attribute>
+<attribute>Europe</attribute>
+<attribute>Canada</attribute>
+<attribute>Asia Pacific</attribute>
+<attribute>Middle East</attribute>
+<attribute>Africa</attribute>
+<attribute>Mexico</attribute>
+<attribute>Caribbean</attribute>
+<attribute>United States</attribute>
+<obj>Air Canada</obj>
+<obj>Air New Zealand</obj>
+<obj>All Nippon Airways</obj>
+<obj>Ansett Australia</obj>
+<obj>The Austrian Airlines Group</obj>
+<obj>British Midland</obj>
+<obj>Lufthansa</obj>
+<obj>Mexicana</obj>
+<obj>Scandinavian Airlines</obj>
+<obj>Singapore Airlines</obj>
+<obj>Thai Airways International</obj>
+<obj>United Airlines</obj>
+<obj>VARIG</obj>
+<row><c>true</c><c>true</c><c>true</c><c>true</c><c>true</c><c>false</c><c>true</c><c>true</c><c>true</c></row>
+<row><c>false</c><c>true</c><c>false</c><c>true</c><c>false</c><c>false</c><c>false</c><c>false</c><c>true</c></row>
+<row><c>false</c><c>true</c><c>false</c><c>true</c><c>false</c><c>false</c><c>false</c><c>false</c><c>true</c></row>
+<row><c>false</c><c>false</c><c>false</c><c>true</c><c>false</c><c>false</c><c>false</c><c>false</c><c>false</c></row>
+<row><c>false</c><c>true</c><c>true</c><c>true</c><c>true</c><c>true</c><c>false</c><c>false</c><c>true</c></row>
+<row><c>false</c><c>true</c><c>false</c><c>false</c><c>false</c><c>false</c><c>false</c><c>false</c><c>false</c></row>
+<row><c>true</c><c>true</c><c>true</c><c>true</c><c>true</c><c>true</c><c>true</c><c>false</c><c>true</c></row>
+<row><c>true</c><c>false</c><c>true</c><c>false</c><c>false</c><c>false</c><c>true</c><c>true</c><c>true</c></row>
+<row><c>true</c><c>true</c><c>false</c><c>true</c><c>false</c><c>true</c><c>false</c><c>false</c><c>true</c></row>
+<row><c>false</c><c>true</c><c>true</c><c>true</c><c>true</c><c>true</c><c>false</c><c>false</c><c>true</c></row>
+<row><c>true</c><c>true</c><c>false</c><c>true</c><c>false</c><c>false</c><c>false</c><c>true</c><c>true</c></row>
+<row><c>true</c><c>true</c><c>true</c><c>true</c><c>false</c><c>false</c><c>true</c><c>true</c><c>true</c></row>
+<row><c>true</c><c>true</c><c>false</c><c>true</c><c>false</c><c>true</c><c>true</c><c>false</c><c>true</c></row>
+</context>

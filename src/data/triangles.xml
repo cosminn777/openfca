@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<context>
+<attribute>Equilateral</attribute>
+<attribute>Isoceles</attribute>
+<attribute>Acute Angled</attribute>
+<attribute>Obtuse Angled</attribute>
+<attribute>Right Angled</attribute>
+<obj>Triangle 1</obj>
+<obj>Triangle 2</obj>
+<obj>Triangle 3</obj>
+<obj>Triangle 4</obj>
+<obj>Triangle 5</obj>
+<obj>Triangle 6</obj>
+<obj>Triangle 7</obj>
+<row><c>false</c><c>true</c><c>false</c><c>true</c><c>false</c></row>
+<row><c>false</c><c>true</c><c>false</c><c>false</c><c>true</c></row>
+<row><c>false</c><c>false</c><c>true</c><c>false</c><c>false</c></row>
+<row><c>true</c><c>true</c><c>true</c><c>false</c><c>false</c></row>
+<row><c>false</c><c>false</c><c>false</c><c>true</c><c>false</c></row>
+<row><c>false</c><c>true</c><c>true</c><c>false</c><c>false</c></row>
+<row><c>false</c><c>false</c><c>false</c><c>false</c><c>true</c></row>
+</context>
