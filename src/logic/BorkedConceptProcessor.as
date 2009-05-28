@@ -12,6 +12,7 @@ package logic
 		private var g: Graph;
 		private var prevItem: Item;
 		private var itemCount: int;
+		private var attributes: Array;
 		
 		public function BorkedConceptProcessor()
 		{
@@ -21,6 +22,7 @@ package logic
 		{
 			g = new Graph();
 			itemCount = 0;
+			this.attributes = attributes;
 			var firstObjects:Array = new Array();
 			var endConcepts:Array = new Array();
 			for (var index:String in objects) firstObjects.push(index);
@@ -37,7 +39,7 @@ package logic
 				{
 					var concept:Object = prevConcepts[conceptIndex];
 					var endConcept:Boolean = true;
-					for each (var attribute:String in attributes)
+					for (var attribute:String in attributes)
 					{
 						var attr:Array = concept["attr"] as Array;
 						if (attr.indexOf(attribute) != -1)
@@ -59,7 +61,7 @@ package logic
 						}
 						var oldAttrs:Array = (concept["attr"] as Array);
 						var newAttr:Array = oldAttrs.concat(attribute);
-						for each (var extraAttr:String in attributes)
+						for (var extraAttr:String in attributes)
 						{
 							if (newAttr.indexOf(extraAttr) != -1)
 							{
@@ -89,7 +91,9 @@ package logic
 				}
 				prevConcepts = newConcepts;
 			}
-			newItem({obj:[], attr:attributes}, 5.0);
+			var attrIndices:Array = attributes.map(function(item:*, index:int, array:Array):int {return index});
+				
+			newItem({obj:[], attr:attrIndices}, 5.0);
 			for each (concept in endConcepts)
 			{
 				linkItems(concept["id"], (itemCount-1).toString());
@@ -98,8 +102,12 @@ package logic
 		}
 
 		private function newItem(concept:Object, extraRepulsion:Number = 1.0): void {
+			var attrs:Array = (concept["attr"] as Array).map(
+				function (elem:*, index:int, arr:Array): String {
+					return attributes[elem];
+				});
 			var item: ConceptItem = new ConceptItem(new Number(itemCount++).toString(),
-													concept["attr"],
+													attrs,
 													concept["obj"], extraRepulsion);
 			g.add(item);
 			prevItem = item;

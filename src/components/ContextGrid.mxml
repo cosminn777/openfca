@@ -41,13 +41,11 @@
 				}
 			}
 			
-			private function createAttributeColumn(attr:String): void
+			private function createAttributeColumn(attrIndex:String, attr:String): void
 			{
 				var newColumn:DataGridColumn = new DataGridColumn();
-				newColumn.dataField = attr;
+				newColumn.dataField = attrIndex;
 				newColumn.headerText = attr;
-				// TODO: custom header renderer
-				//newColumn.headerRenderer = new ClassFactory(mx.controls.TextInput);
 				newColumn.sortable = false;
 				newColumn.editable = false;
 				newColumn.draggable = false;
@@ -60,15 +58,22 @@
 				var newObject:Array = new Array();
 				newObject["objectName"] = name;
 				objects.push(name);
-				for each (var attr:String in attributes)
-					newObject[attr] = false;
+				for (var attrIndex:String in attributes)
+					newObject[attrIndex] = false;
 				return newObject;
 			}
 			
-			private function setGrid(objects:Array, attributes:Array): void
+			private function setGrid(objects:Array, attributes:Array, rows:ArrayCollection = null): void
 			{
+				if (rows == null)
+				{
+					this.rows = rows = new ArrayCollection()
+				}
+				else
+				{
+					this.rows = rows;
+				}
 				this.attributes = attributes;
-				rows = new ArrayCollection();
 				for each (var object:String in objects) {
 					rows.addItem(createObject(object));			
 				}
@@ -79,13 +84,12 @@
 				objectColumn.sortable = false;
 				objectColumn.draggable = false;
 				objectColumn.rendererIsEditor = true;
-				//objectColumn.itemRenderer = new ClassFactory(mx.controls.TextInput);
 				
 				cols = new Array();
 				cols.push(objectColumn);	
 				
-				for each (var attr:String in attributes) {
-					createAttributeColumn(attr);
+				for (var attrIndex:String in attributes) {
+					createAttributeColumn(attrIndex, attributes[attrIndex]);
 				}
 				var emptyCol:DataGridColumn = new DataGridColumn("");
 				emptyCol.editable = false;
@@ -204,7 +208,8 @@
 							row[panel.textInput.text] = false;
 						}
 						var emptyColumn:Object = cols.pop();
-						createAttributeColumn(panel.textInput.text);
+						var newId:String = (cols.length-1).toString();
+						createAttributeColumn(newId, panel.textInput.text);
 						cols.push(emptyColumn);
 						contable.columns = cols;
 						PopUpManager.removePopUp(panel);

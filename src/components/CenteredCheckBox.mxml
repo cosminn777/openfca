@@ -30,9 +30,7 @@
 			
 			private function changed(): void
 			{
-				var col:DataGridColumn = (_listData.owner as DataGrid).columns[_listData.columnIndex];
-				var text:String = col.headerText;
-				super.data[text] = checkBox.selected;
+				super.data[_listData.columnIndex] = checkBox.selected;
 			}
 		]]>
 	</mx:Script>
