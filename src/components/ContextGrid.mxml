@@ -68,15 +68,19 @@
 				if (rows == null)
 				{
 					this.rows = rows = new ArrayCollection()
+					for each (var object:String in objects) {
+						rows.addItem(createObject(object));			
+					}
 				}
 				else
 				{
 					this.rows = rows;
+					this.objects = objects;
+					for (var row:String in rows) {
+						rows[row]["objectName"] = objects[row];			
+					}
 				}
 				this.attributes = attributes;
-				for each (var object:String in objects) {
-					rows.addItem(createObject(object));			
-				}
 				
 				var objectColumn:DataGridColumn = new DataGridColumn();
 				objectColumn.headerText = "";
@@ -119,7 +123,7 @@
 			private function createContext(event:NewContextEvent): void
 			{
 				setContextGridVisibility();
-				setGrid(event.objects, event.attributes);
+				setGrid(event.objects, event.attributes, event.rows);
 			}
 			
 			private function showCreateContext(): void
