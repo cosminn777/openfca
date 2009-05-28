@@ -72,6 +72,8 @@
 		]]>
 	</mx:Script>
 	<mx:Model id="numbersModel" source="data/numbers.xml" />
+	<mx:Model id="StarAllianceMembersModel" source="data/staralliancemembers.xml" />
+	<mx:Model id="TrianglesModel" source="data/triangles.xml" />
 	<mx:Label text="Please specify the objects and attributes of the context (separated by comma)" />
 	<mx:Form xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%">
 		<mx:FormItem label="Objects:" width="100%">
@@ -98,6 +100,8 @@
 		<mx:dataProvider>
 			<mx:Array>
 				<mx:String>Numbers</mx:String>
+				<mx:String>Star Alliance Members</mx:String>
+				<mx:String>Triangles</mx:String>
 			</mx:Array>
 		</mx:dataProvider>
 	</mx:ButtonBar>
@@ -118,5 +122,7 @@
 	</mx:Array>
 	<mx:Array id="modelNamesArray">
 		<mx:String>numbersModel</mx:String>
+		<mx:String>StarAllianceMembersModel</mx:String>
+		<mx:String>TrianglesModel</mx:String>
 	</mx:Array>
 </mx:Panel>
