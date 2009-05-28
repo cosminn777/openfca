@@ -238,14 +238,22 @@
 			<mx:Button id="backToGridButton" visible="false" includeInLayout="false" label="Back" click="setContextGridVisibility()"/>
 			<mx:Button id="helpButton" visible="true" includeInLayout="true" label="Help" />
 	</mx:ApplicationControlBar>
+
+	<mx:Fade id="fadeIn" alphaFrom="0.0" alphaTo="1.0"/>
+	<mx:Fade id="fadeOut" alphaFrom="1.0" alphaTo="0.0"/>
+	
 	<mx:ViewStack id="viewStack" width="100%" height="100%">
 		<components:NewContextPanel
 			id="newContextPanel"
+			showEffect="{fadeIn}"
+			hideEffect="{fadeOut}" 
 			createContextClick="createContext(event)"
 			cancelCreateContextClick="cancelCreateContext()" />
 									
 
-		<mx:VBox id="contextCanvas" width="100%"  height="100%">
+		<mx:VBox id="contextCanvas" width="100%"  height="100%"
+			showEffect="{fadeIn}"
+			hideEffect="{fadeOut}">
 			<mx:DataGrid lockedColumnCount="1" creationComplete="initGrid()" id="contable"
 					     horizontalScrollPolicy="on"
 					     verticalScrollPolicy="on"
@@ -255,6 +263,8 @@
 			</mx:DataGrid>
 		</mx:VBox>
 		
-		<components:LatticeView id="lattice" width="100%" height="100%" />
+		<components:LatticeView id="lattice" width="100%" height="100%"
+						showEffect="{fadeIn}"
+						hideEffect="{fadeOut}" />
 	</mx:ViewStack>
 </mx:VBox>
