@@ -2,6 +2,7 @@
 <mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:fc="http://www.adobe.com/2006/fc">
 	<mx:Script>
 		<![CDATA[
+			import logic.NaiveConceptProcessor;
 			import logic.BorkedConceptProcessor;
 			import logic.IConceptProcessor;
 			import dataclasses.ConceptItem;
@@ -15,7 +16,6 @@
 			private function init(): void
 			{
 				s.dataProvider = g;
-				conceptProcessor = new BorkedConceptProcessor();
 			}
 			
 			private function computeB0rkedContext(objects:Array, attributes:Array, data:ArrayCollection): void
@@ -24,6 +24,7 @@
 			
 			public function setContext(objects:Array, attributes:Array, data:ArrayCollection): void
 			{
+				conceptProcessor = new NaiveConceptProcessor();
 				g = conceptProcessor.computeConcept(objects, attributes, data);
 				if (s != null) {
 					s.dataProvider = g;
