@@ -12,16 +12,20 @@
 
 	<mx:Script>
 		<![CDATA[
+			import mx.utils.ObjectProxy;
+			import mx.collections.ArrayCollection;
 			import mx.events.ItemClickEvent;
 			import mx.utils.StringUtil;
 			import events.NewContextEvent;
+			
+			private var rows:ArrayCollection = null;
 			
 			private function init(): void
 			{
 				objectsTextInput.setFocus();
 			}
 			
-			private function sendCreateContext(objects:String, attributes:String): void
+			private function sendCreateContext(objects:String, attributes:String, rows:ArrayCollection): void
 			{
 				var o:Array = objects.split(",").map(
 					function(s:String, i:int, o:Array): String {
@@ -31,12 +35,12 @@
 					function(s:String, i:int, o:Array): String {
 						return mx.utils.StringUtil.trim(s);
 					});
-				dispatchEvent(new NewContextEvent("createContextClick", o, a));
+				dispatchEvent(new NewContextEvent("createContextClick", o, a, rows));
 			}
 			
 			private function createContext(): void
 			{
-				sendCreateContext(objectsTextInput.text, attributesTextInput.text);
+				sendCreateContext(objectsTextInput.text, attributesTextInput.text, rows);
 			}
 			
 			private function cancel(): void
@@ -46,11 +50,28 @@
 			
 			private function clickHandler(event:ItemClickEvent): void
 			{
+				rows = null;
 				objectsTextInput.text = objectArray[event.index]
 				attributesTextInput.text = attributeArray[event.index];
 			}
+
+			private function contextClickHandler(event:ItemClickEvent): void
+			{
+				var model:ObjectProxy = (document[modelNamesArray[event.index]]);
+				var objects:Array = model.obj as Array;
+				var attributes:Array = model.attribute as Array
+				objectsTextInput.text = objects.join(",");
+				attributesTextInput.text = attributes.join(",");
+				rows = new ArrayCollection();
+				for each (var row:ObjectProxy in model.row)
+				{
+					rows.addItem(row.c as Array);
+				}
+				dispatchEvent(new NewContextEvent("createContextClick", objects, attributes, rows))
+			}
 		]]>
 	</mx:Script>
+	<mx:Model id="numbersModel" source="data/numbers.xml" />
 	<mx:Label text="Please specify the objects and attributes of the context (separated by comma)" />
 	<mx:Form xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%">
 		<mx:FormItem label="Objects:" width="100%">
@@ -71,6 +92,15 @@
 			</mx:Array>
 		</mx:dataProvider>
 	</mx:ButtonBar>
+	<mx:Spacer height="10" />
+	<mx:Label text="Or choose a complete context from the following" />
+	<mx:ButtonBar itemClick="contextClickHandler(event)">
+		<mx:dataProvider>
+			<mx:Array>
+				<mx:String>Numbers</mx:String>
+			</mx:Array>
+		</mx:dataProvider>
+	</mx:ButtonBar>
 	<mx:Spacer height="100%"/>
 	<mx:ControlBar horizontalAlign="right">
 		<mx:Button id="createButton" label="Create context" click="createContext()"/>
@@ -85,5 +115,8 @@
 		<mx:String>odd,even,composite,prime,square</mx:String>
 		<mx:String>fast,cheap,nice,eco</mx:String>
 		<mx:String>cheap,nice,rich,battery,signal</mx:String>
+	</mx:Array>
+	<mx:Array id="modelNamesArray">
+		<mx:String>numbersModel</mx:String>
 	</mx:Array>
 </mx:Panel>
