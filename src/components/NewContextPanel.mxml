@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml"
+	horizontalAlign="center"
+	paddingBottom="20"
+	paddingTop="20"
+	layout="vertical" title="New context"
+	creationComplete="init()">
+	<mx:Metadata>
+		[Event(name="createContextClick", type="events.NewContextEvent")]
+		[Event(name="cancelCreateContextClick", type="events.NewContextEvent")]
+	</mx:Metadata>
+
+	<mx:Script>
+		<![CDATA[
+			import mx.events.ItemClickEvent;
+			import mx.utils.StringUtil;
+			import events.NewContextEvent;
+			
+			private function init(): void
+			{
+				objectsTextInput.setFocus();
+			}
+			
+			private function sendCreateContext(objects:String, attributes:String): void
+			{
+				var o:Array = objects.split(",").map(
+					function(s:String, i:int, o:Array): String {
+						return mx.utils.StringUtil.trim(s);
+					});
+				var a:Array = attributes.split(",").map(
+					function(s:String, i:int, o:Array): String {
+						return mx.utils.StringUtil.trim(s);
+					});
+				dispatchEvent(new NewContextEvent("createContextClick", o, a));
+			}
+			
+			private function createContext(): void
+			{
+				sendCreateContext(objectsTextInput.text, attributesTextInput.text);
+			}
+			
+			private function cancel(): void
+			{
+				dispatchEvent(new NewContextEvent("cancelCreateContextClick"));
+			}
+			
+			private function clickHandler(event:ItemClickEvent): void
+			{
+				objectsTextInput.text = objectArray[event.index]
+				attributesTextInput.text = attributeArray[event.index];
+			}
+		]]>
+	</mx:Script>
+	<mx:Label text="Please specify the objects and attributes of the context (separated by comma)" />
+	<mx:Form xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%">
+		<mx:FormItem label="Objects:" width="100%">
+			<mx:TextInput width="100%" id="objectsTextInput"/>
+		</mx:FormItem>
+		<mx:FormItem label="Attributes:" width="100%">
+			<mx:TextInput width="100%" id="attributesTextInput" enter="createContext()"/>
+		</mx:FormItem>
+	</mx:Form>
+	<mx:Spacer height="10" />
+	<mx:Label text="You may also choose a configuration from the following" />
+	<mx:ButtonBar itemClick="clickHandler(event)">
+		<mx:dataProvider>
+			<mx:Array>
+				<mx:String>Numbers</mx:String>
+				<mx:String>Cars</mx:String>
+				<mx:String>Phones</mx:String>
+			</mx:Array>
+		</mx:dataProvider>
+	</mx:ButtonBar>
+	<mx:Spacer height="100%"/>
+	<mx:ControlBar horizontalAlign="right">
+		<mx:Button id="createButton" label="Create context" click="createContext()"/>
+		<mx:Button label="Cancel" click="cancel()"/>
+	</mx:ControlBar>
+	<mx:Array id="objectArray">
+		<mx:String>1,2,3,4,5,6,7,8,9,10</mx:String>
+		<mx:String>Mustang,Corolla,Prius,Accord,Caliber</mx:String>
+		<mx:String>E70,E71,3220,6600,TytnII</mx:String>
+	</mx:Array>
+	<mx:Array id="attributeArray">
+		<mx:String>odd,even,composite,prime,square</mx:String>
+		<mx:String>fast,cheap,nice,eco</mx:String>
+		<mx:String>cheap,nice,rich,battery,signal</mx:String>
+	</mx:Array>
+</mx:Panel>
