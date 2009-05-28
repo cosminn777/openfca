@@ -126,12 +126,13 @@
 			
 			private function unsetVisibility(): void
 			{
-				
 				for each (var child:UIComponent in appControlBar.getChildren())
 				{
 					child.visible = false;
 					child.includeInLayout = false;
 				}
+				helpButton.visible = true;
+				helpButton.includeInLayout = true;
 			}
 			
 			private function setContextGridVisibility(): void
