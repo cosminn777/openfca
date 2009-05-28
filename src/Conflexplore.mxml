@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
-				xmlns:components="components.*" layout="vertical">
-	<mx:Image  source="data/logo.PNG" scaleContent="false"/>
-	<components:ContextGrid minWidth="640" width="85%" height="95%" />
-	<mx:Spacer height="5%">
-		
-	</mx:Spacer>
-	<mx:Label text="© 2009 Gigi cu cele 2 patrupede" width="100%" textAlign="right" fontWeight="bold"/>
+				xmlns:components="components.*" layout="vertical"
+				backgroundGradientColors="[#888888,#333333]" verticalAlign="top">
+	<mx:Image  source="data/logo.PNG" />
+	<components:ContextGrid minWidth="640" width="95%" height="100%" />
+	<mx:Spacer height="2%" />
+	<mx:Label color="#AAAAAA" text="© 2009 Borza, Nadăş and Sabou" width="100%" textAlign="right" fontWeight="bold"/>
 </mx:Application>

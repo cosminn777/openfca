@@ -59,8 +59,8 @@
 		</mx:GridRow>
 	</mx:Grid>
 
-	<fc:SpringGraph id="s" backgroundColor="#777777" width="100%" height="100%"
-		lineColor="#6666ff" repulsionFactor="{repulsionSlider.value}"
+	<fc:SpringGraph id="s" width="100%" height="100%"
+		lineColor="#8888ff" repulsionFactor="{repulsionSlider.value}"
 		creationComplete="init()">
 		<fc:itemRenderer>
 			<mx:Component>
