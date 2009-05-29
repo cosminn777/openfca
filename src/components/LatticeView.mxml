@@ -23,6 +23,7 @@
 				conceptProcessor = new NaiveConceptProcessor();
 				g = conceptProcessor.computeConcept(objects, attributes, data);
 				if (s != null) {
+					s.empty(); 
 					s.dataProvider = g;
 				}
 			}
