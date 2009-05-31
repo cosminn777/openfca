@@ -1,6 +1,7 @@
 package logic
 {
 	import com.adobe.flex.extras.controls.springgraph.Graph;
+	import com.adobe.flex.extras.controls.springgraph.Item;
 	
 	import dataclasses.ConceptItem;
 	
@@ -216,7 +217,11 @@ package logic
 					conceptAttributes.push(attributes[conceptIntents[j]]);
 				}
 
-				var concept:ConceptItem = new ConceptItem(i.toString(), conceptAttributes, conceptObjects); 
+				var concept:Item = new Item(i.toString());
+				var xmlData:XML = <node />;
+				xmlData.@attributes = "{" + conceptAttributes.join(",") + "}";
+				xmlData.@objects = "[" + conceptObjects.join(",") + "]";
+				concept.data = xmlData; 
 				concepts.push(concept);
 				g.add(concept);
 			}
