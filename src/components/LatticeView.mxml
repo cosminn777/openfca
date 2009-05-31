@@ -27,11 +27,6 @@
 					s.dataProvider = g;
 				}
 			}
-			
-			private function doubleClick(event:Event): void
-			{
-				
-			}
 		]]>
 	</mx:Script>
 	<mx:Grid width="100%">
@@ -115,10 +110,10 @@
 				            }
 						]]>
 					</mx:Script>
-					<mx:TextArea text="{data.attributes}" fontSize="{outerDocument.fontSizeSlider.value}" backgroundAlpha="0.2"
+					<mx:TextArea selectable="false" text="{data.data.@attributes}" fontSize="{outerDocument.fontSizeSlider.value}" backgroundAlpha="0.2"
 						textAlign="center" width="{outerDocument.widthSlider.value}" editable="false" horizontalScrollPolicy="off"
 						verticalScrollPolicy="auto" height="100%" minHeight="0"/>					
-					<mx:TextArea text="{data.objects}" fontSize="{outerDocument.fontSizeSlider.value}" backgroundAlpha="0.2"
+					<mx:TextArea selectable="false" text="{data.data.@objects}" fontSize="{outerDocument.fontSizeSlider.value}" backgroundAlpha="0.2"
 						textAlign="center" width="{outerDocument.widthSlider.value}" editable="false" horizontalScrollPolicy="off"
 						verticalScrollPolicy="auto" height="100%" minHeight="0"/>					
 				</mx:VBox>

@@ -3,6 +3,7 @@
 	initialize="init()" horizontalAlign="center">
 	<mx:Script>
 		<![CDATA[
+			import mx.controls.Alert;
 			import mx.core.UIComponent;
 			import mx.core.ComponentDescriptor;
 			import mx.containers.ControlBar;
@@ -23,6 +24,8 @@
 			private var rows:ArrayCollection;
 			
 			private var cols:Array;
+			
+			private var fileReference:FileReference = new FileReference();
 
 			private function init(): void
 			{
@@ -64,6 +67,7 @@
 			
 			private function setGrid(objects:Array, attributes:Array, rows:ArrayCollection = null): void
 			{
+				this.attributes = attributes;
 				if (rows == null)
 				{
 					this.rows = rows = new ArrayCollection()
@@ -79,8 +83,6 @@
 						rows[row]["objectName"] = objects[row];			
 					}
 				}
-				this.attributes = attributes;
-				
 				var objectColumn:DataGridColumn = new DataGridColumn();
 				objectColumn.headerText = "";
 				objectColumn.dataField = "objectName";
@@ -138,8 +140,10 @@
 					child.visible = false;
 					child.includeInLayout = false;
 				}
-				helpButton.visible = true;
-				helpButton.includeInLayout = true;
+				openButton.visible = true;
+				openButton.includeInLayout = true;
+				saveButton.visible = true;
+				saveButton.includeInLayout = true;
 			}
 			
 			private function setContextGridVisibility(): void
@@ -224,9 +228,80 @@
 						PopUpManager.removePopUp(panel);
 					});
 			}
+			
+			private function onFileSelect(event:Event): void
+			{
+				fileReference.addEventListener(Event.COMPLETE, onFileComplete);
+				fileReference.load();
+			}
+			
+			private function onFileComplete(event:Event): void
+			{
+				var xmlData:XML = new XML(fileReference.data.toString());
+				attributes = new Array();
+				for each (var a:XML in xmlData.a)
+				{
+					attributes.push(a[0]);
+				}
+				objects = new Array();
+				for each (var o:XML in xmlData.o)
+				{
+					objects.push(o[0]);
+				}
+				rows = new ArrayCollection();
+				for each (var row:XML in xmlData.r)
+				{
+					var newRow:Array = new Array();
+					for each (var c:XML in row.c)
+					{
+						newRow.push(c[0]);
+					}
+					rows.addItem(newRow);
+				}
+				setGrid(objects, attributes, rows);
+				setContextGridVisibility(); 
+			}
+			
+			private function openClickHandler():void
+			{
+				fileReference.browse([new FileFilter("Data", "*.xml")]);
+				fileReference.addEventListener(Event.SELECT, onFileSelect);
+			}
+			
+			private function saveClickHandler():void
+			{
+				var fileReference:FileReference = new FileReference();
+				var xmlData:XML = <conflexplore></conflexplore>;
+				for each (var a:String in attributes)
+				{
+					var xmlA:XML = <a></a>;
+					xmlA.appendChild(a);
+					xmlData.appendChild(xmlA);
+				}
+				for each (var o:String in objects)
+				{
+					var xmlO:XML = <o></o>;
+					xmlO.appendChild(o);
+					xmlData.appendChild(xmlO);
+				}
+				for each (var row:Array in rows)
+				{
+					var xmlR:XML = <r></r>;
+					for (var attributeIndex:String in attributes)
+					{
+						var xmlC:XML = <c></c>;
+						xmlC.appendChild(row[attributeIndex]);
+						xmlR.appendChild(xmlC);
+					} 
+					xmlData.appendChild(xmlR);
+				}
+				fileReference.save(xmlData.toXMLString(), "data.xml");
+			}
 		]]>
 	</mx:Script>
 	<mx:ApplicationControlBar id="appControlBar" width="100%">
+			<mx:Button id="openButton" visible="true" includeInLayout="true" click="openClickHandler()" label="Open" />
+			<mx:Button id="saveButton" visible="true" includeInLayout="true" click="saveClickHandler()" label="Save" />
 			<mx:Button label="New Context" includeInLayout="false" visible="false" id="resetButton"  click="showCreateContext()"/>
 			<mx:HBox id="gridControlBar" includeInLayout="false" visible="false">
 				<mx:Button label="Add Object" click="showAddObject()"/>
@@ -236,7 +311,6 @@
 			</mx:HBox>
 			<mx:Button id="viewLatticeButton" visible="false" includeInLayout="false" label="View Lattice" click="showLattice()"/>
 			<mx:Button id="backToGridButton" visible="false" includeInLayout="false" label="Back" click="setContextGridVisibility()"/>
-			<mx:Button id="helpButton" visible="true" includeInLayout="true" label="Help" />
 	</mx:ApplicationControlBar>
 
 	<mx:Fade id="fadeIn" alphaFrom="0.0" alphaTo="1.0"/>
