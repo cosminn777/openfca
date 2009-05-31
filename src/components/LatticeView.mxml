@@ -5,7 +5,6 @@
 			import logic.NaiveConceptProcessor;
 			import logic.BorkedConceptProcessor;
 			import logic.IConceptProcessor;
-			import dataclasses.ConceptItem;
 			import mx.collections.ArrayCollection;
 			import com.adobe.flex.extras.controls.springgraph.Item;
 			import com.adobe.flex.extras.controls.springgraph.Graph;
