@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" height="562" xmlns:components="components.*"
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" xmlns:components="components.*"
 	initialize="init()" horizontalAlign="center">
 	<mx:Script>
 		<![CDATA[
