@@ -30,7 +30,7 @@
 			
 			private function changed(): void
 			{
-				super.data[_listData.columnIndex] = checkBox.selected;
+				super.data[_listData.columnIndex-1] = checkBox.selected;
 			}
 		]]>
 	</mx:Script>
