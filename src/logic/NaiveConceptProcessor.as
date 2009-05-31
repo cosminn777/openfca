@@ -3,8 +3,6 @@ package logic
 	import com.adobe.flex.extras.controls.springgraph.Graph;
 	import com.adobe.flex.extras.controls.springgraph.Item;
 	
-	import dataclasses.ConceptItem;
-	
 	import mx.collections.ArrayCollection;
 
 	public class NaiveConceptProcessor implements IConceptProcessor
