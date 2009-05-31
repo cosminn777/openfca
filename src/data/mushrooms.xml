@@ -1,84 +1,84 @@
 <?xml version="1.0"?><conflexplore>
-<a>1e</a>
-<a>1p</a>
-<a>2x</a>
-<a>2k</a>
-<a>2f</a>
-<a>2b</a>
-<a>3f</a>
-<a>3y</a>
-<a>3s</a>
-<a>4w</a>
-<a>4n</a>
-<a>4e</a>
-<a>4g</a>
-<a>4p</a>
-<a>4c</a>
-<a>5f</a>
-<a>5t</a>
-<a>6n</a>
-<a>6s</a>
-<a>6y</a>
-<a>6f</a>
-<a>6m</a>
-<a>7f</a>
-<a>7a</a>
-<a>8w</a>
-<a>8c</a>
-<a>9b</a>
-<a>9n</a>
-<a>10w</a>
-<a>10b</a>
-<a>10p</a>
-<a>10n</a>
-<a>10y</a>
-<a>10o</a>
-<a>10g</a>
-<a>11e</a>
-<a>11t</a>
-<a>12?</a>
-<a>12c</a>
-<a>12b</a>
-<a>13k</a>
-<a>13s</a>
-<a>13y</a>
-<a>14s</a>
-<a>14k</a>
-<a>14y</a>
-<a>15w</a>
-<a>15p</a>
-<a>15o</a>
-<a>15c</a>
-<a>15n</a>
-<a>16w</a>
-<a>16o</a>
-<a>16c</a>
-<a>16p</a>
-<a>16n</a>
-<a>17p</a>
-<a>18w</a>
-<a>18o</a>
-<a>18n</a>
-<a>19t</a>
-<a>19o</a>
-<a>19n</a>
-<a>20p</a>
-<a>20e</a>
-<a>20n</a>
-<a>21w</a>
-<a>21n</a>
-<a>21o</a>
-<a>21y</a>
-<a>21b</a>
-<a>22s</a>
-<a>22v</a>
-<a>22c</a>
-<a>22n</a>
-<a>22y</a>
-<a>23g</a>
-<a>23p</a>
-<a>23l</a>
-<a>23d</a>
+<a>CLASSES: Edible</a>
+<a>CLASSES: Poisonous</a>
+<a>CAP-SHAPE: Convex</a>
+<a>CAP-SHAPE: Knobbed</a>
+<a>CAP-SHAPE: Flat</a>
+<a>CAP-SHAPE: Bell</a>
+<a>CAP-SURFACE: Fibrous</a>
+<a>CAP-SURFACE: Scaly</a>
+<a>CAP-SURFACE: Smooth</a>
+<a>CAP-COLOR: White</a>
+<a>CAP-COLOR: Brown</a>
+<a>CAP-COLOR: Red</a>
+<a>CAP-COLOR: Gray</a>
+<a>CAP-COLOR: Pink</a>
+<a>CAP-COLOR: Cinnamon</a>
+<a>BRUISES: No</a>
+<a>BRUISES: Bruises</a>
+<a>ODOR: None</a>
+<a>ODOR: Spicy</a>
+<a>ODOR: Fishy</a>
+<a>ODOR: Foul</a>
+<a>ODOR: Musty</a>
+<a>GILL-ATTACHMENT: Free</a>
+<a>GILL-ATTACHMENT: Attached</a>
+<a>GILL-SPACING: Crowded</a>
+<a>GILL-SPACING: Close</a>
+<a>GILL-SIZE: Broad</a>
+<a>GILL-SIZE: Narrow</a>
+<a>GILL-COLOR: White</a>
+<a>GILL-COLOR: Buff</a>
+<a>GILL-COLOR: Pink</a>
+<a>GILL-COLOR: Brown</a>
+<a>GILL-COLOR: Yellow</a>
+<a>GILL-COLOR: Orange</a>
+<a>GILL-COLOR: Gray</a>
+<a>STALK-SHAPE: Enlarging</a>
+<a>STALK-SHAPE: Tapering</a>
+<a>STALK-ROOT: Missing</a>
+<a>STALK-ROOT: Club</a>
+<a>STALK-ROOT: Bulbous</a>
+<a>STALK-SURFACE-ABOVE-RING: Silky</a>
+<a>STALK-SURFACE-ABOVE-RING: Smooth</a>
+<a>STALK-SURFACE-ABOVE-RING: Scaly</a>
+<a>STALK-SURFACE-BELOW-RING: Smooth</a>
+<a>STALK-SURFACE-BELOW-RING: Silky</a>
+<a>STALK-SURFACE-BELOW-RING: Scaly</a>
+<a>STALK-COLOR-ABOVE-RING: White</a>
+<a>STALK-COLOR-ABOVE-RING: Pink</a>
+<a>STALK-COLOR-ABOVE-RING: Orange</a>
+<a>STALK-COLOR-ABOVE-RING: Cinnamon</a>
+<a>STALK-COLOR-ABOVE-RING: Brown</a>
+<a>STALK-COLOR-BELOW-RING: White</a>
+<a>STALK-COLOR-BELOW-RING: Orange</a>
+<a>STALK-COLOR-BELOW-RING: Cinnamon</a>
+<a>STALK-COLOR-BELOW-RING: Pink</a>
+<a>STALK-COLOR-BELOW-RING: Brown</a>
+<a>VEIL-TYPE: Partial</a>
+<a>VEIL-COLOR: White</a>
+<a>VEIL-COLOR: Orange</a>
+<a>VEIL-COLOR: Brown</a>
+<a>RING-NUMBER: Two</a>
+<a>RING-NUMBER: One</a>
+<a>RING-NUMBER: None</a>
+<a>RING-TYPE: Pendant</a>
+<a>RING-TYPE: Evanescent</a>
+<a>RING-TYPE: None</a>
+<a>SPORE-PRINT-COLOR: White</a>
+<a>SPORE-PRINT-COLOR: Brown</a>
+<a>SPORE-PRINT-COLOR: Orange</a>
+<a>SPORE-PRINT-COLOR: Yellow</a>
+<a>SPORE-PRINT-COLOR: Buff</a>
+<a>POPULATION: Scattered</a>
+<a>POPULATION: Several</a>
+<a>POPULATION: Clustered</a>
+<a>POPULATION: Numerous</a>
+<a>POPULATION: Solitary</a>
+<a>HABITAT: Grasses</a>
+<a>HABITAT: Paths</a>
+<a>HABITAT: Leaves</a>
+<a>HABITAT: Woods</a>
 <o>Mushroom 1</o>
 <o>Mushroom 2</o>
 <o>Mushroom 3</o>
