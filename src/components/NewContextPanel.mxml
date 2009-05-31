@@ -58,12 +58,12 @@
 			private function contextClickHandler(event:ItemClickEvent): void
 			{
 				var model:ObjectProxy = (document[modelNamesArray[event.index]]);
-				var objects:Array = model.obj as Array;
-				var attributes:Array = model.attribute as Array
+				var objects:Array = model.o as Array;
+				var attributes:Array = model.a as Array
 				objectsTextInput.text = objects.join(",");
 				attributesTextInput.text = attributes.join(",");
 				rows = new ArrayCollection();
-				for each (var row:ObjectProxy in model.row)
+				for each (var row:ObjectProxy in model.r)
 				{
 					rows.addItem(row.c as Array);
 				}
