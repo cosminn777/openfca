@@ -13,254 +13,200 @@ namespace libconexplore
 
         }
 
-        private List<int> getAttributeExtent(bool[][] data, int attribute)
-		{
-			List<int> objects = new List<int>();
-			int i = 0;
-			for (i = 0; i < data.Length; ++i)
-			{
-				if (data[i][attribute] == true)
-				{
-					objects.Add(i);
-				}	
-			}
-			return objects;
-		}
-
-        
-		private List<int> getIntent(bool[][] data, string[] attributes, List<int> extent)
-		{
-			List<int> intent = new List<int>();
-			int i = 0;
-			for (i = 0; i < attributes.Length; ++i)
-			{
-				int j = 0;
-				for (j = 0; j < extent.Count; ++j)
-				{
-					if (data[extent[j]][i] == false)
-					{
-						break;
-					}
-				}
-				if (j == extent.Count)
-				{
-					intent.Add(i);
-				}
-			}
-			return intent;
-		}
-		
-
-        private List<int> getIntersection(List<int> set1, List<int> set2)
-		{
-			List<int> intersection = new List<int>();
-			int i = 0;
-			for (i = 0; i < set1.Count; ++i)
-			{
-				if (set2.IndexOf(set1[i],0) > -1) // exists in set2
-				{
-					intersection.Add(set1[i]);	
-				}
-			}
-			return intersection;
-		}
-
-        private bool equalArray(List<int> set1, List<int> set2)
-		{
-			if (set1.Count != set2.Count)
-			{
-				return false;
-			}
-			if (set1.Count == 0) // empty arrays are considered to be equal
-			{
-				return true;
-			}
-			
-			int j = 0;
-			for (j = 0; j < set1.Count; ++j)
-			{
-				if (set2.IndexOf(set1[j], 0) == -1) // not in the array
-				{
-					return false;
-				}
-			}	
-			return true;
-		}
-		
-
-        private bool containsArray(List<List<int>> sets, List<int> containedSet)
-		{
-			int i = 0;
-			for (i = 0; i < sets.Count; ++i)
-			{
-				if (equalArray(sets[i], containedSet))
-				{
-					return true;
-				}		
-			}
-			return false;
-		}
-
-        public void Compute(string[] objects, string[] attributes, bool[][] data)
+        private HashSet<int> ExtentForSingleAttribute(bool[][] bValues, int iAttribute)
         {
-            List<List<int>> extents = new List<List<int>>(); // will contain all extents
-			List<List<int>> intents = new List<List<int>>();
+            HashSet<int> hsObjects = new HashSet<int>();
+            
+            int i = 0;
+            for (i = 0; i < bValues.Length; ++i)
+            {
+                if (bValues[i][iAttribute])
+                {
+                    hsObjects.Add(i);
+                }
+            }
 
-			int j = 0;
-			int i = 0;
-			int k = 0;
-			
-			// for each attribute, write their extents
-			for (j = 0; j < attributes.Length; ++j)
-			{
-				List<int> attributeExtent = getAttributeExtent(data, j);
-				if (!containsArray(extents, attributeExtent))
-				{
-					extents.Add(attributeExtent);
-				}
-			}
-			// while the extents set changes, compute all pairwise intersections
-			bool changed = false;
-			while (!changed)
-			{
-				changed = false;
-				int len = extents.Count;
-				
-				for (i = 0; i < len - 1; ++i)
-				{
-					for (k = i + 1; k < len; ++k)
-					{
-						List<int> intersection = getIntersection(extents[i], extents[k]);
-						if (!containsArray(extents, intersection))
-						{
-							extents.Add(intersection);
-							changed = true;
-						}
-					}
-				}
-			}
-			// add the set of all objects if it's not already in the list
-			List<int> allObjects = new List<int>();
-			for (j = 0; j < objects.Length; ++j)
-			{
-				allObjects.Add(j);
-			} 
-			if (!containsArray(extents, allObjects))
-			{
-				extents.Add(allObjects);
-			}
-			
-			
-			// initialize levels for each concept
-			List<int> level = new List<int>();
-			for (i = 0; i < extents.Count; ++i)
-			{
-				level.Add(0); // initialize all to level 0
-			}
-			
-			// sort extents by their leghth, number of objects
-			List<int> set1;
-			List<int> set2;
-			for (i = 0; i < extents.Count - 1; ++i)
-			{
-				for (j = i + 1; j < extents.Count; ++j)
-				{
-					set1 = extents[i];
-					set2 = extents[j];
-					if (set1.Count < set2.Count)
-					{
-						extents[i] = set2;
-						extents[j] = set1;
-					}
-				}
-			}
-			
-			// compute the levels for each concept
-			for (i = 0; i < extents.Count; ++i)
-			{
-				int max = 0;
-				for (j = i - 1; j >= 0; --j)
-				{
-					set1 = extents[i];
-					set2 = extents[j];
-					if (getIntersection(set1, set2).Count == set1.Count) // set1 is all included in set2
-					{
-						if (max < level[j])
-						{
-							max = level[j]; 
-						}
-					}	
-				}
-				level[i] = max + 1;
-			}
-			
-			// compute intents for all extents
-			for (i = 0; i < extents.Count; ++i)
-			{
-				intents.Add(getIntent(data, attributes, extents[i]));
-			}
+            return hsObjects;
+        }
 
-            Debug.WriteLine(string.Format("Formal concepts: {0}", extents.Count));
+        private HashSet<int> IntentForMultipleObjects(bool[][] bValues, string[] sAttributes, HashSet<int> hsObjects)
+        {
+            HashSet<int> hgAttributes = new HashSet<int>();
+            
+            int i = 0;
+            for (i = 0; i < sAttributes.Length; ++i)
+            {
+                bool bOk = true;
+                foreach (int j in hsObjects)
+                {
+                    if (!bValues[j][i])
+                    {
+                        bOk = false;
+                        break;
+                    }
+                }
+                if (bOk)
+                {
+                    hgAttributes.Add(i);
+                }
+            }
 
-            //List<int> concepts: Array = new Array();
-            //// create graph nodes
-            //for (i = 0; i < extents.length; ++i)
-            //{
-            //    // convert extent index to name
-            //    var conceptObjects:Array = new Array();
-            //    var conceptExtents:Array = extents[i];
-            //    for (j = 0; j < conceptExtents.length; ++j)
-            //    {
-            //        conceptObjects.push(objects[conceptExtents[j]]);
-            //    }
-            //    // convert intent index to name
-            //    var conceptAttributes:Array = new Array();
-            //    var conceptIntents:Array = intents[i];
-            //    for (j = 0; j < conceptIntents.length; ++j)
-            //    {
-            //        conceptAttributes.push(attributes[conceptIntents[j]]);
-            //    }
+            return hgAttributes;
+        }
 
-            //    var concept:ConceptItem = new ConceptItem(i.toString(), conceptAttributes, conceptObjects); 
-            //    concepts.push(concept);
-            //    g.add(concept);
-            //}
+        public void Compute(string[] sObjects, string[] sAttributes, bool[][] bValues)
+        {
+            HashSet<HashSet<int>> hshsExtents = new HashSet<HashSet<int>>(new NaiveComparer()); // will contain all extents
 
-            //var links:int = 0;
-            //// connect concepts
-            //var linked: Array = new Array();
-            //for (i = 0; i < extents.length; ++i)
-            //{
-            //    for (j = i - 1; j >= 0; --j)
-            //    {
-            //        set1 = extents[i];
-            //        set2 = extents[j];
-            //        if (getIntersection(set1, set2).length == set1.length) // set1 is all included in set2
-            //        {
-            //            if (level[i] - level[j] == 1) // has to be on the next level
-            //            {
-            //                g.link(g.find(j.toString()), g.find(i.toString()));
-            //                ++links;
-            //                // keep track of nodes that act as targets
-            //                if (linked.indexOf(j, 0) == -1)
-            //                { 
-            //                    linked.push(j);
-            //                }
-            //            }
-            //        }	
-            //    }
-            //}
-			
-            //// connect remaining concepts to the bottom one (a.k.a. covaseala)
-            //for (i = 0; i < extents.length - 1; ++i)
-            //{
-            //    if (linked.indexOf(i,0) == -1)
-            //    {
-            //        // connect a node that has never been used as a source to the concept with empty objects and all attributes
-            //        g.link(g.find(i.toString()), g.find((extents.length - 1).toString()));
-            //        ++links;
-            //    }
-            //}
+            int i = 0, j = 0;
+
+            // For each attribute add its extent
+            for (j = 0; j < sAttributes.Length; ++j)
+            {
+                HashSet<int> hsExtent = ExtentForSingleAttribute(bValues, j);
+                hshsExtents.Add(hsExtent);
+            }
+
+            // While the set of extents changes compute all pairwise intersections
+            bool bChanged = true;
+            while (bChanged)
+            {
+                bChanged = false;
+                
+                List<HashSet<int>> lhsExtents = new List<HashSet<int>>(hshsExtents);
+                Debug.WriteLine(string.Format("Formal concepts so far: {0}", lhsExtents.Count));
+
+                for (i = 0; i < lhsExtents.Count - 1; ++i)
+                {
+                    for (j = i + 1; j < lhsExtents.Count; ++j)
+                    {
+                        HashSet<int> hsExtentIntersection = new HashSet<int>(lhsExtents[i]);
+                        hsExtentIntersection.IntersectWith(lhsExtents[j]);
+                        if (hshsExtents.Add(hsExtentIntersection))
+                        {
+                            bChanged = true;
+                        }
+                    }
+                }
+            }
+
+            // Add the set of all objects if it's not already there
+            HashSet<int> hsAllObjects = new HashSet<int>();
+            for (i = 0; i < sObjects.Length; ++i)
+            {
+                hsAllObjects.Add(i);
+            }
+            hshsExtents.Add(hsAllObjects);
+
+            // Done
+            List<HashSet<int>> lhsFinalExtents = new List<HashSet<int>>(hshsExtents);
+            List<HashSet<int>> lhsFinalIntents = new List<HashSet<int>>();
+
+            // Initialize levels for each formal concept
+            List<int> lLevels = new List<int>();
+            for (i = 0; i < lhsFinalExtents.Count; ++i)
+            {
+                lLevels.Add(0);
+            }
+
+            // Sort extents by their length
+            HashSet<int> hs1;
+            HashSet<int> hs2;
+            for (i = 0; i < lhsFinalExtents.Count - 1; ++i)
+            {
+                for (j = i + 1; j < lhsFinalExtents.Count; ++j)
+                {
+                    hs1 = lhsFinalExtents[i];
+                    hs2 = lhsFinalExtents[j];
+                    if (hs1.Count < hs2.Count)
+                    {
+                        lhsFinalExtents[i] = hs2;
+                        lhsFinalExtents[j] = hs1;
+                    }
+                }
+            }
+
+            // Compute level for each concept
+            for (i = 0; i < lhsFinalExtents.Count; ++i)
+            {
+                int iMax = 0;
+                for (j = i - 1; j >= 0; --j)
+                {
+                    hs1 = lhsFinalExtents[i];
+                    hs2 = lhsFinalExtents[j];
+                    if (hs1.IsSubsetOf(hs2)) // set1 is all included in set2
+                    {
+                        if (iMax < lLevels[j])
+                        {
+                            iMax = lLevels[j];
+                        }
+                    }
+                }
+                lLevels[i] = iMax + 1;
+            }
+
+            // Compute intent for every extent
+            for (i = 0; i < lhsFinalExtents.Count; ++i)
+            {
+                lhsFinalIntents.Add(IntentForMultipleObjects(bValues, sAttributes, lhsFinalExtents[i]));
+            }
+
+            Debug.WriteLine(string.Format("Total formal concepts: {0}", lhsFinalExtents.Count));
+
+            // Create graph nodes
+            List<Concept> lConcepts = new List<Concept>();
+            for (i = 0; i < lhsFinalExtents.Count; ++i)
+            {
+                // Convert extent index to name
+                List<string> lConceptObjects = new List<string>();
+                foreach (int iObject in lhsFinalExtents[i])
+                {
+                    lConceptObjects.Add(sObjects[iObject]);
+                }
+
+                // Convert intent index to name
+                List<string> lConceptAttributes = new List<string>();
+                foreach (int iAttribute in lhsFinalIntents[i])
+                {
+                    lConceptAttributes.Add(sAttributes[iAttribute]);
+                }
+
+                lConcepts.Add(new Concept() { Objects = lConceptObjects, Attributes = lConceptAttributes });
+            }
+
+            // Connect concepts
+            List<Link> lLinks = new List<Link>();
+            HashSet<int> hsLinked = new HashSet<int>();
+            for (i = 0; i < lhsFinalExtents.Count; ++i)
+            {
+                for (j = i - 1; j >= 0; --j)
+                {
+                    hs1 = lhsFinalExtents[i];
+                    hs2 = lhsFinalExtents[j];
+                    if (hs1.IsSubsetOf(hs2)) // set1 is all included in set2
+                    {
+                        if (lLevels[i] - lLevels[j] == 1) // Is on the next level
+                        {
+                            lLinks.Add(new Link() { Source = lConcepts[j], Target = lConcepts[i] });
+                            // Keep track of nodes that act as targets
+                            hsLinked.Add(j);
+                        }
+                    }	
+                }
+            }
+
+            // Connect remaining concepts to the bottom one
+            for (i = 0; i < lhsFinalExtents.Count - 1; ++i)
+            {
+                if (!hsLinked.Overlaps(new int[] { i }))
+                {
+                    // Connect a node that has never been used as a source to the concept with empty objects and all attributes
+                    lLinks.Add(new Link() { Source = lConcepts[i], Target = lConcepts[lConcepts.Count - 1] });
+                    hsLinked.Add(i);
+                }
+            }
+
+            Debug.WriteLine(string.Format("Total links: {0}", lLinks.Count));
         }
     }
 }
