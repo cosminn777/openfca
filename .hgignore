@@ -1,0 +1,8 @@
+syntax: glob
+bin-*
+*/Thumbs.db
+*.swc
+conexplore/*/bin
+conexplore/*/obj
+*.suo
+*.csproj.user
