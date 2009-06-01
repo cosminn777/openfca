@@ -11,6 +11,8 @@ namespace winconexplore
         static void Main(string[] args)
         {
             Loader cLoader = new Loader();
+            //cLoader.Load("triangles.xml");
+            //cLoader.Load("numbers.xml");
             cLoader.Load("mushrooms.xml");
 
             Naive cNaive = new Naive();

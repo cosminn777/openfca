@@ -116,8 +116,8 @@ package logic
 				}
 			}
 			// while the extents set changes, compute all pairwise intersections
-			var changed:Boolean = false;
-			while (!changed)
+			var changed:Boolean = true;
+			while (changed)
 			{
 				changed = false;
 				var len:int = extents.length;

@@ -41,7 +41,7 @@ namespace Mushrooms
             
             string[] lines = File.ReadAllLines("agaricus-lepiota.data");
             List<string> lLines = new List<string>(lines);
-            //lLines.RemoveRange(0, 7600);
+            //lLines.RemoveRange(0, 7900);
             lines = lLines.ToArray();
 
             string[][] values = new string[lines.Length][];
