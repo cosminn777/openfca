@@ -216,9 +216,10 @@ package logic
 				}
 
 				var concept:Item = new Item(i.toString());
-				var xmlData:XML = <node />;
-				xmlData.@attributes = "{" + conceptAttributes.join(",") + "}";
-				xmlData.@objects = "[" + conceptObjects.join(",") + "]";
+				var xmlData:XML = <n />;
+				xmlData.@id = i.toString();
+				xmlData.@a = "{" + conceptAttributes.join(",") + "}";
+				xmlData.@o = "[" + conceptObjects.join(",") + "]";
 				concept.data = xmlData; 
 				concepts.push(concept);
 				g.add(concept);
