@@ -12,8 +12,9 @@ namespace winconexplore
         {
             Loader cLoader = new Loader();
             //cLoader.Load("triangles.xml");
-            //cLoader.Load("numbers.xml");
-            cLoader.Load("mushrooms.xml");
+            cLoader.Load("numbers.xml");
+            //cLoader.Load("mushrooms.xml");
+            //cLoader.Load("ads.xml");
 
             Naive cNaive = new Naive();
             cNaive.Compute(cLoader.Objects, cLoader.Attributes, cLoader.Values);

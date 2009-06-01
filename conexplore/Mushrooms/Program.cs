@@ -9,18 +9,9 @@ namespace Mushrooms
 {
     class Program
     {
-        private static string getValue()
-        {
-            return "";
-        }
-
-        private static string getAttr()
-        {
-            return "";
-        }
-
         static void Main(string[] args)
         {
+            int cSuppAttributes = 0;
             List<Dictionary<char, string>> lAttributeNames = new List<Dictionary<char, string>>();
             string[] lineNames = File.ReadAllLines("agaricus-lepiota.names");
             foreach (string lineName in lineNames)
@@ -36,12 +27,14 @@ namespace Mushrooms
                     char[] cName = sepName[0].ToCharArray();
                     cName[0] = char.ToUpper(cName[0]);
                     lAttributeNames[lAttributeNames.Count - 1].Add(sepName[1][0], string.Format("{0}: {1}", head[0].ToUpper(), new string(cName)));
+                    ++cSuppAttributes;
                 }
             }
-            
+            Debug.WriteLine(string.Format("Supposed total number of attributes: {0}", cSuppAttributes));
+
             string[] lines = File.ReadAllLines("agaricus-lepiota.data");
             List<string> lLines = new List<string>(lines);
-            //lLines.RemoveRange(0, 7900);
+            //lLines.RemoveRange(0, 7000);
             lines = lLines.ToArray();
 
             string[][] values = new string[lines.Length][];
@@ -49,9 +42,10 @@ namespace Mushrooms
             int i = 0;
             for (i = 0; i < lines.Length; ++i)
             {
-                values[i] = lines[i].Split(new char[] { ',' });
+                values[i] = lines[i].Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
             }
 
+            int cAttributes = 0;
             List<List<string>> llAttributes = new List<List<string>>(values[0].Length);
 
             for (i = 0; i < values[0].Length; ++i)
@@ -63,9 +57,11 @@ namespace Mushrooms
                     if (!llAttributes[i].Contains(values[j][i]))
                     {
                         llAttributes[i].Add(values[j][i]);
+                        ++cAttributes;
                     }
                 }
             }
+            Debug.WriteLine(string.Format("Total number of attributes: {0}", cAttributes));
 
             StreamWriter fs = File.CreateText("mushrooms.xml");
             fs.WriteLine("<?xml version=\"1.0\"?><conflexplore>");
