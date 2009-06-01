@@ -2,6 +2,7 @@
 <mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:fc="http://www.adobe.com/2006/fc">
 	<mx:Script>
 		<![CDATA[
+			import com.adobe.flex.extras.controls.springgraph.GraphEdge;
 			import logic.NaiveConceptProcessor;
 			import logic.IConceptProcessor;
 			import mx.collections.ArrayCollection;
@@ -16,6 +17,15 @@
 				s.dataProvider = g;
 			}
 			
+			public function setGraph(graph:XML): void
+			{
+				g = Graph.fromXML(graph, ["n", "e", "f", "t"]);
+				if (s != null) {
+					s.empty(); 
+					s.dataProvider = g;
+				}
+			}
+			
 			public function setContext(objects:Array, attributes:Array, data:ArrayCollection): void
 			{
 				conceptProcessor = new NaiveConceptProcessor();
@@ -24,6 +34,23 @@
 					s.empty(); 
 					s.dataProvider = g;
 				}
+			}
+			
+			public function getGraphXML(): XML
+			{
+				var graphXML:XML = <graph></graph>;
+				for each (var item:Item in g.nodes)
+				{
+					graphXML.appendChild(item.data);
+				}
+				for each (var edge:Array in g.edges)
+				{
+					var edgeXML:XML = <e />;
+					edgeXML.@f = edge[0].id;
+					edgeXML.@t = edge[1].id;
+					graphXML.appendChild(edgeXML);
+				}
+				return graphXML;
 			}
 		]]>
 	</mx:Script>
@@ -108,10 +135,10 @@
 				            }
 						]]>
 					</mx:Script>
-					<mx:TextArea selectable="false" text="{data.data.@attributes}" fontSize="{outerDocument.fontSizeSlider.value}" backgroundAlpha="0.2"
+					<mx:TextArea selectable="false" text="{data.data.@a}" fontSize="{outerDocument.fontSizeSlider.value}" backgroundAlpha="0.2"
 						textAlign="center" width="{outerDocument.widthSlider.value}" editable="false" horizontalScrollPolicy="off"
 						verticalScrollPolicy="auto" height="100%" minHeight="0"/>					
-					<mx:TextArea selectable="false" text="{data.data.@objects}" fontSize="{outerDocument.fontSizeSlider.value}" backgroundAlpha="0.2"
+					<mx:TextArea selectable="false" text="{data.data.@o}" fontSize="{outerDocument.fontSizeSlider.value}" backgroundAlpha="0.2"
 						textAlign="center" width="{outerDocument.widthSlider.value}" editable="false" horizontalScrollPolicy="off"
 						verticalScrollPolicy="auto" height="100%" minHeight="0"/>					
 				</mx:VBox>

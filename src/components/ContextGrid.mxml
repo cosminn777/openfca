@@ -3,6 +3,9 @@
 	initialize="init()" horizontalAlign="center">
 	<mx:Script>
 		<![CDATA[
+			import com.adobe.flex.extras.controls.springgraph.Item;
+			import com.adobe.flex.extras.controls.springgraph.Graph;
+			import com.adobe.flex.extras.controls.forcelayout.Node;
 			import mx.controls.Alert;
 			import mx.core.UIComponent;
 			import mx.core.ComponentDescriptor;
@@ -254,7 +257,7 @@
 					var newRow:Array = new Array();
 					for each (var c:XML in row.c)
 					{
-						newRow.push(c[0]);
+						newRow.push(new Boolean(c[0] == "true"));
 					}
 					rows.addItem(newRow);
 				}
@@ -295,6 +298,7 @@
 					} 
 					xmlData.appendChild(xmlR);
 				}
+				xmlData.appendChild(lattice.getGraphXML());
 				fileReference.save(xmlData.toXMLString(), "data.xml");
 			}
 		]]>
