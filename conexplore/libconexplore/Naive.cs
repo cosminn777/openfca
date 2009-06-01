@@ -13,192 +13,177 @@ namespace libconexplore
 
         }
 
-        private List<int> getAttributeExtent(bool[][] data, int attribute)
-		{
-			List<int> objects = new List<int>();
-			int i = 0;
-			for (i = 0; i < data.Length; ++i)
-			{
-				if (data[i][attribute] == true)
-				{
-					objects.Add(i);
-				}	
-			}
-			return objects;
-		}
+        private HashSet<int> getAttributeExtent(bool[][] data, int attribute)
+        {
+            HashSet<int> objects = new HashSet<int>();
+            int i = 0;
+            for (i = 0; i < data.Length; ++i)
+            {
+                if (data[i][attribute])
+                {
+                    objects.Add(i);
+                }
+            }
+            return objects;
+        }
 
-        
-		private List<int> getIntent(bool[][] data, string[] attributes, List<int> extent)
-		{
-			List<int> intent = new List<int>();
-			int i = 0;
-			for (i = 0; i < attributes.Length; ++i)
-			{
-				int j = 0;
-				for (j = 0; j < extent.Count; ++j)
-				{
-					if (data[extent[j]][i] == false)
-					{
-						break;
-					}
-				}
-				if (j == extent.Count)
-				{
-					intent.Add(i);
-				}
-			}
-			return intent;
-		}
-		
 
-        private List<int> getIntersection(List<int> set1, List<int> set2)
-		{
-			List<int> intersection = new List<int>();
-			int i = 0;
-			for (i = 0; i < set1.Count; ++i)
-			{
-				if (set2.IndexOf(set1[i],0) > -1) // exists in set2
-				{
-					intersection.Add(set1[i]);	
-				}
-			}
-			return intersection;
-		}
+        private HashSet<int> getIntent(bool[][] data, string[] attributes, HashSet<int> extent)
+        {
+            HashSet<int> intent = new HashSet<int>();
+            int i = 0;
+            for (i = 0; i < attributes.Length; ++i)
+            {
+                bool bOk = true;
+                foreach (int j in extent)
+                {
+                    if (data[j][i] == false)
+                    {
+                        bOk = false;
+                        break;
+                    }
+                }
+                if (bOk)
+                {
+                    intent.Add(i);
+                }
+            }
+            return intent;
+        }
 
-        private bool equalArray(List<int> set1, List<int> set2)
-		{
-			if (set1.Count != set2.Count)
-			{
-				return false;
-			}
-			if (set1.Count == 0) // empty arrays are considered to be equal
-			{
-				return true;
-			}
-			
-			int j = 0;
-			for (j = 0; j < set1.Count; ++j)
-			{
-				if (set2.IndexOf(set1[j], 0) == -1) // not in the array
-				{
-					return false;
-				}
-			}	
-			return true;
-		}
-		
+        //private bool contains(Dictionary<string, HashSet<int>> lSets, HashSet<int> containedSet)
+        //{
+        //    return lSets.ContainsKey(getKey(containedSet));
 
-        private bool containsArray(List<List<int>> sets, List<int> containedSet)
-		{
-			int i = 0;
-			for (i = 0; i < sets.Count; ++i)
-			{
-				if (equalArray(sets[i], containedSet))
-				{
-					return true;
-				}		
-			}
-			return false;
-		}
+        //    //int i = 0;
+        //    //for (i = 0; i < lSets.Count; ++i)
+        //    //{
+        //    //    if ((lSets[i].IsSubsetOf(containedSet)) && (lSets[i].IsSupersetOf(containedSet)))
+        //    //    {
+        //    //        return true;
+        //    //    }
+        //    //}
+        //    //return false;
+        //}
+
+        //private string getKey(HashSet<int> set)
+        //{
+        //    StringBuilder sb = new StringBuilder();
+        //    sb.Append(set.Count.ToString() + ":");
+
+        //    foreach (int i in set)
+        //    {
+        //        sb.Append(i.ToString());
+        //    }
+
+        //    //Debug.WriteLine(sb.ToString());
+
+        //    return sb.ToString();
+        //}
 
         public void Compute(string[] objects, string[] attributes, bool[][] data)
         {
-            List<List<int>> extents = new List<List<int>>(); // will contain all extents
-			List<List<int>> intents = new List<List<int>>();
+            HashSet<HashSet<int>> extents = new HashSet<HashSet<int>>(new NaiveComparer()); // will contain all extents
+            List<HashSet<int>> intents = new List<HashSet<int>>();
 
-			int j = 0;
-			int i = 0;
-			int k = 0;
-			
-			// for each attribute, write their extents
-			for (j = 0; j < attributes.Length; ++j)
-			{
-				List<int> attributeExtent = getAttributeExtent(data, j);
-				if (!containsArray(extents, attributeExtent))
-				{
-					extents.Add(attributeExtent);
-				}
-			}
-			// while the extents set changes, compute all pairwise intersections
-			bool changed = false;
-			while (!changed)
-			{
-				changed = false;
-				int len = extents.Count;
-				
-				for (i = 0; i < len - 1; ++i)
-				{
-					for (k = i + 1; k < len; ++k)
-					{
-						List<int> intersection = getIntersection(extents[i], extents[k]);
-						if (!containsArray(extents, intersection))
-						{
-							extents.Add(intersection);
-							changed = true;
-						}
-					}
-				}
-			}
-			// add the set of all objects if it's not already in the list
-			List<int> allObjects = new List<int>();
-			for (j = 0; j < objects.Length; ++j)
-			{
-				allObjects.Add(j);
-			} 
-			if (!containsArray(extents, allObjects))
-			{
-				extents.Add(allObjects);
-			}
-			
-			
-			// initialize levels for each concept
-			List<int> level = new List<int>();
-			for (i = 0; i < extents.Count; ++i)
-			{
-				level.Add(0); // initialize all to level 0
-			}
-			
-			// sort extents by their leghth, number of objects
-			List<int> set1;
-			List<int> set2;
-			for (i = 0; i < extents.Count - 1; ++i)
-			{
-				for (j = i + 1; j < extents.Count; ++j)
-				{
-					set1 = extents[i];
-					set2 = extents[j];
-					if (set1.Count < set2.Count)
-					{
-						extents[i] = set2;
-						extents[j] = set1;
-					}
-				}
-			}
-			
-			// compute the levels for each concept
-			for (i = 0; i < extents.Count; ++i)
-			{
-				int max = 0;
-				for (j = i - 1; j >= 0; --j)
-				{
-					set1 = extents[i];
-					set2 = extents[j];
-					if (getIntersection(set1, set2).Count == set1.Count) // set1 is all included in set2
-					{
-						if (max < level[j])
-						{
-							max = level[j]; 
-						}
-					}	
-				}
-				level[i] = max + 1;
-			}
-			
-			// compute intents for all extents
-			for (i = 0; i < extents.Count; ++i)
-			{
-				intents.Add(getIntent(data, attributes, extents[i]));
-			}
+            int j = 0;
+            int i = 0;
+            //int k = 0;
+
+            // for each attribute, write their extents
+            for (j = 0; j < attributes.Length; ++j)
+            {
+                HashSet<int> attributeExtent = getAttributeExtent(data, j);
+                //if (!contains(extents, attributeExtent))
+                //{
+                extents.Add(attributeExtent);
+                //}
+            }
+            // while the extents set changes, compute all pairwise intersections
+            bool changed = true;
+            while (changed)
+            {
+                changed = false;
+                
+                List<HashSet<int>> ll = new List<HashSet<int>>(extents);
+                int len = ll.Count;
+
+                for (i = 0; i < len - 1; ++i)
+                {
+                    for (j = i + 1; j < len; ++j)
+                    {
+                        HashSet<int> intersection = new HashSet<int>(ll[i]);
+                        intersection.IntersectWith(ll[j]);
+                        //if (!contains(extents, intersection))
+                        //{
+                        if (extents.Add(intersection))
+                        {
+                            changed = true;
+                        }
+                        //}
+                    }
+                }
+            }
+            // add the set of all objects if it's not already in the list
+            HashSet<int> allObjects = new HashSet<int>();
+            for (j = 0; j < objects.Length; ++j)
+            {
+                allObjects.Add(j);
+            }
+            //if (!contains(extents, allObjects))
+            //{
+            extents.Add(allObjects);
+            //}
+
+
+            // initialize levels for each concept
+            List<int> level = new List<int>();
+            for (i = 0; i < extents.Count; ++i)
+            {
+                level.Add(0); // initialize all to level 0
+            }
+
+            // sort extents by their leghth, number of objects
+            //HashSet<int> set1;
+            //HashSet<int> set2;
+            //for (i = 0; i < extents.Count - 1; ++i)
+            //{
+            //    for (j = i + 1; j < extents.Count; ++j)
+            //    {
+            //        set1 = extents[i];
+            //        set2 = extents[j];
+            //        if (set1.Count < set2.Count)
+            //        {
+            //            extents[i] = set2;
+            //            extents[j] = set1;
+            //        }
+            //    }
+            //}
+
+            // compute the levels for each concept
+            //for (i = 0; i < extents.Count; ++i)
+            //{
+            //    int max = 0;
+            //    for (j = i - 1; j >= 0; --j)
+            //    {
+            //        set1 = extents[i];
+            //        set2 = extents[j];
+            //        if (set1.IsSubsetOf(set2)) // set1 is all included in set2
+            //        {
+            //            if (max < level[j])
+            //            {
+            //                max = level[j];
+            //            }
+            //        }
+            //    }
+            //    level[i] = max + 1;
+            //}
+
+            // compute intents for all extents
+            //for (i = 0; i < extents.Count; ++i)
+            //{
+            //    intents.Add(getIntent(data, attributes, extents[i]));
+            //}
 
             Debug.WriteLine(string.Format("Formal concepts: {0}", extents.Count));
 
@@ -250,7 +235,7 @@ namespace libconexplore
             //        }	
             //    }
             //}
-			
+
             //// connect remaining concepts to the bottom one (a.k.a. covaseala)
             //for (i = 0; i < extents.length - 1; ++i)
             //{
