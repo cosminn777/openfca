@@ -3,7 +3,6 @@
 	<mx:Script>
 		<![CDATA[
 			import logic.NaiveConceptProcessor;
-			import logic.BorkedConceptProcessor;
 			import logic.IConceptProcessor;
 			import mx.collections.ArrayCollection;
 			import com.adobe.flex.extras.controls.springgraph.Item;
