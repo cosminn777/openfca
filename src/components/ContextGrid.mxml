@@ -169,11 +169,17 @@
 			private function showLattice(): void
 			{
 				lattice.setContext(objects, attributes, rows);
+				setLatticeVisibility();
+			}
+			
+			private function setLatticeVisibility(): void
+			{
 				unsetVisibility();
 				backToGridButton.visible = true;
 				backToGridButton.includeInLayout = true;
 				viewStack.selectedChild = lattice;
 			}
+			
 			
 			private function showAddObject(): void
 			{
@@ -261,8 +267,18 @@
 					}
 					rows.addItem(newRow);
 				}
-				setGrid(objects, attributes, rows);
-				setContextGridVisibility(); 
+				var itemCount:int = 0;
+				for each (var x:XML in xmlData.graph.n) {
+					itemCount++;
+				}
+				if (itemCount > 0) {
+					setGrid(objects, attributes, rows);
+					lattice.setGraph(xmlData.graph[0]);
+					setLatticeVisibility(); 
+				} else {
+					setGrid(objects, attributes, rows);
+					setContextGridVisibility(); 
+				}
 			}
 			
 			private function openClickHandler():void
