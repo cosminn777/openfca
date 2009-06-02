@@ -59,7 +59,7 @@ namespace libconexplore
 
             int[] aB = new int[lhsB[iR].Count];
             lhsB[iR].CopyTo(aB);
-            
+
             int[] aA = new int[lhsA[iNewR].Count];
             lhsA[iNewR].CopyTo(aA);
 
@@ -106,7 +106,7 @@ namespace libconexplore
 
             HashSet<int> hsSupremumObjects = new HashSet<int>();
             HashSet<int> hsSupremumAttributes = new HashSet<int>();
-            
+
             for (i = 0; i < sObjects.Length; ++i)
             {
                 hsSupremumObjects.Add(i);
@@ -120,30 +120,47 @@ namespace libconexplore
             iNewR = 0;
             InClose(0, 0, bValues);
 
-            // The infimum does not contain attributes, so correct that
-            Debug.Assert(lhsB[lhsB.Count - 1].Count == 0);
-            for (i = 0; i < sAttributes.Length; ++i)
+            int iInfimum = -1;
+            for (i = 0; i < lhsA.Count; ++i)
             {
-                lhsB[lhsB.Count - 1].Add(i);
+                if ((lhsA[i].Count == 0)/* && (lhsB[i].Count == 0)*/)
+                {
+                    iInfimum = i;
+                }
+            }
+
+            //if (iInfimum == -1)
+            //{
+            //    lhsA.Add(new HashSet<int>());
+            //    lhsB.Add(new HashSet<int>());
+            //}
+
+            if (iInfimum > -1)
+            {
+                // The infimum does not contain attributes, so correct that
+                for (i = 0; i < sAttributes.Length; ++i)
+                {
+                    lhsB[lhsB.Count - 1].Add(i);
+                }
             }
 
             Debug.Assert(lhsA.Count == lhsB.Count);
             Debug.WriteLine(string.Format("Total formal concepts: {0}", lhsA.Count));
 
-            for (i = 0; i < lhsA.Count; ++i)
-            {
-                Debug.Write(string.Format("{0}: [", i + 1));
-                foreach (int j in lhsA[i])
-                {
-                    Debug.Write(string.Format("{0} ", j + 1));
-                }
-                Debug.Write("] {");
-                foreach (int j in lhsB[i])
-                {
-                    Debug.Write(string.Format("{0} ", j + 1));
-                }
-                Debug.WriteLine("}");
-            }
+            //for (i = 0; i < lhsA.Count; ++i)
+            //{
+            //    Debug.Write(string.Format("{0}: [", i + 1));
+            //    foreach (int j in lhsA[i])
+            //    {
+            //        Debug.Write(string.Format("{0} ", j + 1));
+            //    }
+            //    Debug.Write("] {");
+            //    foreach (int j in lhsB[i])
+            //    {
+            //        Debug.Write(string.Format("{0} ", j + 1));
+            //    }
+            //    Debug.WriteLine("}");
+            //}
 
             // Create concepts
             List<Concept> lConcepts = new List<Concept>();

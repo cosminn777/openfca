@@ -24,19 +24,11 @@ namespace libconexplore
                 lLevels.Add(0);
             }
 
-            // Sort extents by their length
-            for (i = 0; i < lConcepts.Count - 1; ++i)
-            {
-                for (j = i + 1; j < lConcepts.Count; ++j)
-                {
-                    if (lConcepts[i].Extent.Count < lConcepts[j].Extent.Count)
-                    {
-                        Concept cAux = lConcepts[i];
-                        lConcepts[i] = lConcepts[j];
-                        lConcepts[j] = cAux;
-                    }
-                }
-            }
+            // Sort extents decreasingly by their length
+            lConcepts.Sort(delegate(Concept c1, Concept c2) { return c2.Extent.Count.CompareTo(c1.Extent.Count); });
+
+            //Debug.Assert(lConcepts[0].Attributes.Count == 0);
+            //Debug.Assert(lConcepts[lConcepts.Count - 1].Objects.Count == 0);
 
             // Compute level for each concept
             for (i = 0; i < lConcepts.Count; ++i)

@@ -65,6 +65,7 @@ namespace Mushrooms
 
             StreamWriter fs = File.CreateText("mushrooms.xml");
             fs.WriteLine("<?xml version=\"1.0\"?><conflexplore>");
+            
             for (i = 0; i < llAttributes.Count; ++i)
             {
                 int j = 0;
@@ -79,6 +80,7 @@ namespace Mushrooms
                 fs.WriteLine(string.Format("<o>Mushroom {0}</o>", i + 1));
             }
 
+            //bool bCheck = true;
             for (i = 0; i < values.Length; ++i)
             {
                 fs.Write("<r>");
@@ -90,6 +92,10 @@ namespace Mushrooms
                     {
                         fs.Write(string.Format("<c>{0}</c>", ((llAttributes[j][k] == values[i][j]) ? "true" : "false")));
                     }
+                    //if (values[i][16] != "p")
+                    //{
+                    //    bCheck = false;
+                    //}
                 }
                 fs.WriteLine("</r>");
             }
