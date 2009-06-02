@@ -46,10 +46,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Concept.cs" />
-    <Compile Include="Andrews.cs" />
+    <Compile Include="AndrewsConceptProcessor.cs" />
+    <Compile Include="Graph.cs" />
+    <Compile Include="IConceptProcessor.cs" />
     <Compile Include="Link.cs" />
+    <Compile Include="Linker.cs" />
     <Compile Include="Loader.cs" />
-    <Compile Include="Naive.cs" />
+    <Compile Include="NaiveConceptProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="NaiveComparer.cs" />
   </ItemGroup>

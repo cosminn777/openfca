@@ -5,10 +5,15 @@ using System.Text;
 
 namespace libconexplore
 {
-    class Link
+    public class Link
     {
-        public Concept Source { get; set; }
-        public Concept Target { get; set; }
+        public Concept Source { get; private set; }
+        public Concept Target { get; private set; }
 
+        public Link(Concept cSource, Concept cTarget)
+        {
+            Source = cSource;
+            Target = cTarget;
+        }
     }
 }

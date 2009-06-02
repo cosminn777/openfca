@@ -5,10 +5,32 @@ using System.Text;
 
 namespace libconexplore
 {
-    class Concept
+    public class Concept
     {
-        public List<string> Objects { get; set; }
-        public List<string> Attributes { get; set; }
+        public List<string> Objects { get; private set; }
+        public List<string> Attributes { get; private set; }
 
+        public HashSet<int> Extent { get; private set; }
+        public HashSet<int> Intent { get; private set; }
+
+        public Concept(HashSet<int> hsExtent, HashSet<int> hsIntent, string[] sObjects, string[] sAttributes)
+        {
+            Extent = hsExtent;
+            Intent = hsIntent;
+
+            // Convert extent index to name
+            Objects = new List<string>();
+            foreach (int iObject in Extent)
+            {
+                Objects.Add(sObjects[iObject]);
+            }
+
+            // Convert intent index to name
+            Attributes = new List<string>();
+            foreach (int iAttribute in Intent)
+            {
+                Attributes.Add(sAttributes[iAttribute]);
+            }
+        }
     }
 }
