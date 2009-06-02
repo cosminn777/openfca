@@ -10,10 +10,15 @@ namespace libconexplore
         public Concept Source { get; private set; }
         public Concept Target { get; private set; }
 
-        public Link(Concept cSource, Concept cTarget)
+        public int From { get; private set; }
+        public int To { get; private set; }
+
+        public Link(Concept cSource, Concept cTarget, int iFrom, int iTo)
         {
             Source = cSource;
             Target = cTarget;
+            From = iFrom;
+            To = iTo;
         }
     }
 }
