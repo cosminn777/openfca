@@ -6,7 +6,7 @@ using System.Diagnostics;
 
 namespace libconexplore
 {
-    public class Andrews
+    public class AndrewsConceptProcessor : IConceptProcessor
     {
         List<HashSet<int>> lhsA = new List<HashSet<int>>();
         List<HashSet<int>> lhsB = new List<HashSet<int>>();
@@ -100,7 +100,7 @@ namespace libconexplore
             return true;
         }
 
-        public void Compute(string[] sObjects, string[] sAttributes, bool[][] bValues)
+        public Graph Process(string[] sObjects, string[] sAttributes, bool[][] bValues)
         {
             int i = 0;
 
@@ -112,13 +112,47 @@ namespace libconexplore
                 hsSupremumObjects.Add(i);
             }
 
+            lhsA.Clear();
+            lhsB.Clear();
             lhsA.Add(hsSupremumObjects);
             lhsB.Add(hsSupremumAttributes);
 
+            iNewR = 0;
             InClose(0, 0, bValues);
+
+            // The infimum does not contain attributes, so correct that
+            Debug.Assert(lhsB[lhsB.Count - 1].Count == 0);
+            for (i = 0; i < sAttributes.Length; ++i)
+            {
+                lhsB[lhsB.Count - 1].Add(i);
+            }
 
             Debug.Assert(lhsA.Count == lhsB.Count);
             Debug.WriteLine(string.Format("Total formal concepts: {0}", lhsA.Count));
+
+            for (i = 0; i < lhsA.Count; ++i)
+            {
+                Debug.Write(string.Format("{0}: [", i + 1));
+                foreach (int j in lhsA[i])
+                {
+                    Debug.Write(string.Format("{0} ", j + 1));
+                }
+                Debug.Write("] {");
+                foreach (int j in lhsB[i])
+                {
+                    Debug.Write(string.Format("{0} ", j + 1));
+                }
+                Debug.WriteLine("}");
+            }
+
+            // Create concepts
+            List<Concept> lConcepts = new List<Concept>();
+            for (i = 0; i < lhsA.Count; ++i)
+            {
+                lConcepts.Add(new Concept(lhsA[i], lhsB[i], sObjects, sAttributes));
+            }
+
+            return new Graph() { Concepts = lConcepts, Links = new Linker().Link(lConcepts) };
         }
     }
 }

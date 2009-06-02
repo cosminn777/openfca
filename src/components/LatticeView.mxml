@@ -4,6 +4,7 @@
 		<![CDATA[
 			import com.adobe.flex.extras.controls.springgraph.GraphEdge;
 			import logic.NaiveConceptProcessor;
+			import logic.AndrewsConceptProcessor;
 			import logic.IConceptProcessor;
 			import mx.collections.ArrayCollection;
 			import com.adobe.flex.extras.controls.springgraph.Item;
