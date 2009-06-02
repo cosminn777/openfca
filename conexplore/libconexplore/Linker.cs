@@ -58,7 +58,7 @@ namespace libconexplore
                     {
                         if (lLevels[i] - lLevels[j] == 1) // Is on the next level
                         {
-                            lLinks.Add(new Link(lConcepts[j], lConcepts[i]));
+                            lLinks.Add(new Link(lConcepts[j], lConcepts[i], j, i));
                             // Keep track of nodes that act as targets
                             hsLinked.Add(j);
                         }
@@ -72,7 +72,7 @@ namespace libconexplore
                 if (!hsLinked.Overlaps(new int[] { i }))
                 {
                     // Connect a node that has never been used as a source to the concept with empty objects and all attributes
-                    lLinks.Add(new Link(lConcepts[i], lConcepts[lConcepts.Count - 1]));
+                    lLinks.Add(new Link(lConcepts[i], lConcepts[lConcepts.Count - 1], i, lConcepts.Count - 1));
                     hsLinked.Add(i);
                 }
             }

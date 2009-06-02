@@ -13,14 +13,18 @@ namespace winconexplore
             Loader cLoader = new Loader();
             //cLoader.Load("triangles.xml");
             //cLoader.Load("numbers.xml");
-            cLoader.Load("mushrooms.xml");
-            //cLoader.Load("ads.xml");
+            //cLoader.Load("mushrooms.xml");
+            cLoader.Load("ads.xml");
 
             //NaiveConceptProcessor cNaive = new NaiveConceptProcessor();
             //cNaive.Process(cLoader.Objects, cLoader.Attributes, cLoader.Values);
             
             AndrewsConceptProcessor cAndrews = new AndrewsConceptProcessor();
-            cAndrews.Process(cLoader.Objects, cLoader.Attributes, cLoader.Values);
+            Graph cGraph = cAndrews.Process(cLoader.Objects, cLoader.Attributes, cLoader.Values);
+
+            //new Saver().Save("triangles-graph.xml", cGraph, cLoader.Objects, cLoader.Attributes, cLoader.Values);
+            //new Saver().Save("numbers-graph.xml", cGraph, cLoader.Objects, cLoader.Attributes, cLoader.Values);
+            new Saver().Save("ads-graph.xml", cGraph, cLoader.Objects, cLoader.Attributes, cLoader.Values);
         }
     }
 }
