@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Concept.cs" />
+    <Compile Include="Andrews.cs" />
     <Compile Include="Link.cs" />
     <Compile Include="Loader.cs" />
     <Compile Include="Naive.cs" />

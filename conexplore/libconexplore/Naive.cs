@@ -91,12 +91,12 @@ namespace libconexplore
             }
 
             // Add the set of all objects if it's not already there
-            HashSet<int> hsAllObjects = new HashSet<int>();
+            HashSet<int> hsSupremum = new HashSet<int>();
             for (i = 0; i < sObjects.Length; ++i)
             {
-                hsAllObjects.Add(i);
+                hsSupremum.Add(i);
             }
-            hshsExtents.Add(hsAllObjects);
+            hshsExtents.Add(hsSupremum);
 
             // Done
             List<HashSet<int>> lhsFinalExtents = new List<HashSet<int>>(hshsExtents);
