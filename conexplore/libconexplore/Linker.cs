@@ -46,30 +46,33 @@ namespace libconexplore
             //Debug.Assert(lConcepts[0].Attributes.Count == 0);
             //Debug.Assert(lConcepts[lConcepts.Count - 1].Objects.Count == 0);
 
-            List<KeyValuePair<int, int>> lSortedByLevel = new List<KeyValuePair<int, int>>(); // Level and Id
-            lSortedByLevel.Add(new KeyValuePair<int, int>(0, 0));
-
             // Compute level for each concept
             for (i = 1; i < lConcepts.Count; ++i)
             {
-                int c = lSortedByLevel.Count;
+                int iMax = 0;
+                int cMin = -1;
                 for (j = i - 1; j >= 0; --j)
                 {
                     //if (lConcepts[i].Extent.IsProperSubsetOf(lConcepts[lSortedByLevel[j].Value].Extent)) // set1 is all included in set2
-                    if (lConcepts[i].Intent.IsProperSupersetOf(lConcepts[lSortedByLevel[j].Value].Intent))
+                    if (lConcepts[i].Intent.IsProperSupersetOf(lConcepts[j].Intent))
                     {
-                        lLevels[i] = lLevels[lSortedByLevel[j].Value] + 1;
-                        int k = i - 1;
-                        while ((k > 0) && (lSortedByLevel[k].Key > lLevels[i]))
+                        if (cMin == -1)
                         {
-                            --k;
+                            cMin = lConcepts[j].Extent.Count;
                         }
-
-                        lSortedByLevel.Insert(k + 1, new KeyValuePair<int, int>(lLevels[i], i));
-
-                        break;
+                        if (cMin != lConcepts[j].Extent.Count)
+                        {
+                            break;
+                        }
+                        if (iMax < lLevels[j])
+                        {
+                            iMax = lLevels[j];
+                        }
                     }
                 }
+                Debug.Assert(cMin > -1);
+
+                lLevels[i] = iMax + 1;
             }
 
             for (i = 0; i < lConcepts.Count; ++i)
@@ -84,16 +87,16 @@ namespace libconexplore
             {
                 for (j = i - 1; j >= 0; --j)
                 {
-                    if (lLevels[i] - lLevels[lSortedByLevel[j].Value] == 1)
+                    if (lLevels[i] - lLevels[j] == 1)
                     {
                         //if (lConcepts[i].Extent.IsProperSubsetOf(lConcepts[lSortedByLevel[j].Value].Extent)) // set1 is all included in set2
-                        if (lConcepts[i].Intent.IsProperSupersetOf(lConcepts[lSortedByLevel[j].Value].Intent))
+                        if (lConcepts[i].Intent.IsProperSupersetOf(lConcepts[j].Intent))
                         {
-                            lLinks.Add(new Link(lConcepts[lSortedByLevel[j].Value], lConcepts[i], lSortedByLevel[j].Value, i));
+                            lLinks.Add(new Link(lConcepts[j], lConcepts[i], j, i));
                             Debug.WriteLine(string.Format("[F:{0} T:{1}]", lLinks[lLinks.Count - 1].From + 1, lLinks[lLinks.Count - 1].To + 1));
 
                             // Keep track of nodes that act as targets
-                            hsLinked.Add(lSortedByLevel[j].Value);
+                            hsLinked.Add(j);
                         }
                     }
                 }
