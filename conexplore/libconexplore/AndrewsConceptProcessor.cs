@@ -45,6 +45,7 @@ namespace libconexplore
                             lhsB[iNewR].Clear();
                             lhsB[iNewR].UnionWith(lhsB[iR]);
                             lhsB[iNewR].Add(j);
+                            //Debug.WriteLine(string.Format("[{0} < {1}]", iNewR + 1, iR + 1));
                             InClose(iNewR, j + 1, bValues);
                         }
 
@@ -140,7 +141,7 @@ namespace libconexplore
                 // The infimum does not contain attributes, so correct that
                 for (i = 0; i < sAttributes.Length; ++i)
                 {
-                    lhsB[lhsB.Count - 1].Add(i);
+                    lhsB[iInfimum].Add(i);
                 }
             }
 
