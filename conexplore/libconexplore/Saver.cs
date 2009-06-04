@@ -38,28 +38,28 @@ namespace libconexplore
                 fs.WriteLine("</r>");
             }
 
-            fs.WriteLine("<concepts>");
-            for (i = 0; i < cGraph.Concepts.Count; ++i)
-            {
-                fs.WriteLine(string.Format("<c id=\"{0}\">", i));
-                int j = 0;
-                for (j = 0; j < cGraph.Concepts[i].Objects.Count; ++j)
-                {
-                    fs.WriteLine(string.Format("<o>{0}</o>", cGraph.Concepts[i].Objects[j]));
-                }
-                for (j = 0; j < cGraph.Concepts[i].Attributes.Count; ++j)
-                {
-                    fs.WriteLine(string.Format("<a>{0}</a>", cGraph.Concepts[i].Attributes[j]));
-                }
-                fs.WriteLine("</c>");
-            }
-            fs.WriteLine("</concepts>");
+            //fs.WriteLine("<concepts>");
+            //for (i = 0; i < cGraph.Concepts.Count; ++i)
+            //{
+            //    fs.WriteLine(string.Format("<c id=\"{0}\">", i));
+            //    int j = 0;
+            //    for (j = 0; j < cGraph.Concepts[i].Objects.Count; ++j)
+            //    {
+            //        fs.WriteLine(string.Format("<o>{0}</o>", cGraph.Concepts[i].Objects[j]));
+            //    }
+            //    for (j = 0; j < cGraph.Concepts[i].Attributes.Count; ++j)
+            //    {
+            //        fs.WriteLine(string.Format("<a>{0}</a>", cGraph.Concepts[i].Attributes[j]));
+            //    }
+            //    fs.WriteLine("</c>");
+            //}
+            //fs.WriteLine("</concepts>");
 
 
             fs.WriteLine("<graph>");
             for (i = 0; i < cGraph.Concepts.Count; ++i)
             {
-                fs.WriteLine(string.Format("<n id=\"{0}\" o=\"Objects: {1}\" a=\"Attributes: {2}\" />", i, cGraph.Concepts[i].Objects.Count, cGraph.Concepts[i].Attributes.Count));
+                fs.WriteLine(string.Format("<n id=\"{0}\" o=\"{1}\" a=\"{2}\" />", i, cGraph.Concepts[i].ObjectsToId(), cGraph.Concepts[i].AttributesToId()));
             }
 
             for (i = 0; i < cGraph.Links.Count; ++i)

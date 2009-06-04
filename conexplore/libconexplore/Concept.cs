@@ -33,6 +33,16 @@ namespace libconexplore
             }
         }
 
+        public string ObjectsToId()
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (int i in Extent)
+            {
+                sb.Append(string.Format("{0};", i));
+            }
+            return sb.ToString();
+        }
+
         public string ObjectsToString()
         {
             StringBuilder sb = new StringBuilder();
@@ -52,5 +62,16 @@ namespace libconexplore
             }
             return sb.ToString();
         }
+
+        public string AttributesToId()
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (int i in Intent)
+            {
+                sb.Append(string.Format("{0};", i));
+            }
+            return sb.ToString();
+        }
+
     }
 }
