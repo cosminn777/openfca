@@ -118,7 +118,7 @@
 			}
 		]]>
 	</mx:Script>
-	<mx:Grid width="100%">
+	<mx:Grid width="100%" horizontalScrollPolicy="off">
 		<mx:GridRow width="100%" height="100%">
 			<mx:GridItem>
 				<mx:Label text="Degrees of separation"/>
@@ -165,9 +165,9 @@
 			<mx:GridItem colSpan="6">
 				<mx:HBox>
 					<mx:Label text="Objects:" />
-					<mx:Label width="100%" id="objectsTextArea" color="#CCCCCC" />
+					<mx:TextInput editable="false" width="100%" id="objectsTextArea" backgroundColor="#777777" color="#CCCCCC" />
 					<mx:Label text="Attributes:" />
-					<mx:Label width="100%" id="attributesTextArea" color="#CCCCCC" />
+					<mx:TextInput editable="false" width="100%" id="attributesTextArea" backgroundColor="#777777" color="#CCCCCC" />
 				</mx:HBox>
 			</mx:GridItem>
 		</mx:GridRow>
