@@ -51,6 +51,30 @@
 				}
 			}
 			
+			public function getConceptsXML(): XML
+			{
+				var result:XML = <concepts></concepts>;
+				for (var conceptId:String in _concepts)
+				{
+					var concept:XML = <c></c>;
+					concept.@id = conceptId;
+					for each (var a:String in _concepts[conceptId].attributes)
+					{
+						var xmlA:XML = <a></a>;
+						xmlA.appendChild(a);
+						concept.appendChild(xmlA);
+					}					
+					for each (var o:String in _concepts[conceptId].objects)
+					{
+						var xmlO:XML = <o></o>;
+						xmlO.appendChild(o);
+						concept.appendChild(xmlO);
+					}
+					result.appendChild(concept);
+				}
+				return result;
+			}
+			
 			public function setContext(objects:Array, attributes:Array, data:ArrayCollection): void
 			{
 				_conceptProcessor = new NaiveConceptProcessor();
