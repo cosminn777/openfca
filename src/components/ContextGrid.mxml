@@ -279,6 +279,7 @@
 				}
 				if (itemCount > 0) {
 					lattice.setGraph(xmlData.graph[0]);
+					lattice.setConcepts(xmlData.concepts[0]);
 					if (objects.length < 100)
 					{
 						setGrid(objects, attributes, rows);
