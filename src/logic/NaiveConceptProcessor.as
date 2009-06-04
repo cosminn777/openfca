@@ -7,8 +7,14 @@ package logic
 
 	public class NaiveConceptProcessor implements IConceptProcessor
 	{
-		public function NaiveConceptProcessor()
+		
+		private var sObjects: Array;
+		private var sAttributes: Array;
+		
+		public function NaiveConceptProcessor(objects:Array, attributes:Array)
 		{
+			sObjects = objects;
+			sAttributes = attributes;
 		}
 		
 		public function getConceptList(): Array
@@ -104,7 +110,7 @@ package logic
 			return false;
 		}
 		
-		public function computeConcept(objects:Array, attributes:Array, data:ArrayCollection):Graph
+		public function computeConcept(data:ArrayCollection):Graph
 		{
 			var g:Graph = new Graph();
 			
@@ -115,7 +121,7 @@ package logic
 			var k:int = 0;
 			
 			// for each attribute, write their extents
-			for (j = 0; j < attributes.length; ++j)
+			for (j = 0; j < sAttributes.length; ++j)
 			{
 				var attributeExtent: Array = getAttributeExtent(data, j);
 				if (!containsArray(extents, attributeExtent))
@@ -145,7 +151,7 @@ package logic
 			}
 			// add the set of all objects if it's not already in the list
 			var allObjects:Array = new Array();
-			for (j = 0; j < objects.length; ++j)
+			for (j = 0; j < sObjects.length; ++j)
 			{
 				allObjects.push(j);
 			} 
@@ -201,7 +207,7 @@ package logic
 			// compute intents for all extents
 			for (i = 0; i < extents.length; ++i)
 			{
-				intents.addItem(getIntent(data, attributes, extents[i]));
+				intents.addItem(getIntent(data, sAttributes, extents[i]));
 			}
 			
 			var concepts: Array = new Array();
@@ -213,14 +219,14 @@ package logic
 				var conceptExtents:Array = extents[i];
 				for (j = 0; j < conceptExtents.length; ++j)
 				{
-					conceptObjects.push(objects[conceptExtents[j]]);
+					conceptObjects.push(sObjects[conceptExtents[j]]);
 				}
 				// convert intent index to name
 				var conceptAttributes:Array = new Array();
 				var conceptIntents:Array = intents[i];
 				for (j = 0; j < conceptIntents.length; ++j)
 				{
-					conceptAttributes.push(attributes[conceptIntents[j]]);
+					conceptAttributes.push(sAttributes[conceptIntents[j]]);
 				}
 
 				var concept:Item = new Item(i.toString());
