@@ -13,12 +13,17 @@
 
 			private var _g: Graph = new Graph();
 			private var _conceptProcessor: IConceptProcessor;
-			private var _concepts: Array;
+			private var _concepts: Array = new Array();
 			
 			private function init(): void
 			{
-				_concepts = new Array();
 				s.dataProvider = _g;
+				if (_concepts.length > 0)
+				{
+					objectsTextArea.text = _concepts[0].objects.join(", ");
+					attributesTextArea.text = _concepts[0].attributes.join(", ");	
+				}
+
 			}
 			
 			public function setGraph(graph:XML): void
@@ -210,10 +215,10 @@
 				            }
 						]]>
 					</mx:Script>
-					<mx:TextArea selectable="false" text="{data.data.@a}" fontSize="{outerDocument.fontSizeSlider.value}" backgroundAlpha="0.2"
+					<mx:TextArea selectable="false" text="{data.data.@o}" fontSize="{outerDocument.fontSizeSlider.value}" backgroundAlpha="0.2"
 						textAlign="center" width="{outerDocument.widthSlider.value}" editable="false" horizontalScrollPolicy="off"
 						verticalScrollPolicy="auto" height="100%" minHeight="0"/>					
-					<mx:TextArea selectable="false" text="{data.data.@o}" fontSize="{outerDocument.fontSizeSlider.value}" backgroundAlpha="0.2"
+					<mx:TextArea selectable="false" text="{data.data.@a}" fontSize="{outerDocument.fontSizeSlider.value}" backgroundAlpha="0.2"
 						textAlign="center" width="{outerDocument.widthSlider.value}" editable="false" horizontalScrollPolicy="off"
 						verticalScrollPolicy="auto" height="100%" minHeight="0"/>					
 				</mx:VBox>
