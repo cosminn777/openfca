@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" layout="vertical" width="320" height="240" title="Add a new object" horizontalAlign="center" paddingBottom="20" paddingTop="20">
+	<mx:Label text="Please type the name of the new object"/>
+	<mx:TextInput id="textInput" />
+	<mx:ControlBar horizontalAlign="right">
+		<mx:Button id="okButton" label="OK"/>
+		<mx:Button id="cancelButton" label="Cancel"/>
+	</mx:ControlBar>
+	
+</mx:Panel>
