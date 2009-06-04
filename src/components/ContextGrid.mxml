@@ -325,6 +325,7 @@
 					xmlData.appendChild(xmlR);
 				}
 				xmlData.appendChild(lattice.getGraphXML());
+				xmlData.appendChild(lattice.getConceptsXML());
 				fileReference.save(xmlData.toXMLString(), "data.xml");
 			}
 		]]>
