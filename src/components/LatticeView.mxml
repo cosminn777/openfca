@@ -2,6 +2,7 @@
 <mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:fc="http://www.adobe.com/2006/fc">
 	<mx:Script>
 		<![CDATA[
+			import logic.Concept;
 			import com.adobe.flex.extras.controls.springgraph.GraphEdge;
 			import logic.NaiveConceptProcessor;
 			import logic.AndrewsConceptProcessor;
@@ -10,43 +11,65 @@
 			import com.adobe.flex.extras.controls.springgraph.Item;
 			import com.adobe.flex.extras.controls.springgraph.Graph;
 
-			private var g: Graph = new Graph();
-			private var conceptProcessor: IConceptProcessor;
-			private var concepts: Array;
+			private var _g: Graph = new Graph();
+			private var _conceptProcessor: IConceptProcessor;
+			private var _concepts: Array;
 			
 			private function init(): void
 			{
-				s.dataProvider = g;
+				_concepts = new Array();
+				s.dataProvider = _g;
 			}
 			
 			public function setGraph(graph:XML): void
 			{
-				g = Graph.fromXML(graph, ["n", "e", "f", "t"]);
+				_g = Graph.fromXML(graph, ["n", "e", "f", "t"]);
 				if (s != null) {
 					s.empty(); 
-					s.dataProvider = g;
+					s.dataProvider = _g;
+				}
+			}
+			
+			public function setConcepts(concepts:XML): void
+			{
+				_concepts = new Array();
+				for each (var concept:XML in concepts.c)
+				{
+					var id:String = concept.@id;
+					var obj:Array = new Array();
+					var attr:Array = new Array();
+					for each (var a:XML in concept.a)
+					{
+						attr.push(a[0]);						
+					}
+					for each (var o:XML in concept.o)
+					{
+						obj.push(o[0]);						
+					}
+					var newConcept:Concept = new Concept(obj, attr);
+					_concepts[id] = newConcept;
 				}
 			}
 			
 			public function setContext(objects:Array, attributes:Array, data:ArrayCollection): void
 			{
-				conceptProcessor = new NaiveConceptProcessor();
-				g = conceptProcessor.computeConcept(objects, attributes, data);
-				concepts = conceptProcessor.getConceptList();
+				_conceptProcessor = new NaiveConceptProcessor();
+				_g = _conceptProcessor.computeConcept(objects, attributes, data);
+				_concepts = _conceptProcessor.getConceptList();
 				if (s != null) {
 					s.empty(); 
-					s.dataProvider = g;
+					s.dataProvider = _g;
 				}
 			}
 			
 			public function getGraphXML(): XML
 			{
 				var graphXML:XML = <graph></graph>;
-				for each (var item:Item in g.nodes)
+				for each (var item:Item in _g.nodes)
 				{
 					graphXML.appendChild(item.data);
 				}
-				for each (var edge:Array in g.edges)
+				for each (var edge:Array in _g.edges)
 				{
 					var edgeXML:XML = <e />;
 					edgeXML.@f = edge[0].id;
@@ -54,6 +77,20 @@
 					graphXML.appendChild(edgeXML);
 				}
 				return graphXML;
+			}
+			
+			public function setActiveItem(id: String): void
+			{
+				var concept:Concept = _concepts[id];
+				if (concept != null)
+				{
+					objectsTextArea.text = concept.objects.join(",");
+					attributesTextArea.text = concept.attributes.join(",");
+				}
+				else
+				{
+					objectsTextArea.text = attributesTextArea.text = "unavailable";
+				}
 			}
 		]]>
 	</mx:Script>
@@ -104,9 +141,9 @@
 			<mx:GridItem colSpan="6">
 				<mx:HBox>
 					<mx:Label text="Objects:" />
-					<mx:Label width="100%" id="objectsTextArea" />
+					<mx:Label width="100%" id="objectsTextArea" color="#CCCCCC" />
 					<mx:Label text="Attributes:" />
-					<mx:Label width="100%" id="attributesTextArea" />
+					<mx:Label width="100%" id="attributesTextArea" color="#CCCCCC" />
 				</mx:HBox>
 			</mx:GridItem>
 		</mx:GridRow>
@@ -136,6 +173,7 @@
 							public function doubleClick(event:Event): void
 							{
 								outerDocument.s.currentItem = event.currentTarget.data;
+								outerDocument.setActiveItem(event.currentTarget.data.id);
 							}
 							private function calcFilters(currentItem: Item, item: Item): Array {
 				                if(outerDocument.s.currentItem == item) {
