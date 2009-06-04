@@ -33,15 +33,23 @@ namespace libconexplore
                 int j = 0;
                 for (j = 0; j < bValues[i].Length; ++j)
                 {
-                    fs.Write(string.Format("<c>{0}</c>", ((bValues[i][j]) ? "true" : "false")));
+                    fs.Write(string.Format("<c>{0}</c>", ((bValues[i][j]) ? "1" : "0")));
                 }
                 fs.WriteLine("</r>");
             }
 
+            fs.WriteLine("<concepts>");
+            for (i = 0; i < cGraph.Concepts.Count; ++i)
+            {
+                fs.WriteLine(string.Format("<c id=\"{0}\" o=\"{1}\" a=\"{2}\" />", i, cGraph.Concepts[i].ObjectsToString(), cGraph.Concepts[i].AttributesToString()));
+            }
+            fs.WriteLine("</concepts>");
+
+
             fs.WriteLine("<graph>");
             for (i = 0; i < cGraph.Concepts.Count; ++i)
             {
-                fs.WriteLine(string.Format("<n id=\"{0}\" o=\"{1}\" a=\"{2}\" />", i, cGraph.Concepts[i].ObjectsToString(), cGraph.Concepts[i].AttributesToString()));
+                fs.WriteLine(string.Format("<n id=\"{0}\" o=\"Objects: {1}\" a=\"Attributes: {2}\" />", i, cGraph.Concepts[i].Objects.Count, cGraph.Concepts[i].Attributes.Count));
             }
 
             for (i = 0; i < cGraph.Links.Count; ++i)
