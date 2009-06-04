@@ -7,15 +7,45 @@ package logic
 
 	public class NaiveConceptProcessor implements IConceptProcessor
 	{
-		public function NaiveConceptProcessor()
+		
+		private var sObjects: Array;
+		private var sAttributes: Array;
+		
+		private	var extents: ArrayCollection = new ArrayCollection(); // will contain all extents
+		private	var intents:ArrayCollection = new ArrayCollection();
+
+		public function NaiveConceptProcessor(objects:Array, attributes:Array)
 		{
+			sObjects = objects;
+			sAttributes = attributes;
 		}
 		
 		public function getConceptList(): Array
 		{
-			// TODO return the list of concepts as a dictionary (id, Concept
 			var conceptList: Array = new Array();
-			conceptList["1231"] = new Concept([], []); // use the same id's that are in Graph nodes 
+			var i:int = 0;
+			for (i = 0; i < extents.length; ++i)
+			{
+				var j:int = 0;
+				// convert extent index to name
+				var conceptObjects:Array = new Array();
+				var conceptExtents:Array = extents[i];
+				for (j = 0; j < conceptExtents.length; ++j)
+				{
+					conceptObjects.push(sObjects[conceptExtents[j]]);
+				}
+				
+				// convert intent index to name
+				var conceptAttributes:Array = new Array();
+				var conceptIntents:Array = intents[i];
+				for (j = 0; j < conceptIntents.length; ++j)
+				{
+					conceptAttributes.push(sAttributes[conceptIntents[j]]);
+				}
+				
+				conceptList[i.toString()] = new Concept(conceptObjects, conceptAttributes); // use the same id's that are in Graph nodes	
+			}
+			 
 			return conceptList;
 		}
 
@@ -104,18 +134,18 @@ package logic
 			return false;
 		}
 		
-		public function computeConcept(objects:Array, attributes:Array, data:ArrayCollection):Graph
+		public function computeConcept(data:ArrayCollection):Graph
 		{
 			var g:Graph = new Graph();
 			
-			var extents: ArrayCollection = new ArrayCollection(); // will contain all extents
-			var intents:ArrayCollection = new ArrayCollection();
+			extents = new ArrayCollection(); // will contain all extents
+			intents = new ArrayCollection();
 			var j: int = 0;
 			var i:int = 0;
 			var k:int = 0;
 			
 			// for each attribute, write their extents
-			for (j = 0; j < attributes.length; ++j)
+			for (j = 0; j < sAttributes.length; ++j)
 			{
 				var attributeExtent: Array = getAttributeExtent(data, j);
 				if (!containsArray(extents, attributeExtent))
@@ -145,7 +175,7 @@ package logic
 			}
 			// add the set of all objects if it's not already in the list
 			var allObjects:Array = new Array();
-			for (j = 0; j < objects.length; ++j)
+			for (j = 0; j < sObjects.length; ++j)
 			{
 				allObjects.push(j);
 			} 
@@ -201,7 +231,7 @@ package logic
 			// compute intents for all extents
 			for (i = 0; i < extents.length; ++i)
 			{
-				intents.addItem(getIntent(data, attributes, extents[i]));
+				intents.addItem(getIntent(data, sAttributes, extents[i]));
 			}
 			
 			var concepts: Array = new Array();
@@ -209,25 +239,30 @@ package logic
 			for (i = 0; i < extents.length; ++i)
 			{
 				// convert extent index to name
+				/*
 				var conceptObjects:Array = new Array();
 				var conceptExtents:Array = extents[i];
 				for (j = 0; j < conceptExtents.length; ++j)
 				{
-					conceptObjects.push(objects[conceptExtents[j]]);
+					conceptObjects.push(sObjects[conceptExtents[j]]);
 				}
+				*/
+				
 				// convert intent index to name
+				/*
 				var conceptAttributes:Array = new Array();
 				var conceptIntents:Array = intents[i];
 				for (j = 0; j < conceptIntents.length; ++j)
 				{
-					conceptAttributes.push(attributes[conceptIntents[j]]);
+					conceptAttributes.push(sAttributes[conceptIntents[j]]);
 				}
-
+				*/
+				
 				var concept:Item = new Item(i.toString());
 				var xmlData:XML = <n />;
 				xmlData.@id = i.toString();
-				xmlData.@a = "{" + conceptAttributes.join(",") + "}";
-				xmlData.@o = "[" + conceptObjects.join(",") + "]";
+				xmlData.@a = "Attributes: " + intents[i].length.toString();
+				xmlData.@o = "Objects: " + extents[i].length.toString();
 				concept.data = xmlData; 
 				concepts.push(concept);
 				g.add(concept);
