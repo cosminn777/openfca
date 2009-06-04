@@ -38,7 +38,7 @@ namespace libconexplore
             StringBuilder sb = new StringBuilder();
             foreach (int i in Extent)
             {
-                sb.Append(string.Format("{0};", i));
+                sb.Append(string.Format("{0},", i));
             }
             return sb.ToString();
         }
@@ -68,7 +68,7 @@ namespace libconexplore
             StringBuilder sb = new StringBuilder();
             foreach (int i in Intent)
             {
-                sb.Append(string.Format("{0};", i));
+                sb.Append(string.Format("{0},", i));
             }
             return sb.ToString();
         }
