@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<conflexplore>
+<a>Latin America</a>
+<a>Europe</a>
+<a>Canada</a>
+<a>Asia Pacific</a>
+<a>Middle East</a>
+<a>Africa</a>
+<a>Mexico</a>
+<a>Caribbean</a>
+<a>United States</a>
+<o>Air Canada</o>
+<o>Air New Zealand</o>
+<o>All Nippon Airways</o>
+<o>Ansett Australia</o>
+<o>The Austrian Airlines Group</o>
+<o>British Midland</o>
+<o>Lufthansa</o>
+<o>Mexicana</o>
+<o>Scandinavian Airlines</o>
+<o>Singapore Airlines</o>
+<o>Thai Airways International</o>
+<o>United Airlines</o>
+<o>VARIG</o>
+<r><c>true</c><c>true</c><c>true</c><c>true</c><c>true</c><c>false</c><c>true</c><c>true</c><c>true</c></r>
+<r><c>false</c><c>true</c><c>false</c><c>true</c><c>false</c><c>false</c><c>false</c><c>false</c><c>true</c></r>
+<r><c>false</c><c>true</c><c>false</c><c>true</c><c>false</c><c>false</c><c>false</c><c>false</c><c>true</c></r>
+<r><c>false</c><c>false</c><c>false</c><c>true</c><c>false</c><c>false</c><c>false</c><c>false</c><c>false</c></r>
+<r><c>false</c><c>true</c><c>true</c><c>true</c><c>true</c><c>true</c><c>false</c><c>false</c><c>true</c></r>
+<r><c>false</c><c>true</c><c>false</c><c>false</c><c>false</c><c>false</c><c>false</c><c>false</c><c>false</c></r>
+<r><c>true</c><c>true</c><c>true</c><c>true</c><c>true</c><c>true</c><c>true</c><c>false</c><c>true</c></r>
+<r><c>true</c><c>false</c><c>true</c><c>false</c><c>false</c><c>false</c><c>true</c><c>true</c><c>true</c></r>
+<r><c>true</c><c>true</c><c>false</c><c>true</c><c>false</c><c>true</c><c>false</c><c>false</c><c>true</c></r>
+<r><c>false</c><c>true</c><c>true</c><c>true</c><c>true</c><c>true</c><c>false</c><c>false</c><c>true</c></r>
+<r><c>true</c><c>true</c><c>false</c><c>true</c><c>false</c><c>false</c><c>false</c><c>true</c><c>true</c></r>
+<r><c>true</c><c>true</c><c>true</c><c>true</c><c>false</c><c>false</c><c>true</c><c>true</c><c>true</c></r>
+<r><c>true</c><c>true</c><c>false</c><c>true</c><c>false</c><c>true</c><c>true</c><c>false</c><c>true</c></r>
+</conflexplore>
