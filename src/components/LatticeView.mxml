@@ -77,8 +77,8 @@
 			
 			public function setContext(objects:Array, attributes:Array, data:ArrayCollection): void
 			{
-				_conceptProcessor = new NaiveConceptProcessor();
-				_g = _conceptProcessor.computeConcept(objects, attributes, data);
+				_conceptProcessor = new NaiveConceptProcessor(objects, attributes);
+				_g = _conceptProcessor.computeConcept(data);
 				_concepts = _conceptProcessor.getConceptList();
 				if (s != null) {
 					s.empty(); 
