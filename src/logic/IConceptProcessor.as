@@ -7,5 +7,6 @@ package logic
 	public interface IConceptProcessor
 	{
 		function computeConcept(objects:Array, attributes:Array, data:ArrayCollection): Graph;
+		function getConceptList(): Array;
 	}
 }

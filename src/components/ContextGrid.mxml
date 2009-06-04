@@ -268,7 +268,7 @@
 						var newRow:Array = new Array();
 						for each (var c:XML in row.c)
 						{
-							newRow.push(new Boolean(c[0] == "true"));
+							newRow.push(new Boolean(c[0] == "1" || c[0] == "true"));
 						}
 						rows.addItem(newRow);
 					}

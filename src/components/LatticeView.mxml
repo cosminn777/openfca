@@ -12,6 +12,7 @@
 
 			private var g: Graph = new Graph();
 			private var conceptProcessor: IConceptProcessor;
+			private var concepts: Array;
 			
 			private function init(): void
 			{
@@ -31,6 +32,7 @@
 			{
 				conceptProcessor = new NaiveConceptProcessor();
 				g = conceptProcessor.computeConcept(objects, attributes, data);
+				concepts = conceptProcessor.getConceptList();
 				if (s != null) {
 					s.empty(); 
 					s.dataProvider = g;
@@ -96,6 +98,16 @@
 			</mx:GridItem>
 			<mx:GridItem width="100%" height="100%">
 				<mx:HSlider id="fontSizeSlider" value="10" minimum="8" maximum="70" change="s.refresh()" liveDragging="true" width="100%"/>
+			</mx:GridItem>
+		</mx:GridRow>
+		<mx:GridRow>
+			<mx:GridItem colSpan="6">
+				<mx:HBox>
+					<mx:Label text="Objects:" />
+					<mx:Label width="100%" id="objectsTextArea" />
+					<mx:Label text="Attributes:" />
+					<mx:Label width="100%" id="attributesTextArea" />
+				</mx:HBox>
 			</mx:GridItem>
 		</mx:GridRow>
 	</mx:Grid>

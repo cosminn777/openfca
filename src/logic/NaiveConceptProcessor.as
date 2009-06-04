@@ -10,6 +10,14 @@ package logic
 		public function NaiveConceptProcessor()
 		{
 		}
+		
+		public function getConceptList(): Array
+		{
+			// TODO return the list of concepts as a dictionary (id, Concept
+			var conceptList: Array = new Array();
+			conceptList["1231"] = new Concept([], []); // use the same id's that are in Graph nodes 
+			return conceptList;
+		}
 
 		private function getAttributeExtent(data:ArrayCollection, attribute:int):Array
 		{
