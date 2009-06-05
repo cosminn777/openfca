@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Xml;
-using System.Xml.XPath;
+using System.IO;
+using System.Diagnostics;
 
 namespace libconexplore
 {
@@ -19,45 +19,42 @@ namespace libconexplore
         {
             FileName = sFileName;
 
-            List<string> lAttributes = new List<string>();
-            List<string> lObjects = new List<string>();
-            List<List<bool>> llValues = new List<List<bool>>();
+            StreamReader fs = new StreamReader(FileName);
+            string sizes = fs.ReadLine();
+            string[] size = sizes.Split(new char[] { ' ' });
+            Debug.Assert(size.Length == 2);
 
-            XmlDocument xDoc = new XmlDocument();
-            xDoc.Load(FileName);
+            int cObjects = int.Parse(size[0]);
+            int cAttributes = int.Parse(size[1]);
 
-            foreach (XmlNode xAttributeNode in xDoc.SelectNodes("/conflexplore/a"))
+            Objects = new string[cObjects];
+            Attributes = new string[cAttributes];
+            Values = new bool[cObjects][];
+
+            int i = 0;
+            for (i = 0; i < cObjects; ++i)
             {
-                lAttributes.Add(xAttributeNode.InnerText);
+                Objects[i] = fs.ReadLine();
             }
 
-            foreach (XmlNode xObjectNode in xDoc.SelectNodes("/conflexplore/o"))
+            for (i = 0; i < cAttributes; ++i)
             {
-                lObjects.Add(xObjectNode.InnerText);
+                Attributes[i] = fs.ReadLine();
             }
 
-            foreach (XmlNode xRowNode in xDoc.SelectNodes("/conflexplore/r"))
+            for (i = 0; i < cObjects; ++i)
             {
-                llValues.Add(new List<bool>());
-                foreach (XmlNode xColNode in xRowNode.SelectNodes("c"))
+                string line = fs.ReadLine();
+                Debug.Assert(line.Length == cAttributes);
+                Values[i] = new bool[cAttributes];
+                int j = 0;
+                for (j = 0; j < cAttributes; ++j)
                 {
-                    llValues[llValues.Count - 1].Add(bool.Parse(xColNode.InnerText));
+                    Values[i][j] = ((line[j] == '1') ? true : false);
                 }
             }
 
-            Attributes = lAttributes.ToArray();
-            Objects = lObjects.ToArray();
-            
-            Values = new bool[Objects.Length][];
-            int i, j;
-            for (i = 0; i < Objects.Length; ++i)
-            {
-                Values[i] = new bool[Attributes.Length];
-                for (j = 0; j < Attributes.Length; ++j)
-                {
-                    Values[i][j] = llValues[i][j];
-                }
-            }
+            fs.Close();
         }
 
     }
