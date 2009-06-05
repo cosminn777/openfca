@@ -14,6 +14,8 @@
 			private var _g: Graph = new Graph();
 			private var _conceptProcessor: IConceptProcessor;
 			private var _concepts: Array = new Array();
+			private var _objects: Array = new Array();
+			private var _attributes: Array = new Array();
 			
 			private function init(): void
 			{
@@ -26,8 +28,10 @@
 
 			}
 			
-			public function setGraph(graph:Graph): void
+			public function setGraph(objects:Array, attributes:Array, graph:Graph): void
 			{
+				_objects = objects;
+				_attributes = attributes;
 				_g = graph;
 				if (s != null) {
 					s.empty(); 
@@ -47,6 +51,8 @@
 			
 			public function setContext(objects:Array, attributes:Array, data:ArrayCollection): void
 			{
+				_objects = objects;
+				_attributes = attributes;
 				_conceptProcessor = new NaiveConceptProcessor(objects, attributes);
 				_g = _conceptProcessor.computeConcept(data);
 				_concepts = _conceptProcessor.getConceptList();
@@ -88,8 +94,14 @@
 				var concept:Concept = _concepts[id];
 				if (concept != null)
 				{
-					objectsList.dataProvider = concept.objects;
-					attributesList.dataProvider = concept.attributes;
+					objectsList.dataProvider = concept.objects.map(
+						function (item:*, index:int, arr:Array):Object {
+							return _objects[item];						
+						});
+					attributesList.dataProvider = concept.attributes.map(
+						function (item:*, index:int, arr:Array):Object {
+							return _attributes[item];						
+						});
 				}
 			}
 		]]>
