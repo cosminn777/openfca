@@ -3,6 +3,8 @@
 	initialize="init()" horizontalAlign="center">
 	<mx:Script>
 		<![CDATA[
+			import logic.ConceptItem;
+			import logic.Concept;
 			import com.adobe.flex.extras.controls.springgraph.Item;
 			import com.adobe.flex.extras.controls.springgraph.Graph;
 			import com.adobe.flex.extras.controls.forcelayout.Node;
@@ -249,37 +251,70 @@
 			
 			private function onFileComplete(event:Event): void
 			{
-				var xmlData:XML = new XML(fileReference.data.toString());
+				var lines:Array = fileReference.data.toString().split("\n");
+				var header:Array = (lines[0] as String).split(" ");
+				var objectCount:int = parseInt(header[0]);
+				var attributeCount:int = parseInt(header[1]);
+				var conceptCount:int = parseInt(header[2]);
+				var edgeCount:int = parseInt(header[3]);
 				attributes = new Array();
-				for each (var a:XML in xmlData.a)
-				{
-					attributes.push(a[0]);
-				}
 				objects = new Array();
-				for each (var o:XML in xmlData.o)
+				var lineIndex:int = 1;
+				for (var oIndex:int = 0; oIndex < objectCount; ++oIndex) 
 				{
-					objects.push(o[0]);
+					objects.push(StringUtil.trim(lines[lineIndex++]));
+				}
+				for (var aIndex:int = 0; aIndex < attributeCount; ++aIndex) 
+				{
+					attributes.push(StringUtil.trim(lines[lineIndex++]));
 				}
 				rows = new ArrayCollection();
-				if (objects.length < 100)
+				for (var rIndex:int = 0; rIndex < objectCount; ++rIndex)
 				{
-					for each (var row:XML in xmlData.r)
+					var newRow:Array = new Array();
+					for each (var c:String in StringUtil.trim(lines[lineIndex]).split(""))
 					{
-						var newRow:Array = new Array();
-						for each (var c:XML in row.c)
-						{
-							newRow.push(new Boolean(c[0] == "1" || c[0] == "true"));
-						}
+						newRow.push(new Boolean(c == "1"));
+					}
+					if (objects.length < 100)
+					{
 						rows.addItem(newRow);
 					}
+					lineIndex++;
 				}
-				var itemCount:int = 0;
-				for each (var x:XML in xmlData.graph.n) {
-					itemCount++;
+				if (conceptCount > 0) {
+					setLatticeVisibility();
+				} else {
+					setGrid(objects, attributes, rows);
+					setContextGridVisibility();
 				}
-				if (itemCount > 0) {
-					lattice.setGraph(xmlData.graph[0]);
-					lattice.setConcepts(xmlData.concepts[0]);
+				var g:Graph = new Graph();
+				var concepts:Array = new Array();
+				for (var nIndex:int = 0; nIndex < conceptCount; ++nIndex)
+				{
+					var conceptId:String = StringUtil.trim(lines[lineIndex++]);
+					var conceptObjects:Array = StringUtil.trim(lines[lineIndex++]).split(",");
+					if (conceptObjects[0] == "")
+					{
+						conceptObjects = new Array();
+					}
+					var conceptAttributes:Array = StringUtil.trim(lines[lineIndex++]).split(",");
+					if (conceptAttributes[0] == "")
+					{
+						conceptAttributes = new Array();
+					}
+					var newConcept:Concept = new Concept(conceptObjects, conceptAttributes);
+					concepts[conceptId] = newConcept;
+					g.add(new ConceptItem(conceptId, "A: "+conceptAttributes.length, "O: " + conceptObjects.length));
+				}
+				for (var eIndex:int = 0; eIndex < edgeCount; ++eIndex)
+				{
+					var edge:Array = StringUtil.trim(lines[lineIndex++]).split(" ");
+					g.link(g.nodes[edge[0]], g.nodes[edge[1]]);
+				}
+				if (concepts.length > 0) {
+					lattice.setGraph(g);
+					lattice.setConcepts(concepts);
 					if (objects.length < 100)
 					{
 						setGrid(objects, attributes, rows);
@@ -293,40 +328,36 @@
 			
 			private function openClickHandler():void
 			{
-				fileReference.browse([new FileFilter("Data", "*.xml")]);
+				fileReference.browse([new FileFilter("Conflexplore files", "*.con")]);
 				fileReference.addEventListener(Event.SELECT, onFileSelect);
 			}
 			
 			private function saveClickHandler():void
 			{
 				var fileReference:FileReference = new FileReference();
-				var xmlData:XML = <conflexplore></conflexplore>;
-				for each (var a:String in attributes)
-				{
-					var xmlA:XML = <a></a>;
-					xmlA.appendChild(a);
-					xmlData.appendChild(xmlA);
-				}
-				for each (var o:String in objects)
-				{
-					var xmlO:XML = <o></o>;
-					xmlO.appendChild(o);
-					xmlData.appendChild(xmlO);
-				}
+				var out:ByteArray = new ByteArray();
+				out.writeUTFBytes(objects.length + " " + attributes.length + " " + 
+							 lattice.getConcepts().length + " " + lattice.getGraph().edges.length + "\n");
+				out.writeUTFBytes(objects.join("\n")+"\n");
+				out.writeUTFBytes(attributes.join("\n")+"\n");
 				for each (var row:Array in rows)
 				{
-					var xmlR:XML = <r></r>;
 					for (var attributeIndex:String in attributes)
 					{
-						var xmlC:XML = <c></c>;
-						xmlC.appendChild(row[attributeIndex]);
-						xmlR.appendChild(xmlC);
-					} 
-					xmlData.appendChild(xmlR);
+						if (row[attributeIndex])
+						{
+							out.writeUTFBytes("1");
+						}
+						else
+						{
+							out.writeUTFBytes("0");
+						}
+					}
+					out.writeUTFBytes("\n"); 
 				}
-				xmlData.appendChild(lattice.getGraphXML());
-				xmlData.appendChild(lattice.getConceptsXML());
-				fileReference.save(xmlData.toXMLString(), "data.xml");
+				out.writeUTFBytes(lattice.getConceptRepresentation());
+				out.writeUTFBytes(lattice.getGraphRepresentation());
+				fileReference.save(out, "data.con");
 			}
 		]]>
 	</mx:Script>

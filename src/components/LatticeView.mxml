@@ -26,58 +26,23 @@
 
 			}
 			
-			public function setGraph(graph:XML): void
+			public function setGraph(graph:Graph): void
 			{
-				_g = Graph.fromXML(graph, ["n", "e", "f", "t"]);
+				_g = graph;
 				if (s != null) {
 					s.empty(); 
 					s.dataProvider = _g;
 				}
 			}
 			
-			public function setConcepts(concepts:XML): void
+			public function setConcepts(concepts:Array): void
 			{
-				_concepts = new Array();
-				for each (var concept:XML in concepts.c)
-				{
-					var id:String = concept.@id;
-					var obj:Array = new Array();
-					var attr:Array = new Array();
-					for each (var a:XML in concept.a)
-					{
-						attr.push(a[0]);						
-					}
-					for each (var o:XML in concept.o)
-					{
-						obj.push(o[0]);						
-					}
-					var newConcept:Concept = new Concept(obj, attr);
-					_concepts[id] = newConcept;
-				}
+				_concepts = concepts;
 			}
 			
-			public function getConceptsXML(): XML
+			public function getConcepts(): Array
 			{
-				var result:XML = <concepts></concepts>;
-				for (var conceptId:String in _concepts)
-				{
-					var concept:XML = <c></c>;
-					concept.@id = conceptId;
-					for each (var a:String in _concepts[conceptId].attributes)
-					{
-						var xmlA:XML = <a></a>;
-						xmlA.appendChild(a);
-						concept.appendChild(xmlA);
-					}					
-					for each (var o:String in _concepts[conceptId].objects)
-					{
-						var xmlO:XML = <o></o>;
-						xmlO.appendChild(o);
-						concept.appendChild(xmlO);
-					}
-					result.appendChild(concept);
-				}
-				return result;
+				return _concepts;
 			}
 			
 			public function setContext(objects:Array, attributes:Array, data:ArrayCollection): void
@@ -91,21 +56,31 @@
 				}
 			}
 			
-			public function getGraphXML(): XML
+			public function getGraph(): Graph
 			{
-				var graphXML:XML = <graph></graph>;
-				for each (var item:Item in _g.nodes)
-				{
-					graphXML.appendChild(item.data);
-				}
+				return _g;
+			}
+			
+			public function getGraphRepresentation(): String
+			{
+				var out:ByteArray = new ByteArray();
 				for each (var edge:Array in _g.edges)
 				{
-					var edgeXML:XML = <e />;
-					edgeXML.@f = edge[0].id;
-					edgeXML.@t = edge[1].id;
-					graphXML.appendChild(edgeXML);
+					out.writeUTFBytes(String(edge[0].id) + " " + String(edge[1].id) + "\n"); 
 				}
-				return graphXML;
+				return out.toString();
+			}
+			
+			public function getConceptRepresentation(): String
+			{
+				var out:ByteArray = new ByteArray();
+				for (var conceptId:String in _concepts)
+				{
+					out.writeUTFBytes(conceptId + "\n");
+					out.writeUTFBytes(_concepts[conceptId].objects.join(",") + "\n");
+					out.writeUTFBytes(_concepts[conceptId].attributes.join(",") + "\n");
+				}
+				return out.toString();
 			}
 			
 			public function setActiveItem(id: String): void
@@ -132,7 +107,7 @@
 				<mx:Label text="Item width"/>
 			</mx:GridItem>
 			<mx:GridItem width="100%" height="100%">
-				<mx:HSlider id="widthSlider" value="110" minimum="20" maximum="200" change="s.refresh()" liveDragging="true" width="100%"/>
+				<mx:HSlider id="widthSlider" value="70" minimum="20" maximum="200" change="s.refresh()" liveDragging="true" width="100%"/>
 			</mx:GridItem>
 			<mx:GridItem>
 				<mx:Label text="Item height"/>
@@ -202,10 +177,10 @@
 					            }
 							]]>
 						</mx:Script>
-						<mx:TextArea selectable="false" text="{data.data.@o}" fontSize="{outerDocument.fontSizeSlider.value}" backgroundAlpha="0.2"
+						<mx:TextArea selectable="false" text="{data.attributes}" fontSize="{outerDocument.fontSizeSlider.value}" backgroundAlpha="0.2"
 							textAlign="center" width="{outerDocument.widthSlider.value}" editable="false" horizontalScrollPolicy="off"
 							verticalScrollPolicy="auto" height="100%" minHeight="0"/>					
-						<mx:TextArea selectable="false" text="{data.data.@a}" fontSize="{outerDocument.fontSizeSlider.value}" backgroundAlpha="0.2"
+						<mx:TextArea selectable="false" text="{data.objects}" fontSize="{outerDocument.fontSizeSlider.value}" backgroundAlpha="0.2"
 							textAlign="center" width="{outerDocument.widthSlider.value}" editable="false" horizontalScrollPolicy="off"
 							verticalScrollPolicy="auto" height="100%" minHeight="0"/>					
 					</mx:VBox>
