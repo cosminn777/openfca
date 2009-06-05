@@ -258,12 +258,7 @@ package logic
 				}
 				*/
 				
-				var concept:Item = new Item(i.toString());
-				var xmlData:XML = <n />;
-				xmlData.@id = i.toString();
-				xmlData.@a = "Attributes: " + intents[i].length.toString();
-				xmlData.@o = "Objects: " + extents[i].length.toString();
-				concept.data = xmlData; 
+				var concept:Item = new ConceptItem(i.toString(), "A: " + intents[i].length, "O: " + extents[i].length.toString());
 				concepts.push(concept);
 				g.add(concept);
 			}
