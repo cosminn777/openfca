@@ -21,7 +21,7 @@ namespace Mushrooms
                 Debug.Assert(head.Length == 2);
                 foreach (string valName in head[1].Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
                 {
-                    string[] sepName = valName.Split(new char[] {'='}, StringSplitOptions.RemoveEmptyEntries);
+                    string[] sepName = valName.Split(new char[] { '=' }, StringSplitOptions.RemoveEmptyEntries);
                     Debug.Assert(sepName.Length == 2);
 
                     char[] cName = sepName[0].ToCharArray();
@@ -63,44 +63,37 @@ namespace Mushrooms
             }
             Debug.WriteLine(string.Format("Total number of attributes: {0}", cAttributes));
 
-            StreamWriter fs = File.CreateText("mushrooms.xml");
-            fs.WriteLine("<?xml version=\"1.0\"?><conflexplore>");
-            
+            StreamWriter fs = File.CreateText("mushrooms.con");
+            fs.WriteLine(string.Format("{0} {1}", values.Length, cAttributes));
+
+            for (i = 0; i < values.Length; ++i)
+            {
+                fs.WriteLine(string.Format("Mushroom {0}", i + 1));
+            }
+
             for (i = 0; i < llAttributes.Count; ++i)
             {
                 int j = 0;
                 for (j = 0; j < llAttributes[i].Count; ++j)
                 {
-                    fs.WriteLine(string.Format("<a>{0}</a>", lAttributeNames[i][llAttributes[i][j][0]]));
+                    fs.WriteLine(string.Format("{0}", lAttributeNames[i][llAttributes[i][j][0]]));
                 }
             }
 
             for (i = 0; i < values.Length; ++i)
             {
-                fs.WriteLine(string.Format("<o>Mushroom {0}</o>", i + 1));
-            }
-
-            //bool bCheck = true;
-            for (i = 0; i < values.Length; ++i)
-            {
-                fs.Write("<r>");
                 int j = 0;
                 for (j = 0; j < llAttributes.Count; ++j)
                 {
                     int k = 0;
                     for (k = 0; k < llAttributes[j].Count; ++k)
                     {
-                        fs.Write(string.Format("<c>{0}</c>", ((llAttributes[j][k] == values[i][j]) ? "true" : "false")));
+                        fs.Write(string.Format("{0}", ((llAttributes[j][k] == values[i][j]) ? "1" : "0")));
                     }
-                    //if (values[i][16] != "p")
-                    //{
-                    //    bCheck = false;
-                    //}
                 }
-                fs.WriteLine("</r>");
+                fs.WriteLine("");
             }
 
-            fs.WriteLine("</conflexplore>");
             fs.Close();
         }
     }

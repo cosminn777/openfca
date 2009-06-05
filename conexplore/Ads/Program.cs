@@ -43,30 +43,29 @@ namespace Ads
             }
             Debug.WriteLine(string.Format("Total number of objects: {0}", values.Length));
 
-            StreamWriter fs = File.CreateText("ads.xml");
-            fs.WriteLine("<?xml version=\"1.0\"?><conflexplore>");
+            StreamWriter fs = File.CreateText("ads.con");
+            fs.WriteLine(string.Format("{0} {1}", values.Length, lAttributeNames.Count));
+
+            for (i = 0; i < values.Length; ++i)
+            {
+                fs.WriteLine(string.Format("Ad {0}", i + 1));
+            }
+
             for (i = 0; i < lAttributeNames.Count; ++i)
             {
-                fs.WriteLine(string.Format("<a>{0}</a>", lAttributeNames[i]));
+                fs.WriteLine(string.Format("{0}", lAttributeNames[i]));
             }
 
             for (i = 0; i < values.Length; ++i)
             {
-                fs.WriteLine(string.Format("<o>Ad {0}</o>", i + 1));
-            }
-
-            for (i = 0; i < values.Length; ++i)
-            {
-                fs.Write("<r>");
                 int j = 0;
                 for (j = 0; j < lAttributeNames.Count; ++j)
                 {
-                    fs.Write(string.Format("<c>{0}</c>", (values[i][j] == "1") ? "true" : "false"));
+                    fs.Write(string.Format("{0}", (values[i][j] == "1") ? "1" : "0"));
                 }
-                fs.WriteLine("</r>");
+                fs.WriteLine("");
             }
 
-            fs.WriteLine("</conflexplore>");
             fs.Close();
         }
     }
