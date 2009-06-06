@@ -313,7 +313,7 @@
 					g.link(g.nodes[edge[0]], g.nodes[edge[1]]);
 				}
 				if (concepts.length > 0) {
-					lattice.setGraph(g);
+					lattice.setGraph(objects, attributes, g);
 					lattice.setConcepts(concepts);
 					if (objects.length < 100)
 					{
