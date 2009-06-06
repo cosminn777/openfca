@@ -46,7 +46,7 @@ namespace libconexplore
 
             for (i = 0; i < cGraph.Links.Count; ++i)
             {
-                fs.WriteLine(string.Format("{0},{1}", cGraph.Links[i].From, cGraph.Links[i].To));
+                fs.WriteLine(string.Format("{0} {1}", cGraph.Links[i].From, cGraph.Links[i].To));
             }
 
             fs.Close();

@@ -35,12 +35,14 @@ namespace libconexplore
 
         public string ObjectsToId()
         {
-            StringBuilder sb = new StringBuilder();
-            foreach (int i in Extent)
+            int[] iExtent = Extent.ToArray();
+            string[] sExtent = new string[iExtent.Length];
+            int i = 0;
+            for (i = 0; i < iExtent.Length; ++i)
             {
-                sb.Append(string.Format("{0},", i));
+                sExtent[i] = iExtent[i].ToString();
             }
-            return sb.ToString();
+            return string.Join(",", sExtent);
         }
 
         public string ObjectsToString()
@@ -65,12 +67,14 @@ namespace libconexplore
 
         public string AttributesToId()
         {
-            StringBuilder sb = new StringBuilder();
-            foreach (int i in Intent)
+            int[] iIntent = Intent.ToArray();
+            string[] sIntent = new string[iIntent.Length];
+            int i = 0;
+            for (i = 0; i < iIntent.Length; ++i)
             {
-                sb.Append(string.Format("{0},", i));
+                sIntent[i] = iIntent[i].ToString();
             }
-            return sb.ToString();
+            return string.Join(",", sIntent);
         }
 
     }
