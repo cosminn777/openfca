@@ -14,20 +14,30 @@
 			private var _g: Graph = new Graph();
 			private var _conceptProcessor: IConceptProcessor;
 			private var _concepts: Array = new Array();
+			private var _objects: Array = new Array();
+			private var _attributes: Array = new Array();
 			
 			private function init(): void
 			{
 				s.dataProvider = _g;
 				if (_concepts.length > 0)
 				{
-					objectsList.dataProvider = 	_concepts[0].objects;
-					attributesList.dataProvider = _concepts[0].attributes;
+					objectsList.dataProvider = 	_concepts[0].objects.map(
+						function (item:*, index:int, arr:Array):Object {
+							return _objects[item];						
+						});
+					attributesList.dataProvider = _concepts[0].attributes.map(
+						function (item:*, index:int, arr:Array):Object {
+							return _attributes[item];						
+						});;
 				}
 
 			}
 			
-			public function setGraph(graph:Graph): void
+			public function setGraph(objects:Array, attributes:Array, graph:Graph): void
 			{
+				_objects = objects;
+				_attributes = attributes;
 				_g = graph;
 				if (s != null) {
 					s.empty(); 
@@ -47,6 +57,8 @@
 			
 			public function setContext(objects:Array, attributes:Array, data:ArrayCollection): void
 			{
+				_objects = objects;
+				_attributes = attributes;
 				_conceptProcessor = new NaiveConceptProcessor(objects, attributes);
 				_g = _conceptProcessor.computeConcept(data);
 				_concepts = _conceptProcessor.getConceptList();
@@ -88,8 +100,14 @@
 				var concept:Concept = _concepts[id];
 				if (concept != null)
 				{
-					objectsList.dataProvider = concept.objects;
-					attributesList.dataProvider = concept.attributes;
+					objectsList.dataProvider = concept.objects.map(
+						function (item:*, index:int, arr:Array):Object {
+							return _objects[item];						
+						});
+					attributesList.dataProvider = concept.attributes.map(
+						function (item:*, index:int, arr:Array):Object {
+							return _attributes[item];						
+						});
 				}
 			}
 		]]>
@@ -189,11 +207,11 @@
 		</fc:Roamer>
 		<mx:VBox horizontalScrollPolicy="off" height="100%" verticalScrollPolicy="off" width="10%" minWidth="70" backgroundColor="#909090"
 				 paddingLeft="5" paddingRight="5" paddingTop="5" paddingBottom="5">
-			<mx:Label text="Objects" />
-			<mx:List id="objectsList" width="100%" height="100%">
-			</mx:List>
 			<mx:Label text="Attributes" />
 			<mx:List id="attributesList" width="100%" height="100%">
+			</mx:List>
+			<mx:Label text="Objects" />
+			<mx:List id="objectsList" width="100%" height="100%">
 			</mx:List>
 		</mx:VBox>
 	</mx:HDividedBox>
