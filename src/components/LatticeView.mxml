@@ -22,8 +22,14 @@
 				s.dataProvider = _g;
 				if (_concepts.length > 0)
 				{
-					objectsList.dataProvider = 	_concepts[0].objects;
-					attributesList.dataProvider = _concepts[0].attributes;
+					objectsList.dataProvider = 	_concepts[0].objects.map(
+						function (item:*, index:int, arr:Array):Object {
+							return _objects[item];						
+						});
+					attributesList.dataProvider = _concepts[0].attributes.map(
+						function (item:*, index:int, arr:Array):Object {
+							return _attributes[item];						
+						});;
 				}
 
 			}
@@ -201,11 +207,11 @@
 		</fc:Roamer>
 		<mx:VBox horizontalScrollPolicy="off" height="100%" verticalScrollPolicy="off" width="10%" minWidth="70" backgroundColor="#909090"
 				 paddingLeft="5" paddingRight="5" paddingTop="5" paddingBottom="5">
-			<mx:Label text="Objects" />
-			<mx:List id="objectsList" width="100%" height="100%">
-			</mx:List>
 			<mx:Label text="Attributes" />
 			<mx:List id="attributesList" width="100%" height="100%">
+			</mx:List>
+			<mx:Label text="Objects" />
+			<mx:List id="objectsList" width="100%" height="100%">
 			</mx:List>
 		</mx:VBox>
 	</mx:HDividedBox>
