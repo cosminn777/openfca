@@ -148,20 +148,20 @@ namespace libconexplore
             Debug.Assert(lhsA.Count == lhsB.Count);
             Debug.WriteLine(string.Format("Total formal concepts: {0}", lhsA.Count));
 
-            //for (i = 0; i < lhsA.Count; ++i)
-            //{
-            //    Debug.Write(string.Format("{0}: [", i + 1));
-            //    foreach (int j in lhsA[i])
-            //    {
-            //        Debug.Write(string.Format("{0} ", j + 1));
-            //    }
-            //    Debug.Write("] {");
-            //    foreach (int j in lhsB[i])
-            //    {
-            //        Debug.Write(string.Format("{0} ", j + 1));
-            //    }
-            //    Debug.WriteLine("}");
-            //}
+            for (i = 0; i < lhsA.Count; ++i)
+            {
+                Debug.Write(string.Format("{0:00}: [", i + 1));
+                foreach (int j in lhsA[i])
+                {
+                    Debug.Write(string.Format("{0} ", j + 1));
+                }
+                Debug.Write("] {");
+                foreach (int j in lhsB[i])
+                {
+                    Debug.Write(string.Format("{0} ", j + 1));
+                }
+                Debug.WriteLine("}");
+            }
 
             // Create concepts
             List<Concept> lConcepts = new List<Concept>();
@@ -170,7 +170,7 @@ namespace libconexplore
                 lConcepts.Add(new Concept(lhsA[i], lhsB[i], sObjects, sAttributes));
             }
 
-            return new Graph() { Concepts = lConcepts, Links = new Linker().Link(lConcepts) };
+            return new Graph() { Concepts = lConcepts, Links = new FloydWarshallLinker().Link(lConcepts) };
         }
     }
 }

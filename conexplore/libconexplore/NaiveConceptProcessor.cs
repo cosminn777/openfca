@@ -117,7 +117,7 @@ namespace libconexplore
                 lConcepts.Add(new Concept(lhsFinalExtents[i], lhsFinalIntents[i], sObjects, sAttributes));
             }
 
-            return new Graph() { Concepts = lConcepts, Links = new Linker().Link(lConcepts) };
+            return new Graph() { Concepts = lConcepts, Links = new FloydWarshallLinker().Link(lConcepts) };
         }
     }
 }
