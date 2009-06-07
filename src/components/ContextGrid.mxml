@@ -288,30 +288,38 @@
 					setGrid(objects, attributes, rows);
 					setContextGridVisibility();
 				}
+				var iMem: int = System.totalMemory / (1024 * 1024); // in MB
 				var g:Graph = new Graph();
 				var concepts:Array = new Array();
 				for (var nIndex:int = 0; nIndex < conceptCount; ++nIndex)
 				{
+					//trace("We're at concept " + nIndex + " and we're eating up " + (System.totalMemory / (1024 * 1024)).toString() + " MB."); // in MB
 					var conceptId:String = StringUtil.trim(lines[lineIndex++]);
-					var conceptObjects:Array = StringUtil.trim(lines[lineIndex++]).split(",");
-					if (conceptObjects[0] == "")
-					{
-						conceptObjects = new Array();
-					}
-					var conceptAttributes:Array = StringUtil.trim(lines[lineIndex++]).split(",");
-					if (conceptAttributes[0] == "")
-					{
-						conceptAttributes = new Array();
-					}
-					var newConcept:Concept = new Concept(conceptObjects, conceptAttributes);
+					//lineIndex++; // Delete this when uncommenting
+					//var conceptObjects:Array = new Array(); //StringUtil.trim(lines[lineIndex++]).split(",");
+					//if (conceptObjects[0] == "")
+					//{
+					//	conceptObjects = new Array();
+					//}
+					//lineIndex++; // Delete this when uncommenting
+					//var conceptAttributes:Array = new Array(); //StringUtil.trim(lines[lineIndex++]).split(",");
+					//if (conceptAttributes[0] == "")
+					//{
+					//	conceptAttributes = new Array();
+					//}
+					var newConcept:Concept = new Concept(null, null, lines[lineIndex++], lines[lineIndex++]);
 					concepts[conceptId] = newConcept;
-					g.add(new ConceptItem(conceptId, "A: "+conceptAttributes.length, "O: " + conceptObjects.length));
+					g.add(new ConceptItem(conceptId, "A: " + 0, "O: " + 0));
 				}
+				iMem = System.totalMemory / (1024 * 1024); // in MB
 				for (var eIndex:int = 0; eIndex < edgeCount; ++eIndex)
 				{
+					//trace("We're at edge " + eIndex + " and we're eating up " + (System.totalMemory / (1024 * 1024)).toString() + " MB."); // in MB
 					var edge:Array = StringUtil.trim(lines[lineIndex++]).split(" ");
 					g.link(g.nodes[edge[0]], g.nodes[edge[1]]);
 				}
+				iMem = System.totalMemory / (1024 * 1024); // in MB
+				trace("Total used memory for " + conceptCount + " concepts and " + edgeCount + " edges: " + (System.totalMemory / (1024 * 1024)).toString() + " MB."); // in MB
 				if (concepts.length > 0) {
 					lattice.setGraph(objects, attributes, g);
 					lattice.setConcepts(concepts);
