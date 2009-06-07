@@ -8,14 +8,14 @@ package events
 	{
 		public var objects:Array;
 		public var attributes:Array;
-		public var rows:ArrayCollection;
+		public var data:String;
 
-		public function NewContextEvent(type:String, objects:Array = null, attributes:Array = null, rows:ArrayCollection = null)
+		public function NewContextEvent(type:String, objects:Array = null, attributes:Array = null, data:String = null)
 		{
 			super(type);
 			this.objects = objects;
 			this.attributes = attributes;
-			this.rows = rows;
+			this.data = data;
 		}
 		
 	}

@@ -128,8 +128,12 @@
 			
 			private function createContext(event:NewContextEvent): void
 			{
-				setContextGridVisibility();
-				setGrid(event.objects, event.attributes, event.rows);
+				if (event.data == null) {
+					setGrid(event.objects, event.attributes);
+					setContextGridVisibility();					
+				} else {
+					loadData(event.data);
+				}
 			}
 			
 			private function showCreateContext(): void
@@ -249,9 +253,9 @@
 				fileReference.load();
 			}
 			
-			private function onFileComplete(event:Event): void
+			private function loadData(data:String): void
 			{
-				var lines:Array = fileReference.data.toString().split("\n");
+				var lines:Array = data.split("\n");
 				var header:Array = (lines[0] as String).split(" ");
 				var objectCount:int = parseInt(header[0]);
 				var attributeCount:int = parseInt(header[1]);
@@ -316,6 +320,11 @@
 					setGrid(objects, attributes, rows);
 					setContextGridVisibility(); 
 				}
+			}
+			
+			private function onFileComplete(event:Event): void
+			{
+				loadData(fileReference.data.toString());
 			}
 			
 			private function openClickHandler():void

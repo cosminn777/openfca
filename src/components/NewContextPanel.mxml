@@ -12,20 +12,21 @@
 
 	<mx:Script>
 		<![CDATA[
+			import mx.rpc.events.ResultEvent;
 			import mx.utils.ObjectProxy;
 			import mx.collections.ArrayCollection;
 			import mx.events.ItemClickEvent;
 			import mx.utils.StringUtil;
 			import events.NewContextEvent;
 			
-			private var rows:ArrayCollection = null;
+			private var conData:String = null;
 			
 			private function init(): void
 			{
 				objectsTextInput.setFocus();
 			}
 			
-			private function sendCreateContext(objects:String, attributes:String, rows:ArrayCollection): void
+			private function sendCreateContext(objects:String, attributes:String, data:String): void
 			{
 				var o:Array = objects.split(",").map(
 					function(s:String, i:int, o:Array): String {
@@ -35,12 +36,14 @@
 					function(s:String, i:int, o:Array): String {
 						return mx.utils.StringUtil.trim(s);
 					});
-				dispatchEvent(new NewContextEvent("createContextClick", o, a, rows));
+				dispatchEvent(new NewContextEvent("createContextClick", o, a, data));
 			}
 			
 			private function createContext(): void
 			{
-				sendCreateContext(objectsTextInput.text, attributesTextInput.text, rows);
+				if (validateData()) {
+					sendCreateContext(objectsTextInput.text, attributesTextInput.text, conData);
+				}
 			}
 			
 			private function cancel(): void
@@ -50,38 +53,46 @@
 			
 			private function clickHandler(event:ItemClickEvent): void
 			{
-				rows = null;
+				conData = null;
 				objectsTextInput.text = objectArray[event.index]
 				attributesTextInput.text = attributeArray[event.index];
+				validateData();
+			}
+			
+			private function validateData(): Boolean
+			{
+				if (StringUtil.trim(objectsTextInput.text) == "") {
+					createButton.enabled = false;
+					return false;
+				}
+				if (StringUtil.trim(attributesTextInput.text) == "") {
+					createButton.enabled = false;
+					return false;
+				}
+				createButton.enabled = true;
+				return true;	
 			}
 
 			private function contextClickHandler(event:ItemClickEvent): void
 			{
-				var model:ObjectProxy = (document[modelNamesArray[event.index]]);
-				var objects:Array = model.o as Array;
-				var attributes:Array = model.a as Array
-				objectsTextInput.text = objects.join(",");
-				attributesTextInput.text = attributes.join(",");
-				rows = new ArrayCollection();
-				for each (var row:ObjectProxy in model.r)
-				{
-					rows.addItem(row.c as Array);
-				}
-				dispatchEvent(new NewContextEvent("createContextClick", objects, attributes, rows))
+				httpService.url = "data/" + fileNamesArray[event.index];
+				httpService.send();
+			}
+			
+			private function onResult(event:ResultEvent):void
+			{
+				dispatchEvent(new NewContextEvent("createContextClick", null, null, event.result as String));
 			}
 		]]>
 	</mx:Script>
-	<mx:Model id="numbersModel" source="data/numbers.xml" />
-	<mx:Model id="StarAllianceMembersModel" source="data/staralliancemembers.xml" />
-	<mx:Model id="TrianglesModel" source="data/triangles.xml" />
-	<mx:Model id="MushroomsModel" source="data/mushrooms.xml" />
+	<mx:HTTPService id="httpService" resultFormat="text" result="onResult(event)" />
 	<mx:Label text="Please specify the objects and attributes of the context (separated by comma)" />
 	<mx:Form xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%">
 		<mx:FormItem label="Objects:" width="100%">
-			<mx:TextInput width="100%" id="objectsTextInput"/>
+			<mx:TextInput width="100%" id="objectsTextInput" change="validateData()" />
 		</mx:FormItem>
 		<mx:FormItem label="Attributes:" width="100%">
-			<mx:TextInput width="100%" id="attributesTextInput" enter="createContext()"/>
+			<mx:TextInput width="100%" id="attributesTextInput" enter="createContext()" change="validateData()" />
 		</mx:FormItem>
 	</mx:Form>
 	<mx:Spacer height="10" />
@@ -103,13 +114,12 @@
 				<mx:String>Numbers</mx:String>
 				<mx:String>Star Alliance Members</mx:String>
 				<mx:String>Triangles</mx:String>
-				<mx:String>Mushrooms</mx:String>
 			</mx:Array>
 		</mx:dataProvider>
 	</mx:ButtonBar>
 	<mx:Spacer height="100%"/>
 	<mx:ControlBar horizontalAlign="right">
-		<mx:Button id="createButton" label="Create context" click="createContext()"/>
+		<mx:Button id="createButton" enabled="false" label="Create context" click="createContext()"/>
 		<mx:Button label="Cancel" click="cancel()"/>
 	</mx:ControlBar>
 	<mx:Array id="objectArray">
@@ -122,10 +132,9 @@
 		<mx:String>fast,cheap,nice,eco</mx:String>
 		<mx:String>cheap,nice,rich,battery,signal</mx:String>
 	</mx:Array>
-	<mx:Array id="modelNamesArray">
-		<mx:String>numbersModel</mx:String>
-		<mx:String>StarAllianceMembersModel</mx:String>
-		<mx:String>TrianglesModel</mx:String>
-		<mx:String>MushroomsModel</mx:String>
+	<mx:Array id="fileNamesArray">
+		<mx:String>numbers.con</mx:String>
+		<mx:String>star_alliance.con</mx:String>
+		<mx:String>triangles.con</mx:String>
 	</mx:Array>
 </mx:Panel>

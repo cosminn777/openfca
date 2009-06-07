@@ -22,16 +22,32 @@
 				s.dataProvider = _g;
 				if (_concepts.length > 0)
 				{
-					objectsList.dataProvider = 	_concepts[0].objects.map(
-						function (item:*, index:int, arr:Array):Object {
-							return _objects[item];						
-						});
-					attributesList.dataProvider = _concepts[0].attributes.map(
-						function (item:*, index:int, arr:Array):Object {
-							return _attributes[item];						
-						});;
+					setLists(_concepts[0]);
 				}
 
+			}
+			
+			private function setLists(concept:Concept): void
+			{
+				objectsList.dataProvider = 	concept.objects.map(
+					function (item:*, index:int, arr:Array):Object {
+						return _objects[item];						
+					});
+				attributesList.dataProvider = concept.attributes.map(
+					function (item:*, index:int, arr:Array):Object {
+						return _attributes[item];						
+					});;
+			}
+			
+			private function resetGraph(): void
+			{
+				if (s != null) {
+					s.empty(); 
+					s.dataProvider = _g;
+					if (_concepts.length > 0) {
+						setActiveItem(_g.nodes[0].id);
+					}
+				}
 			}
 			
 			public function setGraph(objects:Array, attributes:Array, graph:Graph): void
@@ -39,15 +55,12 @@
 				_objects = objects;
 				_attributes = attributes;
 				_g = graph;
-				if (s != null) {
-					s.empty(); 
-					s.dataProvider = _g;
-				}
 			}
 			
 			public function setConcepts(concepts:Array): void
 			{
 				_concepts = concepts;
+				resetGraph();
 			}
 			
 			public function getConcepts(): Array
@@ -62,10 +75,7 @@
 				_conceptProcessor = new NaiveConceptProcessor(objects, attributes);
 				_g = _conceptProcessor.computeConcept(data);
 				_concepts = _conceptProcessor.getConceptList();
-				if (s != null) {
-					s.empty(); 
-					s.dataProvider = _g;
-				}
+				resetGraph();
 			}
 			
 			public function getGraph(): Graph
@@ -100,14 +110,7 @@
 				var concept:Concept = _concepts[id];
 				if (concept != null)
 				{
-					objectsList.dataProvider = concept.objects.map(
-						function (item:*, index:int, arr:Array):Object {
-							return _objects[item];						
-						});
-					attributesList.dataProvider = concept.attributes.map(
-						function (item:*, index:int, arr:Array):Object {
-							return _attributes[item];						
-						});
+					setLists(concept);
 				}
 			}
 		]]>
