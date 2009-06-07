@@ -134,6 +134,19 @@ package logic
 			return false;
 		}
 		
+		private function findArray(sets: ArrayCollection, containedSet:Array):int
+		{
+			var i:int = 0;
+			for (i = 0; i < sets.length; ++i)
+			{
+				if (equalArray(sets[i], containedSet))
+				{
+					return i;
+				}		
+			}
+			return -1;
+		}
+		
 		public function computeConcept(data:ArrayCollection):Graph
 		{
 			var g:Graph = new Graph();
@@ -184,50 +197,15 @@ package logic
 				extents.addItem(allObjects);
 			}
 			
-			
-			// initialize levels for each concept
-			var level: Array = new Array();
-			for (i = 0; i < extents.length; ++i)
+			// find supremum and put it on the first position
+			var iFind: int = findArray(extents, allObjects);
+			if (iFind > -1)
 			{
-				level.push(0); // initialize all to level 0
+				var aux: Array = extents[0];
+				extents[0] = extents[iFind];
+				extents[iFind] = aux;
 			}
-			
-			// sort extents by their leghth, number of objects
-			var set1:Array;
-			var set2:Array;
-			for (i = 0; i < extents.length - 1; ++i)
-			{
-				for (j = i + 1; j < extents.length; ++j)
-				{
-					set1 = extents[i];
-					set2 = extents[j];
-					if (set1.length < set2.length)
-					{
-						extents[i] = set2;
-						extents[j] = set1;
-					}
-				}
-			}
-			
-			// compute the levels for each concept
-			for (i = 0; i < extents.length; ++i)
-			{
-				var max:int = 0;
-				for (j = i - 1; j >= 0; --j)
-				{
-					set1 = extents[i];
-					set2 = extents[j];
-					if (getIntersection(set1, set2).length == set1.length) // set1 is all included in set2
-					{
-						if (max < level[j])
-						{
-							max = level[j]; 
-						}
-					}	
-				}
-				level[i] = max + 1;
-			}
-			
+									
 			// compute intents for all extents
 			for (i = 0; i < extents.length; ++i)
 			{
@@ -243,42 +221,53 @@ package logic
 				g.add(concept);
 			}
 
-			var links:int = 0;
-			// connect concepts
-			var linked: Array = new Array();
+			// Init for Floyd-Warshall
+			var bIncluded:ArrayCollection = new ArrayCollection();
 			for (i = 0; i < extents.length; ++i)
 			{
-				for (j = i - 1; j >= 0; --j)
+				bIncluded.addItem(new Array());
+				for (j = 0; j < extents.length; ++j)
+                {
+                	var ein: Array = getIntersection(extents[i], extents[j]);
+                	
+                	// i is included in j
+                	bIncluded[i].push(((ein.length == extents[i].length) && (ein.length != extents[j].length)) ? true : false);
+                }	
+			}
+
+			// Floyd-Warshall
+			for (k = 0; k < bIncluded.length; ++k)
+            {
+                for (i = 0; i < bIncluded.length; ++i)
+                {
+                    for (j = 0; j < bIncluded.length; ++j)
+                    {
+                        if (bIncluded[i][j] == true)
+                        {
+                            if ((bIncluded[i][k] == true) && (bIncluded[k][j] == true))
+                            {
+                                bIncluded[i][j] = false;
+                            }
+                        }
+                    }
+                }
+            }        
+                
+			// connect concepts
+			var iLinks: int = 0;
+			for (i = 0; i < bIncluded.length; ++i)
+			{
+				for (j = 0; j < bIncluded.length; ++j)
 				{
-					set1 = extents[i];
-					set2 = extents[j];
-					if (getIntersection(set1, set2).length == set1.length) // set1 is all included in set2
+					if (bIncluded[i][j] == true)
 					{
-						if (level[i] - level[j] == 1) // has to be on the next level
-						{
-							g.link(g.find(j.toString()), g.find(i.toString()));
-							++links;
-							// keep track of nodes that act as targets
-							if (linked.indexOf(j, 0) == -1)
-							{ 
-								linked.push(j);
-							}
-						}
+						g.link(g.find(i.toString()), g.find(j.toString()));
+						++iLinks;
 					}	
 				}
 			}
-			
-			// connect remaining concepts to the bottom one (a.k.a. covaseala)
-			for (i = 0; i < extents.length - 1; ++i)
-			{
-				if (linked.indexOf(i,0) == -1)
-				{
-					// connect a node that has never been used as a source to the concept with empty objects and all attributes
-					g.link(g.find(i.toString()), g.find((extents.length - 1).toString()));
-					++links;
-				}
-			}
-						
+								
+			trace("Done with " + concepts.length + " and with " + iLinks + " edges.");	
 			return g;
 		}
 		
