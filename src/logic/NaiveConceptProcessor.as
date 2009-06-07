@@ -238,27 +238,7 @@ package logic
 			// create graph nodes
 			for (i = 0; i < extents.length; ++i)
 			{
-				// convert extent index to name
-				/*
-				var conceptObjects:Array = new Array();
-				var conceptExtents:Array = extents[i];
-				for (j = 0; j < conceptExtents.length; ++j)
-				{
-					conceptObjects.push(sObjects[conceptExtents[j]]);
-				}
-				*/
-				
-				// convert intent index to name
-				/*
-				var conceptAttributes:Array = new Array();
-				var conceptIntents:Array = intents[i];
-				for (j = 0; j < conceptIntents.length; ++j)
-				{
-					conceptAttributes.push(sAttributes[conceptIntents[j]]);
-				}
-				*/
-				
-				var concept:Item = new ConceptItem(i.toString(), "A: " + intents[i].length, "O: " + extents[i].length.toString());
+				var concept:Item = new ConceptItem(i.toString(), intents[i].length, extents[i].length);
 				concepts.push(concept);
 				g.add(concept);
 			}

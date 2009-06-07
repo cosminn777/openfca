@@ -257,6 +257,7 @@
 				var attributeCount:int = parseInt(header[1]);
 				var conceptCount:int = parseInt(header[2]);
 				var edgeCount:int = parseInt(header[3]);
+				
 				attributes = new Array();
 				objects = new Array();
 				var lineIndex:int = 1;
@@ -282,39 +283,22 @@
 					}
 					lineIndex++;
 				}
-				if (conceptCount > 0) {
-					setLatticeVisibility();
-				} else {
-					setGrid(objects, attributes, rows);
-					setContextGridVisibility();
-				}
+
 				var iMem: int = System.totalMemory / (1024 * 1024); // in MB
 				var g:Graph = new Graph();
 				var concepts:Array = new Array();
 				for (var nIndex:int = 0; nIndex < conceptCount; ++nIndex)
 				{
-					//trace("We're at concept " + nIndex + " and we're eating up " + (System.totalMemory / (1024 * 1024)).toString() + " MB."); // in MB
 					var conceptId:String = StringUtil.trim(lines[lineIndex++]);
-					//lineIndex++; // Delete this when uncommenting
-					//var conceptObjects:Array = new Array(); //StringUtil.trim(lines[lineIndex++]).split(",");
-					//if (conceptObjects[0] == "")
-					//{
-					//	conceptObjects = new Array();
-					//}
-					//lineIndex++; // Delete this when uncommenting
-					//var conceptAttributes:Array = new Array(); //StringUtil.trim(lines[lineIndex++]).split(",");
-					//if (conceptAttributes[0] == "")
-					//{
-					//	conceptAttributes = new Array();
-					//}
-					var newConcept:Concept = new Concept(null, null, lines[lineIndex++], lines[lineIndex++]);
+					var newConcept:Concept = new Concept(null, null, lines[lineIndex], lines[lineIndex+1]);
 					concepts[conceptId] = newConcept;
-					g.add(new ConceptItem(conceptId, "A: " + 0, "O: " + 0));
+					g.add(new ConceptItem(conceptId, -1, -1, lines[lineIndex+1],
+													 lines[lineIndex]));
+					lineIndex += 2;
 				}
 				iMem = System.totalMemory / (1024 * 1024); // in MB
 				for (var eIndex:int = 0; eIndex < edgeCount; ++eIndex)
 				{
-					//trace("We're at edge " + eIndex + " and we're eating up " + (System.totalMemory / (1024 * 1024)).toString() + " MB."); // in MB
 					var edge:Array = StringUtil.trim(lines[lineIndex++]).split(" ");
 					g.link(g.nodes[edge[0]], g.nodes[edge[1]]);
 				}

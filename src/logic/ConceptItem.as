@@ -4,17 +4,46 @@ package logic
 
 	public class ConceptItem extends Item
 	{
-		[Bindable]
-		public var attributes:String;
+		private var _attributeCount:int;
+		private var _objectCount:int;
+		private var _attributes:String;
+		private var _objects:String;
 
-		[Bindable]
-		public var objects:String;
+		private function checkEmpty(a:Array): Array
+		{
+			if (a[0] == "\r" || a[0] == "") return [];
+			else return a;
+		}
+		
+		private function getCount(items:String, itemCount:int): int
+		{
+			if (items == null)
+			{
+				return itemCount;
+			}
+			else
+			{
+				return checkEmpty(items.split(",")).length;
+			}
+		}
+		
+		public function get objectCount(): String
+		{
+			return "O: " + getCount(_objects, _objectCount);
+		}
 
-		public function ConceptItem(id:String, attributes:String, objects:String)
+		public function get attributeCount(): String
+		{
+			return "A: " + getCount(_attributes, _attributeCount);
+		}
+
+		public function ConceptItem(id:String, attributeCount:int, objectCount:int, attributes:String = null, objects:String = null)
 		{
 			super(id);
-			this.attributes = attributes;
-			this.objects = objects;
+			_attributeCount = attributeCount;
+			_objectCount = objectCount;
+			_objects = objects;
+			_attributes = attributes;
 		}
 		
 	}
