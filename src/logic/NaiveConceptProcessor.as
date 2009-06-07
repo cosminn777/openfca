@@ -32,7 +32,7 @@ package logic
 				var conceptExtents:Array = extents[i];
 				for (j = 0; j < conceptExtents.length; ++j)
 				{
-					conceptObjects.push(sObjects[conceptExtents[j]]);
+					conceptObjects.push(conceptExtents[j]);
 				}
 				
 				// convert intent index to name
@@ -40,7 +40,7 @@ package logic
 				var conceptIntents:Array = intents[i];
 				for (j = 0; j < conceptIntents.length; ++j)
 				{
-					conceptAttributes.push(sAttributes[conceptIntents[j]]);
+					conceptAttributes.push(conceptIntents[j]);
 				}
 				
 				conceptList[i.toString()] = new Concept(conceptObjects, conceptAttributes); // use the same id's that are in Graph nodes	
