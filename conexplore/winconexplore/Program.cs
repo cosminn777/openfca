@@ -13,8 +13,8 @@ namespace winconexplore
             Loader cLoader = new Loader();
             //cLoader.Load("triangles.con");
             //cLoader.Load("numbers.con");
-            cLoader.Load("mushrooms.con");
-            //cLoader.Load("ads.con");
+            //cLoader.Load("mushrooms.con");
+            cLoader.Load("ads.con");
 
             //NaiveConceptProcessor cNaive = new NaiveConceptProcessor();
             //cNaive.Process(cLoader.Objects, cLoader.Attributes, cLoader.Values);
@@ -26,8 +26,8 @@ namespace winconexplore
 
             //new Saver().Save("triangles-graph.con", cGraph, cLoader.Objects, cLoader.Attributes, cLoader.Values);
             //new Saver().Save("numbers-graph.con", cGraph, cLoader.Objects, cLoader.Attributes, cLoader.Values);
-            new Saver().Save("mushrooms-graph.con", cGraph, cLoader.Objects, cLoader.Attributes, cLoader.Values);
-            //new Saver().Save("ads-graph.con", cGraph, cLoader.Objects, cLoader.Attributes, cLoader.Values);
+            //new Saver().Save("mushrooms-graph.con", cGraph, cLoader.Objects, cLoader.Attributes, cLoader.Values);
+            new Saver().Save("ads-graph.con", cGraph, cLoader.Objects, cLoader.Attributes, cLoader.Values);
 
             Console.WriteLine("Done.");
             Console.ReadLine();
