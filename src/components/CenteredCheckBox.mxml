@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
+	horizontalAlign="center"
+	implements="mx.controls.listClasses.IDropInListItemRenderer">
+	<mx:Script>
+		<![CDATA[
+			import mx.controls.dataGridClasses.DataGridColumn;
+			import mx.controls.DataGrid;
+			import mx.events.FlexEvent;
+			
+			private var _listData:BaseListData;
+		
+			import mx.controls.listClasses.BaseListData;
+
+			public function get listData(): BaseListData
+			{
+				return _listData;
+			}
+			
+			public function set listData(value:BaseListData): void
+			{
+				_listData = value;
+			}
+			
+			override public function set data(value:Object):void
+			{
+				super.data = value;
+				checkBox.selected = (_listData.label == "true");
+			}
+			
+			private function changed(): void
+			{
+				super.data[_listData.columnIndex-1] = checkBox.selected;
+			}
+		]]>
+	</mx:Script>
+	<mx:CheckBox id="checkBox" change="changed()"/>
+</mx:VBox>
