@@ -1,7 +1,6 @@
 package logic
 {
 	import com.adobe.flex.extras.controls.springgraph.Graph;
-	import com.adobe.flex.extras.controls.springgraph.Item;
 	
 	import mx.collections.ArrayCollection;
 
@@ -14,6 +13,10 @@ package logic
 		private	var extents: ArrayCollection = new ArrayCollection(); // will contain all extents
 		private	var intents:ArrayCollection = new ArrayCollection();
 
+		private var concepts:Array = new Array();
+		private var labelsAttribute:Array = new Array();
+		private var labelsObject:Array = new Array();
+		
 		public function NaiveConceptProcessor(objects:Array, attributes:Array)
 		{
 			sObjects = objects;
@@ -43,7 +46,12 @@ package logic
 					conceptAttributes.push(conceptIntents[j]);
 				}
 				
-				conceptList[i.toString()] = new Concept(conceptObjects, conceptAttributes); // use the same id's that are in Graph nodes	
+				var c:Concept = new Concept(conceptObjects, conceptAttributes); // use the same id's that are in Graph nodes
+				
+				c.attachedObject = (labelsObject[i] != -1) ? labelsObject[i].toString() : null;
+				c.attachedAttribute = (labelsAttribute[i] != -1) ? labelsAttribute[i].toString() : null;
+				
+				conceptList[i.toString()] = c;
 			}
 			 
 			return conceptList;
@@ -237,7 +245,10 @@ package logic
 				labelObjectIntent.push(getObjectIntent(data, i));
 			}
 			
-			var concepts: Array = new Array();
+			concepts = new Array();
+			labelsAttribute = new Array();
+			labelsObject = new Array();
+			
 			// create graph nodes
 			for (i = 0; i < extents.length; ++i)
 			{
@@ -257,6 +268,9 @@ package logic
 						iObject = j;
 					}
 				}
+				
+				labelsAttribute.push(iAttribute);
+				labelsObject.push(iObject);
 				
 				var sLabelAttribute:String = ((iAttribute != -1) ? sAttributes[iAttribute] : null); 
 				var sLabelObject:String = ((iObject != -1) ? sObjects[iObject] : null);
@@ -279,7 +293,7 @@ package logic
                 {
                 	var ein: Array = getIntersection(extents[i], extents[j]);
                 	
-                	// i is included in j
+                	// i is included in j, strict/proper inclusion
                 	bIncluded[i].push(((ein.length == extents[i].length) && (ein.length != extents[j].length)) ? true : false);
                 }	
 			}
@@ -310,7 +324,9 @@ package logic
 				{
 					if (bIncluded[i][j] == true)
 					{
-						g.link(g.find(i.toString()), g.find(j.toString()));
+						//trace(i + " included in " + j);
+						trace(j + " " + i);
+						g.link(g.find(j.toString()), g.find(i.toString()));
 						++iLinks;
 					}	
 				}
