@@ -91,7 +91,6 @@ namespace libconexplore
 
             // Connect concepts
             List<Link> lLinks = new List<Link>();
-            HashSet<int> hsLinked = new HashSet<int>();
             for (i = 0; i < bIncluded.Length; ++i)
             {
                 for (j = 0; j < bIncluded.Length; ++j)
@@ -100,9 +99,6 @@ namespace libconexplore
                     {
                         lLinks.Add(new Link(lConcepts[i], lConcepts[j], i, j));
                         Debug.WriteLine(string.Format("[F:{0} T:{1}]", lLinks[lLinks.Count - 1].From + 1, lLinks[lLinks.Count - 1].To + 1));
-
-                        // Keep track of nodes that act as targets
-                        hsLinked.Add(j);
                     }
                 }
             }
