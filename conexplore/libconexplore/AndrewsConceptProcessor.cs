@@ -121,47 +121,33 @@ namespace libconexplore
             iNewR = 0;
             InClose(0, 0, bValues);
 
-            int iInfimum = -1;
-            for (i = 0; i < lhsA.Count; ++i)
+            Debug.Assert(lhsB[lhsB.Count - 1].Count == 0);
+            lhsA[lhsA.Count - 1].Clear();
+
+            // The infimum does not contain attributes, so correct that
+            for (i = 0; i < sAttributes.Length; ++i)
             {
-                if ((lhsA[i].Count == 0)/* && (lhsB[i].Count == 0)*/)
-                {
-                    iInfimum = i;
-                }
+                lhsB[lhsB.Count - 1].Add(i);
             }
 
-            //if (iInfimum == -1)
-            //{
-            //    lhsA.Add(new HashSet<int>());
-            //    lhsB.Add(new HashSet<int>());
-            //}
-
-            if (iInfimum > -1)
-            {
-                // The infimum does not contain attributes, so correct that
-                for (i = 0; i < sAttributes.Length; ++i)
-                {
-                    lhsB[iInfimum].Add(i);
-                }
-            }
 
             Debug.Assert(lhsA.Count == lhsB.Count);
             Debug.WriteLine(string.Format("Total formal concepts: {0}", lhsA.Count));
 
-            for (i = 0; i < lhsA.Count; ++i)
-            {
-                Debug.Write(string.Format("{0:00}: [", i + 1));
-                foreach (int j in lhsA[i])
-                {
-                    Debug.Write(string.Format("{0} ", j + 1));
-                }
-                Debug.Write("] {");
-                foreach (int j in lhsB[i])
-                {
-                    Debug.Write(string.Format("{0} ", j + 1));
-                }
-                Debug.WriteLine("}");
-            }
+            //for (i = 0; i < lhsA.Count; ++i)
+            //{
+            //    Debug.Write(string.Format("{0:00}: [", i + 1));
+            //    foreach (int j in lhsA[i])
+            //    {
+            //        Debug.Write(string.Format("{0} ", j + 1));
+            //    }
+            //    Debug.Write("] [");
+            //    foreach (int j in lhsB[i])
+            //    {
+            //        Debug.Write(string.Format("{0} ", j + 1));
+            //    }
+            //    Debug.WriteLine("]");
+            //}
 
             // Create concepts
             List<Concept> lConcepts = new List<Concept>();
@@ -170,7 +156,8 @@ namespace libconexplore
                 lConcepts.Add(new Concept(lhsA[i], lhsB[i], sObjects, sAttributes));
             }
 
-            return new Graph() { Concepts = lConcepts, Links = new FloydWarshallLinker().Link(lConcepts) };
+            //return new Graph() { Concepts = lConcepts, Links = new FloydWarshallLinker().Link(lConcepts) };
+            return new Graph() { Concepts = lConcepts, Links = new AlaouiLinker().Link(lConcepts, sAttributes) };
         }
     }
 }

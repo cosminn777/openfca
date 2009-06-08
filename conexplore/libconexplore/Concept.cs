@@ -47,22 +47,12 @@ namespace libconexplore
 
         public string ObjectsToString()
         {
-            StringBuilder sb = new StringBuilder();
-            foreach (string sObject in Objects)
-            {
-                sb.Append(string.Format("{0}; ", sObject));
-            }
-            return sb.ToString();
+            return string.Join(",", Objects.ToArray());
         }
 
         public string AttributesToString()
         {
-            StringBuilder sb = new StringBuilder();
-            foreach (string sAttibute in Attributes)
-            {
-                sb.Append(string.Format("{0}; ", sAttibute));
-            }
-            return sb.ToString();
+            return string.Join(",", Attributes.ToArray());
         }
 
         public string AttributesToId()

@@ -64,6 +64,9 @@
     <None Include="numbers.con">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="random.con">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="triangles.con">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
