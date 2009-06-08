@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flexLibProperties version="1">
+<includeClasses>
+<classEntry path="com.adobe.flex.extras.controls.springgraph.HistorySeedView"/>
+<classEntry path="com.adobe.flex.extras.controls.springgraph.IEdgeRenderer"/>
+<classEntry path="com.adobe.flex.extras.controls.springgraph.IViewFactory"/>
+<classEntry path="com.adobe.flex.extras.controls.springgraph.DefaultItemView"/>
+<classEntry path="com.adobe.flex.extras.controls.springgraph.Item"/>
+<classEntry path="com.adobe.flex.extras.controls.springgraph.GraphEdge"/>
+<classEntry path="com.adobe.flex.extras.controls.springgraph.GraphDataProvider"/>
+<classEntry path="com.adobe.flex.extras.controls.forcelayout.IForEachNodePair"/>
+<classEntry path="com.adobe.flex.extras.controls.springgraph.SpringGraph"/>
+<classEntry path="com.adobe.flex.extras.controls.springgraph.GraphNode"/>
+<classEntry path="com.adobe.flex.extras.controls.springgraph.Graph"/>
+<classEntry path="com.adobe.flex.extras.controls.springgraph.Roamer"/>
+<classEntry path="com.adobe.flex.extras.controls.forcelayout.Node"/>
+<classEntry path="com.adobe.flex.extras.controls.springgraph.HistorySeed"/>
+</includeClasses>
+<includeResources>
+<resourceEntry destPath="D:/programs/SpringGraph_20061210/SpringGraph/manifest.xml" sourcePath="D:/programs/SpringGraph_20061210/SpringGraph/manifest.xml"/>
+</includeResources>
+<namespaceManifests>
+<namespaceManifestEntry manifest="manifest.xml" namespace="http://www.adobe.com/2006/fc"/>
+</namespaceManifests>
+</flexLibProperties>

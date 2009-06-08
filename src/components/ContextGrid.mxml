@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" xmlns:components="components.*"
+	initialize="init()" horizontalAlign="center">
+	<mx:Script>
+		<![CDATA[
+			import logic.ConceptItem;
+			import logic.Concept;
+			import com.adobe.flex.extras.controls.springgraph.Item;
+			import com.adobe.flex.extras.controls.springgraph.Graph;
+			import com.adobe.flex.extras.controls.forcelayout.Node;
+			import mx.controls.Alert;
+			import mx.core.UIComponent;
+			import mx.core.ComponentDescriptor;
+			import mx.containers.ControlBar;
+			import events.NewContextEvent;
+			import mx.utils.StringUtil;
+			import mx.events.FlexEvent;
+			import mx.containers.Panel;
+			import mx.managers.PopUpManager;
+			import mx.controls.TextInput;
+			import mx.controls.CheckBox;
+			import mx.controls.dataGridClasses.DataGridColumn;
+			import mx.collections.ArrayCollection;
+			
+			private var objects:Array;
+			private var attributes:Array;
+			
+			[Bindable]
+			private var rows:ArrayCollection;
+			
+			private var cols:Array;
+			
+			private var fileReference:FileReference = new FileReference();
+
+			private function init(): void
+			{
+				rows = new ArrayCollection();
+				cols = new Array();
+				objects = new Array();
+				attributes = new Array();
+			}
+			
+			private function initGrid(): void
+			{
+				if (contable != null)
+				{
+					contable.columns = cols;
+				}
+			}
+			
+			private function createAttributeColumn(attrIndex:String, attr:String): void
+			{
+				var newColumn:DataGridColumn = new DataGridColumn();
+				newColumn.dataField = attrIndex;
+				newColumn.headerText = attr;
+				newColumn.sortable = false;
+				newColumn.editable = false;
+				newColumn.draggable = false;
+				newColumn.itemRenderer = new ClassFactory(components.CenteredCheckBox);
+				cols.push(newColumn);
+			}
+			
+			private function createObject(name:String): Array
+			{
+				var newObject:Array = new Array();
+				newObject["objectName"] = name;
+				objects.push(name);
+				for (var attrIndex:String in attributes)
+					newObject[attrIndex] = false;
+				return newObject;
+			}
+			
+			private function setGrid(objects:Array, attributes:Array, rows:ArrayCollection = null): void
+			{
+				this.attributes = attributes;
+				if (rows == null)
+				{
+					this.rows = rows = new ArrayCollection()
+					for each (var object:String in objects) {
+						rows.addItem(createObject(object));			
+					}
+				}
+				else
+				{
+					this.rows = rows;
+					this.objects = objects;
+					for (var row:String in rows) {
+						rows[row]["objectName"] = objects[row];			
+					}
+				}
+				var objectColumn:DataGridColumn = new DataGridColumn();
+				objectColumn.headerText = "";
+				objectColumn.dataField = "objectName";
+				objectColumn.sortable = false;
+				objectColumn.draggable = false;
+				objectColumn.rendererIsEditor = true;
+				
+				cols = new Array();
+				cols.push(objectColumn);	
+				
+				for (var attrIndex:String in attributes) {
+					createAttributeColumn(attrIndex, attributes[attrIndex]);
+				}
+				var emptyCol:DataGridColumn = new DataGridColumn("");
+				emptyCol.editable = false;
+				emptyCol.draggable = false;
+				emptyCol.sortable = false;
+				emptyCol.width = 0;
+				cols.push(emptyCol);
+				if (contable != null)
+				{
+					contable.columns = cols;
+				}
+			}
+			
+			private function setGridBySize(objectCount: int, attributeCount: int): void
+			{	
+				var objects:Array = new Array();
+				for (var i:int = 0; i < objectCount; ++i) {
+					objects.push("obj"+i.toString());
+				}
+				var attributes:Array = new Array();
+				for (i = 0; i < attributeCount; ++i) {
+					attributes.push("attr"+i.toString());
+				}
+				setGrid(objects, attributes);
+			}
+			
+			private function createContext(event:NewContextEvent): void
+			{
+				if (event.data == null) {
+					setGrid(event.objects, event.attributes);
+					setContextGridVisibility();					
+				} else {
+					loadData(event.data);
+				}
+			}
+			
+			private function showCreateContext(): void
+			{
+				unsetVisibility();
+				viewStack.selectedChild = newContextPanel;
+			}
+			
+			private function unsetVisibility(): void
+			{
+				for each (var child:UIComponent in appControlBar.getChildren())
+				{
+					child.visible = false;
+					child.includeInLayout = false;
+				}
+				openButton.visible = true;
+				openButton.includeInLayout = true;
+				saveButton.visible = true;
+				saveButton.includeInLayout = true;
+			}
+			
+			private function setContextGridVisibility(): void
+			{
+				unsetVisibility();
+				viewLatticeButton.visible = true;
+				viewLatticeButton.includeInLayout = true;
+				resetButton.visible = true;
+				resetButton.includeInLayout = true;
+				gridControlBar.visible = true;
+				gridControlBar.includeInLayout = true;
+				viewStack.selectedChild = contextCanvas;
+			}
+			
+			private function cancelCreateContext(): void
+			{
+				setContextGridVisibility();
+			}
+			
+			private function showLattice(): void
+			{
+				if (rows.length > 0)
+				{
+					lattice.setContext(objects, attributes, rows);
+				}
+				setLatticeVisibility();
+			}
+			
+			private function setLatticeVisibility(): void
+			{
+				unsetVisibility();
+				backToGridButton.visible = true;
+				backToGridButton.includeInLayout = true;
+				viewStack.selectedChild = lattice;
+			}
+			
+			
+			private function showAddObject(): void
+			{
+				var panel:AddObjectPanel = new AddObjectPanel();
+				PopUpManager.addPopUp(panel, this, true);
+				PopUpManager.centerPopUp(panel);
+				panel.textInput.setFocus();
+				var addObject:Function = function (event:Event): void {
+						rows.addItem(createObject(panel.textInput.text));
+						PopUpManager.removePopUp(panel);
+					};
+				panel.okButton.addEventListener(MouseEvent.CLICK, addObject);
+				panel.textInput.addEventListener(FlexEvent.ENTER, addObject);
+				panel.cancelButton.addEventListener(MouseEvent.CLICK,
+					function (event:Event): void {
+						PopUpManager.removePopUp(panel);
+					});
+			}
+			
+			private function popObject(): void
+			{
+				rows.removeItemAt(rows.length-1);
+			}
+			
+			private function popAttribute(): void
+			{
+				var emptyColumn:Object = cols.pop();
+				cols.pop();
+				cols.push(emptyColumn);
+				contable.columns = cols;
+			}
+			
+			private function showAddAttribute(): void
+			{
+				var panel:AddAttributePanel = new AddAttributePanel();
+				PopUpManager.addPopUp(panel, this, true);
+				PopUpManager.centerPopUp(panel);
+				panel.textInput.setFocus();
+				var addAttribute:Function = function (event:Event): void {
+						for each (var row:Array in rows)
+						{
+							row[panel.textInput.text] = false;
+						}
+						var emptyColumn:Object = cols.pop();
+						var newId:String = (cols.length-1).toString();
+						createAttributeColumn(newId, panel.textInput.text);
+						cols.push(emptyColumn);
+						contable.columns = cols;
+						PopUpManager.removePopUp(panel);
+					};
+				panel.okButton.addEventListener(MouseEvent.CLICK, addAttribute);
+				panel.textInput.addEventListener(FlexEvent.ENTER, addAttribute);
+				panel.cancelButton.addEventListener(MouseEvent.CLICK,
+					function (event:Event): void {
+						PopUpManager.removePopUp(panel);
+					});
+			}
+			
+			private function onFileSelect(event:Event): void
+			{
+				fileReference.addEventListener(Event.COMPLETE, onFileComplete);
+				fileReference.load();
+			}
+			
+			private function loadData(data:String): void
+			{
+				var lines:Array = data.split("\n");
+				var header:Array = (lines[0] as String).split(" ");
+				var objectCount:int = parseInt(header[0]);
+				var attributeCount:int = parseInt(header[1]);
+				var conceptCount:int = parseInt(header[2]);
+				var edgeCount:int = parseInt(header[3]);
+				
+				attributes = new Array();
+				objects = new Array();
+				var lineIndex:int = 1;
+				for (var oIndex:int = 0; oIndex < objectCount; ++oIndex) 
+				{
+					objects.push(StringUtil.trim(lines[lineIndex++]));
+				}
+				for (var aIndex:int = 0; aIndex < attributeCount; ++aIndex) 
+				{
+					attributes.push(StringUtil.trim(lines[lineIndex++]));
+				}
+				rows = new ArrayCollection();
+				for (var rIndex:int = 0; rIndex < objectCount; ++rIndex)
+				{
+					var newRow:Array = new Array();
+					for each (var c:String in StringUtil.trim(lines[lineIndex]).split(""))
+					{
+						newRow.push(new Boolean(c == "1"));
+					}
+					if (objects.length < 100)
+					{
+						rows.addItem(newRow);
+					}
+					lineIndex++;
+				}
+
+				var iMem: int = System.totalMemory / (1024 * 1024); // in MB
+				var g:Graph = new Graph();
+				var concepts:Array = new Array();
+				for (var nIndex:int = 0; nIndex < conceptCount; ++nIndex)
+				{
+					var conceptId:String = StringUtil.trim(lines[lineIndex++]);
+					var newConcept:Concept = new Concept(null, null, lines[lineIndex], lines[lineIndex + 1]);
+					concepts[conceptId] = newConcept;
+					var cItem:ConceptItem = new ConceptItem(conceptId, -1, -1, lines[lineIndex + 1], lines[lineIndex]);
+					lineIndex += 2;
+					var attachedIdObject: String = StringUtil.trim(lines[lineIndex++]);
+					var attachedIdAttribute: String = StringUtil.trim(lines[lineIndex++]);
+					if (attachedIdObject != "")
+					{
+						cItem.attachedObject = objects[attachedIdObject];
+					}
+					if (attachedIdAttribute != "")
+					{
+						cItem.attachedAttribute = attributes[attachedIdAttribute];
+					}
+					g.add(cItem);
+					
+				}
+				iMem = System.totalMemory / (1024 * 1024); // in MB
+				for (var eIndex:int = 0; eIndex < edgeCount; ++eIndex)
+				{
+					var edge:Array = StringUtil.trim(lines[lineIndex++]).split(" ");
+					g.link(g.nodes[edge[0]], g.nodes[edge[1]]);
+				}
+				iMem = System.totalMemory / (1024 * 1024); // in MB
+				trace("Total used memory for " + conceptCount + " concepts and " + edgeCount + " edges: " + (System.totalMemory / (1024 * 1024)).toString() + " MB."); // in MB
+				if (concepts.length > 0) {
+					lattice.setGraph(objects, attributes, g);
+					lattice.setConcepts(concepts);
+					if (objects.length < 100)
+					{
+						setGrid(objects, attributes, rows);
+					} 
+					setLatticeVisibility(); 
+				} else {
+					setGrid(objects, attributes, rows);
+					setContextGridVisibility(); 
+				}
+			}
+			
+			private function onFileComplete(event:Event): void
+			{
+				loadData(fileReference.data.toString());
+			}
+			
+			private function openClickHandler():void
+			{
+				fileReference.browse([new FileFilter("Conflexplore files", "*.con")]);
+				fileReference.addEventListener(Event.SELECT, onFileSelect);
+			}
+			
+			private function saveClickHandler():void
+			{
+				var fileReference:FileReference = new FileReference();
+				var out:ByteArray = new ByteArray();
+				out.writeUTFBytes(objects.length + " " + attributes.length + " " + 
+							 lattice.getConcepts().length + " " + lattice.getGraph().edges.length + "\n");
+				out.writeUTFBytes(objects.join("\n")+"\n");
+				out.writeUTFBytes(attributes.join("\n")+"\n");
+				for each (var row:Array in rows)
+				{
+					for (var attributeIndex:String in attributes)
+					{
+						if (row[attributeIndex])
+						{
+							out.writeUTFBytes("1");
+						}
+						else
+						{
+							out.writeUTFBytes("0");
+						}
+					}
+					out.writeUTFBytes("\n"); 
+				}
+				out.writeUTFBytes(lattice.getConceptRepresentation());
+				out.writeUTFBytes(lattice.getGraphRepresentation());
+				fileReference.save(out, "data.con");
+			}
+		]]>
+	</mx:Script>
+	<mx:ApplicationControlBar id="appControlBar" width="100%">
+			<mx:Button id="openButton" visible="true" includeInLayout="true" click="openClickHandler()" label="Open" />
+			<mx:Button id="saveButton" visible="true" includeInLayout="true" click="saveClickHandler()" label="Save" />
+			<mx:Button label="New Context" includeInLayout="false" visible="false" id="resetButton"  click="showCreateContext()"/>
+			<mx:HBox id="gridControlBar" includeInLayout="false" visible="false">
+				<mx:Button label="Add Object" click="showAddObject()"/>
+				<mx:Button label="Pop Object" click="popObject()"/>
+				<mx:Button label="Add Attribute" click="showAddAttribute()"/>
+				<mx:Button label="Pop Attribute" click="popAttribute()"/>
+			</mx:HBox>
+			<mx:Button id="viewLatticeButton" visible="false" includeInLayout="false" label="View Lattice" click="showLattice()"/>
+			<mx:Button id="backToGridButton" visible="false" includeInLayout="false" label="Back" click="setContextGridVisibility()"/>
+	</mx:ApplicationControlBar>
+
+	<mx:Fade id="fadeIn" alphaFrom="0.0" alphaTo="1.0"/>
+	<mx:Fade id="fadeOut" alphaFrom="1.0" alphaTo="0.0"/>
+	
+	<mx:ViewStack id="viewStack" width="100%" height="100%">
+		<components:NewContextPanel
+			id="newContextPanel"
+			showEffect="{fadeIn}"
+			hideEffect="{fadeOut}" 
+			createContextClick="createContext(event)"
+			cancelCreateContextClick="cancelCreateContext()" />
+									
+
+		<mx:VBox id="contextCanvas" width="100%"  height="100%"
+			horizontalScrollPolicy="off"
+			showEffect="{fadeIn}"
+			hideEffect="{fadeOut}">
+			<mx:DataGrid lockedColumnCount="1" creationComplete="initGrid()" id="contable"
+					     horizontalScrollPolicy="on"
+					     verticalScrollPolicy="on"
+					     variableRowHeight="true"
+					     width="100%" height="100%"
+						 dataProvider="{rows}" editable="true">
+			</mx:DataGrid>
+		</mx:VBox>
+		
+		<components:LatticeView id="lattice" width="100%" height="100%"
+						showEffect="{fadeIn}"
+						hideEffect="{fadeOut}" />
+	</mx:ViewStack>
+</mx:VBox>
