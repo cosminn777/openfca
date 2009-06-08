@@ -7,14 +7,17 @@ namespace libconexplore
 {
     public class Concept
     {
+        /* public int Id { get; private set; } */
+
         public List<string> Objects { get; private set; }
         public List<string> Attributes { get; private set; }
 
         public HashSet<int> Extent { get; private set; }
         public HashSet<int> Intent { get; private set; }
 
-        public Concept(HashSet<int> hsExtent, HashSet<int> hsIntent, string[] sObjects, string[] sAttributes)
+        public Concept(/*int iId, */HashSet<int> hsExtent, HashSet<int> hsIntent, string[] sObjects, string[] sAttributes)
         {
+            /*Id = iId;*/
             Extent = hsExtent;
             Intent = hsIntent;
 
