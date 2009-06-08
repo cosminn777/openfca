@@ -2,6 +2,7 @@ package renderers
 {
 	import com.adobe.flex.extras.controls.springgraph.Graph;
 	import com.adobe.flex.extras.controls.springgraph.IEdgeRenderer;
+	import com.adobe.flex.extras.controls.springgraph.Item;
 	
 	import flash.display.Graphics;
 	import flash.geom.Matrix;
@@ -19,6 +20,17 @@ package renderers
 			var m:Matrix = new Matrix;
 			var center:Point = new Point((fromX + toX)/2, (fromY + toY)/2);
 			var pivot:Point = new Point(toX, toY);
+			var item1:Item = (fromView as Object).data;
+			var item2:Item = (toView as Object).data;
+			var fromId:String = graph.getLinkData(item1, item2).toString();
+			if (item1.id != fromId) {
+				var aux:int = fromX;
+				fromX = toX;
+				toX = aux;
+				aux = fromY;
+				fromY = toY;
+				toY = aux;
+			}
 			pivot = pivot.subtract(center);
 			pivot.normalize(10.0);
 			m.rotate(Math.PI*0.85);
