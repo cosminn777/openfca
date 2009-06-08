@@ -53,7 +53,7 @@ namespace libconexplore
             Debug.WriteLine("");
             for (i = 0; i < lConcepts.Count; ++i)
             {
-                Debug.WriteLine(string.Format("{0:00}: [{1}] [{2}]", i + 1, lConcepts[i].ObjectsToString(), lConcepts[i].AttributesToString()));
+                Debug.WriteLine(string.Format("{0:00}: [{1}] [{2}]", i + 1 /*lConcepts[i].Id*/, lConcepts[i].ObjectsToString(), lConcepts[i].AttributesToString()));
             }
 
             // Connect concepts

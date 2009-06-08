@@ -153,7 +153,7 @@ namespace libconexplore
             List<Concept> lConcepts = new List<Concept>();
             for (i = 0; i < lhsA.Count; ++i)
             {
-                lConcepts.Add(new Concept(lhsA[i], lhsB[i], sObjects, sAttributes));
+                lConcepts.Add(new Concept(/*i, */lhsA[i], lhsB[i], sObjects, sAttributes));
             }
 
             //return new Graph() { Concepts = lConcepts, Links = new FloydWarshallLinker().Link(lConcepts) };

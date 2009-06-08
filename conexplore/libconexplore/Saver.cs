@@ -39,7 +39,7 @@ namespace libconexplore
 
             for (i = 0; i < cGraph.Concepts.Count; ++i)
             {
-                fs.WriteLine(string.Format("{0}", i));
+                fs.WriteLine(string.Format("{0}", i /*cGraph.Concepts[i].Id*/));
                 fs.WriteLine(string.Format("{0}", cGraph.Concepts[i].ObjectsToId()));
                 fs.WriteLine(string.Format("{0}", cGraph.Concepts[i].AttributesToId()));
             }
