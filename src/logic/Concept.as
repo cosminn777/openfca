@@ -10,12 +10,17 @@ package logic
 		private var _lineOfObjects:String;
 		private var _lineOfAttributes:String;
 		
+		public var attachedObject:String;
+		public var attachedAttribute:String;
+		
 		public function Concept(objects:Array, attributes:Array, lineOfObjects:String = null, lineOfAttributes:String = null)
 		{
 			_objects = objects;
 			_attributes = attributes;
 			_lineOfObjects = lineOfObjects;
 			_lineOfAttributes = lineOfAttributes;
+			attachedObject = null;
+			attachedAttribute = null;
 		}
 		
 		public function get attributes(): Array

@@ -105,6 +105,8 @@
 					out.writeUTFBytes(conceptId + "\n");
 					out.writeUTFBytes(_concepts[conceptId].objects.join(",") + "\n");
 					out.writeUTFBytes(_concepts[conceptId].attributes.join(",") + "\n");
+					out.writeUTFBytes(((_concepts[conceptId].attachedObject != null) ? _concepts[conceptId].attachedObject : "") + "\n");
+					out.writeUTFBytes(((_concepts[conceptId].attachedAttribute != null) ? _concepts[conceptId].attachedAttribute : "") + "\n");
 				}
 				return out.toString();
 			}

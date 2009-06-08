@@ -76,6 +76,7 @@ namespace libconexplore
                         if (k == lLocalLinks.Count)
                         {
                             lLocalLinks.Add(new Link(lConcepts[i], lConcepts[j], i, j));
+                            Debug.WriteLine(string.Format("[F:{0} T:{1}]", lLocalLinks[lLocalLinks.Count - 1].From + 1, lLocalLinks[lLocalLinks.Count - 1].To + 1));
                         }
                     }
                 }
