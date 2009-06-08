@@ -315,7 +315,7 @@
 				for (var eIndex:int = 0; eIndex < edgeCount; ++eIndex)
 				{
 					var edge:Array = StringUtil.trim(lines[lineIndex++]).split(" ");
-					g.link(g.nodes[edge[0]], g.nodes[edge[1]]);
+					g.link(g.nodes[edge[0]], g.nodes[edge[1]], edge[0]);
 				}
 				iMem = System.totalMemory / (1024 * 1024); // in MB
 				trace("Total used memory for " + conceptCount + " concepts and " + edgeCount + " edges: " + (System.totalMemory / (1024 * 1024)).toString() + " MB."); // in MB

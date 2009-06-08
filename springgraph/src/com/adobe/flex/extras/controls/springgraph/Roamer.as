@@ -9,8 +9,6 @@
 
 package com.adobe.flex.extras.controls.springgraph {
 	import flash.events.Event;
-	import flash.events.TimerEvent;
-	import flash.geom.Rectangle;
 
 	/**
 	 *  Dispatched when there is any change to the nodes and/or links of this graph.
@@ -313,7 +311,8 @@ package com.adobe.flex.extras.controls.springgraph {
 				var neighbors: Object = fullGraph.neighbors(item.id);
 				for(var neighborId: String in neighbors) {
 					if(g.hasNode(neighborId)) {
-						g.link(item, g.find(neighborId));
+						var neighbor:Item = g.find(neighborId); 
+						g.link(item, neighbor, fullGraph.getLinkData(item, neighbor));
 					}
 				}
 			}
@@ -399,7 +398,7 @@ package com.adobe.flex.extras.controls.springgraph {
 					var neighbor: Item = fullGraph.find(neighborId)
 					if(!addToGraph(neighbor, generation + 1, graph))
 						return true;
-					graph.link(item, neighbor);
+					graph.link(item, neighbor, fullGraph.getLinkData(item, neighbor));
 				}
 			}
 			return true;
