@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AlaouiLinker.cs" />
     <Compile Include="Concept.cs" />
     <Compile Include="AndrewsConceptProcessor.cs" />
     <Compile Include="Graph.cs" />

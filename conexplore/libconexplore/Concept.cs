@@ -7,14 +7,17 @@ namespace libconexplore
 {
     public class Concept
     {
+        /* public int Id { get; private set; } */
+
         public List<string> Objects { get; private set; }
         public List<string> Attributes { get; private set; }
 
         public HashSet<int> Extent { get; private set; }
         public HashSet<int> Intent { get; private set; }
 
-        public Concept(HashSet<int> hsExtent, HashSet<int> hsIntent, string[] sObjects, string[] sAttributes)
+        public Concept(/*int iId, */HashSet<int> hsExtent, HashSet<int> hsIntent, string[] sObjects, string[] sAttributes)
         {
+            /*Id = iId;*/
             Extent = hsExtent;
             Intent = hsIntent;
 
@@ -47,22 +50,12 @@ namespace libconexplore
 
         public string ObjectsToString()
         {
-            StringBuilder sb = new StringBuilder();
-            foreach (string sObject in Objects)
-            {
-                sb.Append(string.Format("{0}; ", sObject));
-            }
-            return sb.ToString();
+            return string.Join(",", Objects.ToArray());
         }
 
         public string AttributesToString()
         {
-            StringBuilder sb = new StringBuilder();
-            foreach (string sAttibute in Attributes)
-            {
-                sb.Append(string.Format("{0}; ", sAttibute));
-            }
-            return sb.ToString();
+            return string.Join(",", Attributes.ToArray());
         }
 
         public string AttributesToId()
