@@ -157,7 +157,11 @@ namespace libconexplore
             }
 
             //return new Graph() { Concepts = lConcepts, Links = new FloydWarshallLinker().Link(lConcepts) };
-            return new Graph() { Concepts = lConcepts, Links = new AlaouiLinker().Link(lConcepts, sAttributes) };
+            return new Graph()
+            {
+                Concepts = new Labeler(sObjects, sAttributes, bValues).Label(lConcepts),
+                Links = new AlaouiLinker().Link(lConcepts, sAttributes)
+            };
         }
     }
 }

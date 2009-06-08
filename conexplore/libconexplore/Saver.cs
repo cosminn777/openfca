@@ -42,6 +42,10 @@ namespace libconexplore
                 fs.WriteLine(string.Format("{0}", i /*cGraph.Concepts[i].Id*/));
                 fs.WriteLine(string.Format("{0}", cGraph.Concepts[i].ObjectsToId()));
                 fs.WriteLine(string.Format("{0}", cGraph.Concepts[i].AttributesToId()));
+                fs.WriteLine(string.Format("{0}", ((cGraph.Concepts[i].LabelObjectRepresentative != -1) ? 
+                    cGraph.Concepts[i].LabelObjectRepresentative.ToString() : "")));
+                fs.WriteLine(string.Format("{0}", ((cGraph.Concepts[i].LabelAttributeRepresentative != -1) ?
+                    cGraph.Concepts[i].LabelAttributeRepresentative.ToString() : "")));
             }
 
             for (i = 0; i < cGraph.Links.Count; ++i)

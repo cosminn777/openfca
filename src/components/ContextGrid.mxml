@@ -294,11 +294,22 @@
 				for (var nIndex:int = 0; nIndex < conceptCount; ++nIndex)
 				{
 					var conceptId:String = StringUtil.trim(lines[lineIndex++]);
-					var newConcept:Concept = new Concept(null, null, lines[lineIndex], lines[lineIndex+1]);
+					var newConcept:Concept = new Concept(null, null, lines[lineIndex], lines[lineIndex + 1]);
 					concepts[conceptId] = newConcept;
-					g.add(new ConceptItem(conceptId, -1, -1, lines[lineIndex+1],
-													 lines[lineIndex]));
+					var cItem:ConceptItem = new ConceptItem(conceptId, -1, -1, lines[lineIndex + 1], lines[lineIndex]);
 					lineIndex += 2;
+					var attachedIdObject: String = StringUtil.trim(lines[lineIndex++]);
+					var attachedIdAttribute: String = StringUtil.trim(lines[lineIndex++]);
+					if (attachedIdObject != "")
+					{
+						cItem.attachedObject = objects[attachedIdObject];
+					}
+					if (attachedIdAttribute != "")
+					{
+						cItem.attachedAttribute = attributes[attachedIdAttribute];
+					}
+					g.add(cItem);
+					
 				}
 				iMem = System.totalMemory / (1024 * 1024); // in MB
 				for (var eIndex:int = 0; eIndex < edgeCount; ++eIndex)

@@ -50,6 +50,7 @@
     <Compile Include="AndrewsConceptProcessor.cs" />
     <Compile Include="Graph.cs" />
     <Compile Include="IConceptProcessor.cs" />
+    <Compile Include="Labeler.cs" />
     <Compile Include="Link.cs" />
     <Compile Include="FloydWarshallLinker.cs" />
     <Compile Include="Loader.cs" />
