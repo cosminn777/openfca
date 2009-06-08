@@ -92,7 +92,15 @@
 				var out:ByteArray = new ByteArray();
 				for each (var edge:Array in _g.edges)
 				{
-					out.writeUTFBytes(String(edge[0].id) + " " + String(edge[1].id) + "\n"); 
+					var item1:Item, item2:Item;
+					if (edge[0].id == _g.getLinkData(edge[0], edge[1])) {
+						item1 = edge[0];
+						item2 = edge[1];
+					} else {
+						item1 = edge[1];
+						item2 = edge[0];
+					}
+					out.writeUTFBytes(String(item1.id) + " " + String(item2.id) + "\n"); 
 				}
 				return out.toString();
 			}

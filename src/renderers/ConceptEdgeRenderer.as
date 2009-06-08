@@ -17,9 +17,6 @@ package renderers
 			var color: uint = 0x8888ff;
 			var alpha: Number = 1.0;
 			var thickness: int = 1;
-			var m:Matrix = new Matrix;
-			var center:Point = new Point((fromX + toX)/2, (fromY + toY)/2);
-			var pivot:Point = new Point(toX, toY);
 			var item1:Item = (fromView as Object).data;
 			var item2:Item = (toView as Object).data;
 			var fromId:String = graph.getLinkData(item1, item2).toString();
@@ -31,6 +28,9 @@ package renderers
 				fromY = toY;
 				toY = aux;
 			}
+			var m:Matrix = new Matrix;
+			var center:Point = new Point((fromX + toX)/2, (fromY + toY)/2);
+			var pivot:Point = new Point(toX, toY);
 			pivot = pivot.subtract(center);
 			pivot.normalize(10.0);
 			m.rotate(Math.PI*0.85);

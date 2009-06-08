@@ -324,9 +324,7 @@ package logic
 				{
 					if (bIncluded[i][j] == true)
 					{
-						//trace(i + " included in " + j);
-						trace(j + " " + i);
-						g.link(g.find(j.toString()), g.find(i.toString()));
+						g.link(g.find(j.toString()), g.find(i.toString()), j.toString());
 						++iLinks;
 					}	
 				}
