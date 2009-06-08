@@ -197,10 +197,10 @@
 					            }
 							]]>
 						</mx:Script>
-						<mx:TextArea selectable="false" text="{data.attributeCount}" fontSize="{outerDocument.fontSizeSlider.value}" backgroundAlpha="0.2"
+						<mx:TextArea selectable="false" text="{data.labelAttribute}" fontSize="{outerDocument.fontSizeSlider.value}" backgroundAlpha="0.2"
 							textAlign="center" width="{outerDocument.widthSlider.value}" editable="false" horizontalScrollPolicy="off"
 							verticalScrollPolicy="auto" height="100%" minHeight="0"/>					
-						<mx:TextArea selectable="false" text="{data.objectCount}" fontSize="{outerDocument.fontSizeSlider.value}" backgroundAlpha="0.2"
+						<mx:TextArea selectable="false" text="{data.labelObject}" fontSize="{outerDocument.fontSizeSlider.value}" backgroundAlpha="0.2"
 							textAlign="center" width="{outerDocument.widthSlider.value}" editable="false" horizontalScrollPolicy="off"
 							verticalScrollPolicy="auto" height="100%" minHeight="0"/>					
 					</mx:VBox>

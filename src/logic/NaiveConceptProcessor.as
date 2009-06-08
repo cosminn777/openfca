@@ -63,6 +63,20 @@ package logic
 			return objects;
 		}
 		
+		private function getObjectIntent(data:ArrayCollection, object:int):Array
+		{
+			var attributes:Array = new Array();
+			var i:int = 0;
+			for (i = 0; i < data[0].length; ++i)
+			{
+				if (data[object][i] == true)
+				{
+					attributes.push(i);
+				}	
+			}
+			return attributes;
+		}
+		
 		private function getIntent(data:ArrayCollection, attributes:Array, extent:Array):Array
 		{
 			var intent:Array = new Array();
@@ -212,11 +226,46 @@ package logic
 				intents.addItem(getIntent(data, sAttributes, extents[i]));
 			}
 			
+			var labelAttributeExtent:Array = new Array();
+			for (i = 0; i < sAttributes.length; ++i)
+			{
+				labelAttributeExtent.push(getAttributeExtent(data, i));
+			}
+			var labelObjectIntent:Array = new Array();
+			for (i = 0; i < sObjects.length; ++i)
+			{
+				labelObjectIntent.push(getObjectIntent(data, i));
+			}
+			
 			var concepts: Array = new Array();
 			// create graph nodes
 			for (i = 0; i < extents.length; ++i)
 			{
-				var concept:Item = new ConceptItem(i.toString(), intents[i].length, extents[i].length);
+				var iAttribute: int = -1;
+				for (j = 0; j < sAttributes.length; ++j)
+				{
+					if (equalArray(extents[i], labelAttributeExtent[j]))
+					{
+						iAttribute = j;
+					}
+				}
+				var iObject: int = -1;
+				for (j = 0; j < sObjects.length; ++j)
+				{
+					if (equalArray(intents[i], labelObjectIntent[j]))
+					{
+						iObject = j;
+					}
+				}
+				
+				var sLabelAttribute:String = ((iAttribute != -1) ? sAttributes[iAttribute] : null); 
+				var sLabelObject:String = ((iObject != -1) ? sObjects[iObject] : null);
+				
+				var concept:ConceptItem = new ConceptItem(i.toString(), intents[i].length, extents[i].length);
+					
+				concept.attachedAttribute = sLabelAttribute;
+				concept.attachedObject = sLabelObject;
+				
 				concepts.push(concept);
 				g.add(concept);
 			}
