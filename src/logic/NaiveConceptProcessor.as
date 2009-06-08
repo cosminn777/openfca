@@ -293,7 +293,7 @@ package logic
                 {
                 	var ein: Array = getIntersection(extents[i], extents[j]);
                 	
-                	// i is included in j
+                	// i is included in j, strict/proper inclusion
                 	bIncluded[i].push(((ein.length == extents[i].length) && (ein.length != extents[j].length)) ? true : false);
                 }	
 			}
@@ -324,7 +324,9 @@ package logic
 				{
 					if (bIncluded[i][j] == true)
 					{
-						g.link(g.find(i.toString()), g.find(j.toString()));
+						//trace(i + " included in " + j);
+						trace(j + " " + i);
+						g.link(g.find(j.toString()), g.find(i.toString()));
 						++iLinks;
 					}	
 				}
