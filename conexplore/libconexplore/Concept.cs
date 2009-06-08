@@ -15,8 +15,14 @@ namespace libconexplore
         public HashSet<int> Extent { get; private set; }
         public HashSet<int> Intent { get; private set; }
 
+        public int LabelObjectRepresentative { get; set; }
+        public int LabelAttributeRepresentative { get; set; }
+
         public Concept(/*int iId, */HashSet<int> hsExtent, HashSet<int> hsIntent, string[] sObjects, string[] sAttributes)
         {
+            LabelObjectRepresentative = -1;
+            LabelAttributeRepresentative = -1;
+
             /*Id = iId;*/
             Extent = hsExtent;
             Intent = hsIntent;
