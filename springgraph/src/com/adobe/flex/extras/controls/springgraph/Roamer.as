@@ -37,6 +37,16 @@ package com.adobe.flex.extras.controls.springgraph {
 			recreateGraph();
 		}
 		
+		[Bindable]
+		public function get skip(): int {
+			return _skip;
+		}
+		
+		public function set skip(i: int): void {
+			_skip = i;
+			recreateGraph();
+		}
+		
 		/**
 		 * We only display items that are within this distance from the current item.
 		 */
@@ -389,16 +399,44 @@ package com.adobe.flex.extras.controls.springgraph {
 		}
 
 		private function addToGraph(item: Item, generation: int, graph: Graph): Boolean {
-			if(itemCount > _itemLimit) return false;
-			itemCount ++;
+			var queue:Array = new Array();
+			queue.push({"gen":generation, "item":item});
+			itemCount++;
 			graph.add(item);
-			if(generation < _maxDistanceFromCurrent) {
-				var neighbors: Object = fullGraph.neighbors(item.id);
+			while (queue.length > 0) {
+				var current:Object = queue.shift();
+				var neighbors: Object = fullGraph.neighbors(current.item.id);
+				if (skip > 0 && current.gen == 1) {
+					var newNeighbors:Array = new Array();
+					for (var nId: String in neighbors)
+						newNeighbors.push(nId);
+					if (newNeighbors.length > _itemLimit - itemCount) {
+						var startIndex:int = skip % newNeighbors.length;
+						newNeighbors = newNeighbors.slice(startIndex, newNeighbors.length-1);
+						neighbors = new Object();
+						for each (nId in newNeighbors) {
+							neighbors[nId] = null;
+						}
+					}
+				}
 				for(var neighborId: String in neighbors) {
-					var neighbor: Item = fullGraph.find(neighborId)
-					if(!addToGraph(neighbor, generation + 1, graph))
-						return true;
-					graph.link(item, neighbor, fullGraph.getLinkData(item, neighbor));
+					var neighbor: Item = fullGraph.find(neighborId);
+					var doLink:Boolean;
+					if (!graph.hasNode(neighborId)) {
+						if (current.gen < _maxDistanceFromCurrent && itemCount < _itemLimit) {
+							doLink = true;
+							graph.add(neighbor);
+							itemCount++;
+							queue.push({"gen": current.gen+1, "item":neighbor});
+						} else {
+							doLink = false;
+						}
+					} else {
+						doLink = true;
+					}
+					if (doLink) {
+						graph.link(current.item, neighbor, fullGraph.getLinkData(current.item, neighbor));
+					}
 				}
 			}
 			return true;
@@ -420,6 +458,7 @@ package com.adobe.flex.extras.controls.springgraph {
 
 		private var _currentItem: Item;
 		private var _itemLimit: int = 50;
+		private var _skip: int = 0;
 		private var fullGraph: Graph;
 		private var _maxDistanceFromCurrent: int;		
 		private var itemCount: int;
