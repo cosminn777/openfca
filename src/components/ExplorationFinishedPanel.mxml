@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" layout="vertical" width="320" height="240" title="Attribute Exploration Finished" horizontalAlign="center" paddingTop="20" paddingBottom="20">
+	<mx:Label text="Attribute exploration is now complete." textAlign="center"/>
+	<mx:ControlBar horizontalAlign="right">
+		<mx:Button id="okButton" label="Ok"/>
+	</mx:ControlBar>
+	
+</mx:Panel>
