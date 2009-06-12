@@ -16,7 +16,7 @@ package logic
 			var i: int = 0;
 			for (i = 0; i < attributes.length; ++i)
 			{
-				A.push(0);
+				A.push(false);
 			}	
 			
 			return A;
@@ -101,6 +101,26 @@ package logic
 			return A;
 		}
 		
+		// B - A
+		public function getBitSetDifference(A: Array, B: Array): Array
+		{
+			var C: Array = new Array();
+			var i: int;
+			for (i = 0; i < A.length; ++i)
+			{
+				if (A[i] == B[i])
+				{
+					C.push(false);
+				}
+				else
+				{
+					C.push(B[i]);
+				}
+			}
+			return C;
+		}
+
+
 		public function getAttrSetAsString(A: Array, attributes:Array): String
 		{
 			var s:String = "";
@@ -157,11 +177,11 @@ package logic
 						}
 				// debug
 				//trace(j + " " + i);
-						if (j >= i)
-						{
-							A = B;
+						//if (j >= i)
+						//{
+							//A = B;
 							success = true;
-						}
+						//}
 					}
 					else
 					{

@@ -65,6 +65,14 @@
 
 			}
 			
+			private function yesExplore(): void {
+					++kExplore; // increase k and add the implication to the set
+					// since we don't need the set, we don't add it anywhere
+					
+					// continue exploring
+					beginExploreAttr();
+				};
+				
 			private function showContinueExploreAttr(implic: String): void
 			{
 				var panel:ExplorationPanel = new ExplorationPanel();
@@ -74,12 +82,9 @@
 				
 				var yes:Function = function (event:Event): void {
 					PopUpManager.removePopUp(panel);
-					++kExplore; // increase k and add the implication to the set
-					// since we don't need the set, we don't add it anywhere
-					
-					// continue exploring
-					beginExploreAttr();
+					yesExplore();
 				};
+				
 				var no:Function = function (event:Event): void {
 					PopUpManager.removePopUp(panel);
 					showAddObject();
@@ -160,12 +165,27 @@
 					attributes, rows), 
 				attributes);
 				
-				showContinueExploreAttr("When object(s) have " + explorer.getAttrSetAsString(explorer.fromBitSetToAttributeSet(kClosure, attributes), attributes) + 
-					" attributes, object(s) also have " + explorer.getAttrSetAsString(explorer.fromBitSetToAttributeSet(kClosureDeriv, attributes), attributes) + " attributes?");
-								
+				var c: int = 0;
+				for (c = 0; c < kClosure.length; ++c)
+				{
+					if (kClosure[c] != kClosureDeriv[c])
+					{
+						break;
+					}
+				}
+				if (c == kClosure.length) // equal
+				{
+					yesExplore();
+				}
+				else
+				{
+					showContinueExploreAttr("When object(s) have " + explorer.getAttrSetAsString(explorer.fromBitSetToAttributeSet(kClosure, attributes), attributes) + 
+						" attributes, object(s) also have " + explorer.getAttrSetAsString(explorer.fromBitSetToAttributeSet(
+							explorer.getBitSetDifference(kClosure, kClosureDeriv), attributes), attributes) + " attributes?");
+				}				
 				return true;
 			}
-			
+						
 			private function createAttributeColumn(attrIndex:String, attr:String): void
 			{
 				var newColumn:DataGridColumn = new DataGridColumn();
