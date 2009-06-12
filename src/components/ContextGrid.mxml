@@ -152,10 +152,16 @@
 				}
 					
 				// haven't reached the end
-				var kClosureDeriv: Array = explorer.getIntent(explorer.getExtent(kClosure, objects, rows), attributes, rows);
+				var kClosureDeriv: Array = explorer.fromAttributeSetToBitSet(
+					explorer.getIntent(
+						explorer.getExtent(
+							explorer.fromBitSetToAttributeSet(kClosure, attributes), 
+						objects, rows), 
+					attributes, rows), 
+				attributes);
 				
-				showContinueExploreAttr("When object(s) have " + explorer.getAttrSetAsString(kClosure, attributes) + 
-					"attributes, object(s) also have " + explorer.getAttrSetAsString(kClosureDeriv, attributes) + "attributes?");
+				showContinueExploreAttr("When object(s) have " + explorer.getAttrSetAsString(explorer.fromBitSetToAttributeSet(kClosure, attributes), attributes) + 
+					" attributes, object(s) also have " + explorer.getAttrSetAsString(explorer.fromBitSetToAttributeSet(kClosureDeriv, attributes), attributes) + " attributes?");
 								
 				return true;
 			}
