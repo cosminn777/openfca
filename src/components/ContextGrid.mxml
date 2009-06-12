@@ -182,7 +182,8 @@
 					showContinueExploreAttr("When object(s) have " + explorer.getAttrSetAsString(explorer.fromBitSetToAttributeSet(kClosure, attributes), attributes) + 
 						" attributes, object(s) also have " + explorer.getAttrSetAsString(explorer.fromBitSetToAttributeSet(
 							explorer.getBitSetDifference(kClosure, kClosureDeriv), attributes), attributes) + " attributes?");
-				}				
+				}		
+						
 				return true;
 			}
 						

@@ -150,7 +150,7 @@ package logic
 					{
 						A[i] = true;
 				// begin debug
-				//*
+				/*
 				var sTrace: String = "A: ";
 				for (j = 0; j < A.length; ++j)
 				{
@@ -160,7 +160,7 @@ package logic
 				//*/
 						var B: Array = fromAttributeSetToBitSet(getIntent(getExtent(fromBitSetToAttributeSet(A, attributes), objects, data), attributes, data), attributes);
 				// begin debug
-				//*	
+				/*	
 				sTrace = "B: ";
 				for (j = 0; j < B.length; ++j)
 				{
@@ -177,11 +177,11 @@ package logic
 						}
 				// debug
 				//trace(j + " " + i);
-						//if (j >= i)
-						//{
-							//A = B;
+				//		if (j >= i)
+				//		{
+				//			A = B;
 							success = true;
-						//}
+				//		}
 					}
 					else
 					{
