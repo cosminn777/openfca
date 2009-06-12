@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" layout="vertical" width="420" height="240" title="Attribute Exploration" horizontalAlign="center" paddingTop="20" paddingBottom="20">
+	<mx:Label text="Is the following implication valid?" textAlign="center"/>
+	<mx:Text text="" id="lblImplication" textAlign="center" width="400" />
+	<mx:ControlBar horizontalAlign="right">
+		<mx:Button id="yesButton" label="Yes"/>
+		<mx:Button id="noButton" label="No"/>
+		<mx:Button id="cancelButton" label="Cancel Exploration"/>
+	</mx:ControlBar>
+	
+</mx:Panel>
