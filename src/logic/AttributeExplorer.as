@@ -1,7 +1,6 @@
 package logic
 {
 	import mx.collections.ArrayCollection;
-	import mx.utils.StringUtil;
 	
 	public class AttributeExplorer
 	{
@@ -23,60 +22,80 @@ package logic
 			return A;
 		}
 		
-		public function getExtent(A:Array, data: ArrayCollection): Array
+		public function getExtent(A:Array, objects: Array, data: ArrayCollection): Array
 		{
 			var B: Array = new Array();
 			var i: int = 0;
 			var j: int = 0;
-			for (i = 0; i < data.length; ++i)
+			for (i = 0; i < objects.length; ++i) // for all objects
 			{
-				var isOk: Boolean = true;
-				for (j = 0; j < A.length; ++j)
+				for (j = 0; j < A.length; ++j) // for all attributes
 				{
-					if (A[j] == true)
+					if (!data[i][A[j]])
 					{
-						if (!data[i][j])
-						{
-							isOk = false;
-						}
+						break;
 					}
 				}
-				B.push((isOk) ? true : false); // simplify, add isOk directly
+				if (j == A.length)
+				{
+					B.push(i);
+				}
 			}
-			
+
 			return B;	
 		}
 		
-		public function getIntent(B:Array, data: ArrayCollection): Array
+		private function fromBitSetToAttributeSet(A: Array, attributes: Array): Array
+		{
+			var i: int = 0;
+			var attrSet: Array = new Array();
+			for (i = 0; i < A.length; ++i)
+			{
+				if (A[i])
+				{
+					attrSet.push(i);
+				}
+			}
+			
+			return attrSet;
+		}
+		
+		private function fromAttributeSetToBitSet(A: Array, attributes: Array): Array
+		{
+			var i: int = 0;
+			var bitSet: Array = new Array();
+			for (i = 0; i < attributes.length; ++i)
+			{
+				bitSet.push(false);
+			}
+			for (i = 0; i < A.length; ++i)
+			{
+				bitSet[A[i]] = true;		
+			}
+			
+			return bitSet;
+		}
+		
+		public function getIntent(B:Array, attributes: Array, data: ArrayCollection): Array
 		{
 			var A: Array = new Array();
 			var i: int = 0;
 			var j: int = 0;
-			if (data.length > 0)
+			for (j = 0; j < attributes.length; ++j) // for all attributes
 			{
-				for (j = 0; j < data[0].length; ++j)
+				for (i = 0; i < B.length; ++i) // for all objects
 				{
-					var isOk: Boolean = true;
-					for (i = 0; i < B.length; ++i)
+					if (!data[B[i]][j])
 					{
-						if (B[i] == true)
-						{
-							if (!data[i][j])
-							{
-								isOk = false;
-							}
-						}
+						break;
 					}
-					A.push((isOk) ? true : false); // simplify
 				}
-			}
-			else // has no objects
-			{
-				for (i = 0; i < B.length; ++i)
+				if (i == B.length)
 				{
-					A.push(true);
+					A.push(j);
 				}
 			}
+			
 			return A;
 		}
 		
@@ -104,12 +123,30 @@ package logic
 				var success: Boolean = false;
 				do
 				{
+					var j: int = 0;
 					i = i - 1;
 					if (A[i] == false)
 					{
 						A[i] = true;
-						var B: Array = getIntent(getExtent(A, data), data);
-						var j: int = 0;
+				// begin debug
+				//*
+				var sTrace: String = "A: ";
+				for (j = 0; j < A.length; ++j)
+				{
+					sTrace += A[j] ? "1" : "0";
+				}
+				trace(sTrace);
+				//*/
+						var B: Array = fromAttributeSetToBitSet(getIntent(getExtent(fromBitSetToAttributeSet(A, attributes), objects, data), attributes, data), attributes);
+				// begin debug
+				//*	
+				sTrace = "B: ";
+				for (j = 0; j < B.length; ++j)
+				{
+					sTrace += B[j] ? "1" : "0";
+				}
+				trace(sTrace);
+				//*/	
 						for (j = 0; j < B.length; ++j)
 						{
 							if ((B[j] == true) && (A[j] == false))
@@ -117,6 +154,8 @@ package logic
 								break;
 							}
 						}
+				// debug
+				//trace(j + " " + i);
 						if (j >= i)
 						{
 							A = B;

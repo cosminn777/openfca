@@ -152,10 +152,10 @@
 				}
 					
 				// haven't reached the end
-				var kClosureDeriv: Array = explorer.getIntent(explorer.getExtent(kClosure, rows), rows);
-					
-				showContinueExploreAttr("When objects have " + explorer.getAttrSetAsString(kClosure, attributes) + 
-					"attributes, objects also have " + explorer.getAttrSetAsString(kClosureDeriv, attributes) + "attributes?");
+				var kClosureDeriv: Array = explorer.getIntent(explorer.getExtent(kClosure, objects, rows), attributes, rows);
+				
+				showContinueExploreAttr("When object(s) have " + explorer.getAttrSetAsString(kClosure, attributes) + 
+					"attributes, object(s) also have " + explorer.getAttrSetAsString(kClosureDeriv, attributes) + "attributes?");
 								
 				return true;
 			}
@@ -328,6 +328,7 @@
 			private function popObject(): void
 			{
 				rows.removeItemAt(rows.length-1);
+				objects.pop();
 			}
 			
 			private function popAttribute(): void
