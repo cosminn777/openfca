@@ -22,6 +22,7 @@ package logic
 			return A;
 		}
 		
+		// gets an object set
 		public function getExtent(A:Array, objects: Array, data: ArrayCollection): Array
 		{
 			var B: Array = new Array();
@@ -45,7 +46,7 @@ package logic
 			return B;	
 		}
 		
-		private function fromBitSetToAttributeSet(A: Array, attributes: Array): Array
+		public function fromBitSetToAttributeSet(A: Array, attributes: Array): Array
 		{
 			var i: int = 0;
 			var attrSet: Array = new Array();
@@ -60,7 +61,7 @@ package logic
 			return attrSet;
 		}
 		
-		private function fromAttributeSetToBitSet(A: Array, attributes: Array): Array
+		public function fromAttributeSetToBitSet(A: Array, attributes: Array): Array
 		{
 			var i: int = 0;
 			var bitSet: Array = new Array();
@@ -76,6 +77,7 @@ package logic
 			return bitSet;
 		}
 		
+		// gets an attribute set
 		public function getIntent(B:Array, attributes: Array, data: ArrayCollection): Array
 		{
 			var A: Array = new Array();
@@ -103,16 +105,15 @@ package logic
 		{
 			var s:String = "";
 			var i: int = 0;
+			var sA: Array = new Array();
 			for (i = 0; i < A.length; ++i)
 			{
-				if (A[i] == true)
-				{
-					s += "<b>" + attributes[i] + "</b>; "; 
-				}
+				sA.push("<b>" + attributes[A[i]] + "</b>"); 
 			}
+			s = sA.join(", ");
 			if (s == "")
 			{
-				s = "<i>no</i> ";
+				s = "<i>no</i>";
 			}
 			return s;
 		}
