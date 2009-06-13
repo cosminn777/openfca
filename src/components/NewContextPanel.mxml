@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml"
+	horizontalAlign="center"
+	paddingBottom="20"
+	paddingTop="20"
+	layout="vertical" title="New context"
+	creationComplete="init()">
+	<mx:Metadata>
+		[Event(name="createContextClick", type="events.NewContextEvent")]
+		[Event(name="cancelCreateContextClick", type="events.NewContextEvent")]
+	</mx:Metadata>
+
+	<mx:Script>
+		<![CDATA[
+			import mx.rpc.events.ResultEvent;
+			import mx.utils.ObjectProxy;
+			import mx.collections.ArrayCollection;
+			import mx.events.ItemClickEvent;
+			import mx.utils.StringUtil;
+			import events.NewContextEvent;
+			
+			private var conData:String = null;
+			
+			private function init(): void
+			{
+				objectsTextInput.setFocus();
+			}
+			
+			private function sendCreateContext(objects:String, attributes:String, data:String): void
+			{
+				var o:Array = objects.split(",").map(
+					function(s:String, i:int, o:Array): String {
+						return mx.utils.StringUtil.trim(s);
+					});
+				var a:Array = attributes.split(",").map(
+					function(s:String, i:int, o:Array): String {
+						return mx.utils.StringUtil.trim(s);
+					});
+				dispatchEvent(new NewContextEvent("createContextClick", o, a, data));
+			}
+			
+			private function createContext(): void
+			{
+				if (validateData()) {
+					sendCreateContext(objectsTextInput.text, attributesTextInput.text, conData);
+				}
+			}
+			
+			private function cancel(): void
+			{
+				dispatchEvent(new NewContextEvent("cancelCreateContextClick"));
+			}
+			
+			private function clickHandler(event:ItemClickEvent): void
+			{
+				conData = null;
+				objectsTextInput.text = objectArray[event.index]
+				attributesTextInput.text = attributeArray[event.index];
+				validateData();
+			}
+			
+			private function validateData(): Boolean
+			{
+				if (StringUtil.trim(objectsTextInput.text) == "") {
+					createButton.enabled = false;
+					return false;
+				}
+				if (StringUtil.trim(attributesTextInput.text) == "") {
+					createButton.enabled = false;
+					return false;
+				}
+				createButton.enabled = true;
+				return true;	
+			}
+
+			private function contextClickHandler(event:ItemClickEvent): void
+			{
+				httpService.url = "data/" + fileNamesArray[event.index];
+				httpService.send();
+			}
+			
+			private function onResult(event:ResultEvent):void
+			{
+				dispatchEvent(new NewContextEvent("createContextClick", null, null, event.result as String));
+			}
+		]]>
+	</mx:Script>
+	<mx:HTTPService id="httpService" resultFormat="text" result="onResult(event)" />
+	<mx:Label text="Please specify the objects and attributes of the context (separated by comma)" />
+	<mx:Form xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%">
+		<mx:FormItem label="Objects:" width="100%">
+			<mx:TextInput width="100%" id="objectsTextInput" change="validateData()" />
+		</mx:FormItem>
+		<mx:FormItem label="Attributes:" width="100%">
+			<mx:TextInput width="100%" id="attributesTextInput" enter="createContext()" change="validateData()" />
+		</mx:FormItem>
+	</mx:Form>
+	<mx:Spacer height="10" />
+	<mx:Label text="You may also choose a configuration from the following" />
+	<mx:ButtonBar itemClick="clickHandler(event)">
+		<mx:dataProvider>
+			<mx:Array>
+				<mx:String>Numbers</mx:String>
+				<mx:String>Cars</mx:String>
+				<mx:String>Phones</mx:String>
+			</mx:Array>
+		</mx:dataProvider>
+	</mx:ButtonBar>
+	<mx:Spacer height="10" />
+	<mx:Label text="Or choose a complete context from the following" />
+	<mx:ButtonBar itemClick="contextClickHandler(event)">
+		<mx:dataProvider>
+			<mx:Array>
+				<mx:String>Numbers</mx:String>
+				<mx:String>Star Alliance Members</mx:String>
+				<mx:String>Triangles</mx:String>
+			</mx:Array>
+		</mx:dataProvider>
+	</mx:ButtonBar>
+	<mx:Spacer height="100%"/>
+	<mx:ControlBar horizontalAlign="right">
+		<mx:Button id="createButton" enabled="false" label="Create context" click="createContext()"/>
+		<mx:Button label="Cancel" click="cancel()"/>
+	</mx:ControlBar>
+	<mx:Array id="objectArray">
+		<mx:String>1,2,3,4,5,6,7,8,9,10</mx:String>
+		<mx:String>Mustang,Corolla,Prius,Accord,Caliber</mx:String>
+		<mx:String>E70,E71,3220,6600,TytnII</mx:String>
+	</mx:Array>
+	<mx:Array id="attributeArray">
+		<mx:String>odd,even,composite,prime,square</mx:String>
+		<mx:String>fast,cheap,nice,eco</mx:String>
+		<mx:String>cheap,nice,rich,battery,signal</mx:String>
+	</mx:Array>
+	<mx:Array id="fileNamesArray">
+		<mx:String>numbers.con</mx:String>
+		<mx:String>star_alliance.con</mx:String>
+		<mx:String>triangles.con</mx:String>
+	</mx:Array>
+</mx:Panel>
