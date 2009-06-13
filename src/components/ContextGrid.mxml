@@ -3,6 +3,7 @@
 	initialize="init()" horizontalAlign="center">
 	<mx:Script>
 		<![CDATA[
+			import mx.messaging.management.Attribute;
 			import logic.AttributeExplorer;
 			import logic.ConceptItem;
 			import logic.Concept;
@@ -49,6 +50,7 @@
 				}
 			}
 			
+			private var explorer: AttributeExplorer = new AttributeExplorer();
 			private var kExplore: int = 1; // step
 			private var kClosure: Array = new Array();
 			
@@ -115,32 +117,32 @@
 				beginExploreAttrButton.label = "Begin Attribute Exploration";
 				kExplore = 1;
 				kClosure = new Array();
+				explorer = new AttributeExplorer();
 			}
 			
 			private function continueExploreAttr(): Boolean
 			{
 				var i: int = 0;
-				var explorer: AttributeExplorer = new AttributeExplorer();
-				
 				
 				if (kExplore  == 1)
 				{
-					 kClosure = explorer.FirstClosure(objects, attributes);
+					 var kClosureFirstTemp: Array = explorer.FirstClosure(objects, attributes, rows);
+					 kClosure = new Array();
+					 for each (var bFirst: Boolean in kClosureFirstTemp)
+					 {
+					 	kClosure.push(bFirst);
+					 }
 				}
 				else
 				{
-					kClosure = explorer.NextClosure(kClosure, objects, attributes, rows);	
+					var kClosureNextTemp: Array = explorer.NextClosure(kClosure, objects, attributes, rows);
+					kClosure = new Array();
+					for each (var bNext: Boolean in kClosureNextTemp)
+					{
+						kClosure.push(bNext);
+					}	
 				}
-				
-				// begin debug	
-				var sTrace: String = kExplore.toString() + ": ";
-				for (i = 0; i < kClosure.length; ++i)
-				{
-					sTrace += kClosure[i] ? "1" : "0";
-				}
-				trace(sTrace);
-				// end debug
-					
+									
 				// check whether we've reached the end of the possible intents
 				for (i = 0; i < kClosure.length; ++i)
 				{
@@ -149,39 +151,41 @@
 						break;
 					}
 				}
-					
-				// reached the end intent
 				if (i == kClosure.length)
 				{
 					return false;
 				}
-					
-				// haven't reached the end
-				var kClosureDeriv: Array = explorer.fromAttributeSetToBitSet(
-					explorer.getIntent(
-						explorer.getExtent(
-							explorer.fromBitSetToAttributeSet(kClosure, attributes), 
-						objects, rows), 
-					attributes, rows), 
-				attributes);
 				
-				var c: int = 0;
-				for (c = 0; c < kClosure.length; ++c)
+				var bsPremise:Array = explorer.sPremise[explorer.sPremise.length - 1];
+				var bsConclusion:Array = explorer.sConclusion[explorer.sConclusion.length - 1];
+				
+				var j: int = 0;
+				for (j = 0; j < kClosure.length; ++j)
 				{
-					if (kClosure[c] != kClosureDeriv[c])
+					if (bsPremise[j] != bsConclusion[j])
 					{
 						break;
 					}
 				}
-				if (c == kClosure.length) // equal
+				if (j == bsPremise.length) // premise is equal to the conclusion
 				{
-					yesExplore();
+					yesExplore(); // skip
 				}
 				else
 				{
-					showContinueExploreAttr("When object(s) have " + explorer.getAttrSetAsString(explorer.fromBitSetToAttributeSet(kClosure, attributes), attributes) + 
-						" attributes, object(s) also have " + explorer.getAttrSetAsString(explorer.fromBitSetToAttributeSet(
-							explorer.getBitSetDifference(kClosure, kClosureDeriv), attributes), attributes) + " attributes?");
+					showContinueExploreAttr("When object(s) have " + 
+						explorer.getAttrSetAsString(
+							explorer.fromBitSetToAttributeSet(
+								bsPremise, 
+							attributes), 
+						attributes) + " attributes, object(s) also have " + 
+						explorer.getAttrSetAsString(
+							explorer.fromBitSetToAttributeSet(
+								explorer.getBitSetDifference(
+									bsPremise, 
+									bsConclusion), 
+								attributes), 
+							attributes) + " attributes?");
 				}		
 						
 				return true;
@@ -215,6 +219,7 @@
 				if (rows == null)
 				{
 					this.rows = rows = new ArrayCollection()
+					this.objects.length = 0;
 					for each (var object:String in objects) {
 						rows.addItem(createObject(object));			
 					}
@@ -222,7 +227,11 @@
 				else
 				{
 					this.rows = rows;
-					this.objects = objects;
+					this.objects = new Array();
+					for each (var object2: String in objects)
+					{
+						this.objects.push(object2);	
+					}
 					for (var row:String in rows) {
 						rows[row]["objectName"] = objects[row];			
 					}
@@ -354,16 +363,23 @@
 			
 			private function popObject(): void
 			{
-				rows.removeItemAt(rows.length-1);
-				objects.pop();
+				if (objects.length > 0)
+				{
+					rows.removeItemAt(rows.length-1);
+					objects.pop();
+				}
 			}
 			
 			private function popAttribute(): void
 			{
-				var emptyColumn:Object = cols.pop();
-				cols.pop();
-				cols.push(emptyColumn);
-				contable.columns = cols;
+				if (attributes.length > 0)
+				{
+					var emptyColumn:Object = cols.pop();
+					cols.pop();
+					cols.push(emptyColumn);
+					contable.columns = cols;
+					attributes.pop();
+				}
 			}
 			
 			private function showAddAttribute(): void
