@@ -3,6 +3,7 @@
 	initialize="init()" horizontalAlign="center">
 	<mx:Script>
 		<![CDATA[
+			import logic.AttributeExplorer;
 			import logic.ConceptItem;
 			import logic.Concept;
 			import com.adobe.flex.extras.controls.springgraph.Item;
@@ -48,6 +49,144 @@
 				}
 			}
 			
+			private var kExplore: int = 1; // step
+			private var kClosure: Array = new Array();
+			
+			private function showEndExploreAttr(): void
+			{
+				var panel:ExplorationFinishedPanel = new ExplorationFinishedPanel();
+				PopUpManager.addPopUp(panel, this, true);
+				PopUpManager.centerPopUp(panel);
+				
+				panel.okButton.addEventListener(MouseEvent.CLICK,
+					function (event:Event): void {
+						PopUpManager.removePopUp(panel);
+					});
+
+			}
+			
+			private function yesExplore(): void {
+					++kExplore; // increase k and add the implication to the set
+					// since we don't need the set, we don't add it anywhere
+					
+					// continue exploring
+					beginExploreAttr();
+				};
+				
+			private function showContinueExploreAttr(implic: String): void
+			{
+				var panel:ExplorationPanel = new ExplorationPanel();
+				PopUpManager.addPopUp(panel, this, true);
+				PopUpManager.centerPopUp(panel);
+				panel.lblImplication.htmlText = implic;
+				
+				var yes:Function = function (event:Event): void {
+					PopUpManager.removePopUp(panel);
+					yesExplore();
+				};
+				
+				var no:Function = function (event:Event): void {
+					PopUpManager.removePopUp(panel);
+					showAddObject();
+				};
+				panel.yesButton.addEventListener(MouseEvent.CLICK, yes);
+				panel.noButton.addEventListener(MouseEvent.CLICK, no);
+				panel.cancelButton.addEventListener(MouseEvent.CLICK,
+					function (event:Event): void {
+						PopUpManager.removePopUp(panel);
+						endExploreAttr();
+					});
+			}
+			
+			private function beginExploreAttr(): void
+			{
+				endExploreAttrButton.enabled = true;
+				beginExploreAttrButton.label = "Continue Exploration";
+				if (!continueExploreAttr()) // finished
+				{
+					showEndExploreAttr();
+					endExploreAttr();
+				}
+			}
+			
+			private function endExploreAttr(): void
+			{
+				endExploreAttrButton.enabled = false;
+				beginExploreAttrButton.label = "Begin Exploration";
+				kExplore = 1;
+				kClosure = new Array();
+			}
+			
+			private function continueExploreAttr(): Boolean
+			{
+				var i: int = 0;
+				var explorer: AttributeExplorer = new AttributeExplorer();
+				
+				
+				if (kExplore  == 1)
+				{
+					 kClosure = explorer.FirstClosure(objects, attributes);
+				}
+				else
+				{
+					kClosure = explorer.NextClosure(kClosure, objects, attributes, rows);	
+				}
+				
+				// begin debug	
+				var sTrace: String = kExplore.toString() + ": ";
+				for (i = 0; i < kClosure.length; ++i)
+				{
+					sTrace += kClosure[i] ? "1" : "0";
+				}
+				trace(sTrace);
+				// end debug
+					
+				// check whether we've reached the end of the possible intents
+				for (i = 0; i < kClosure.length; ++i)
+				{
+					if (kClosure[i] == false)
+					{
+						break;
+					}
+				}
+					
+				// reached the end intent
+				if (i == kClosure.length)
+				{
+					return false;
+				}
+					
+				// haven't reached the end
+				var kClosureDeriv: Array = explorer.fromAttributeSetToBitSet(
+					explorer.getIntent(
+						explorer.getExtent(
+							explorer.fromBitSetToAttributeSet(kClosure, attributes), 
+						objects, rows), 
+					attributes, rows), 
+				attributes);
+				
+				var c: int = 0;
+				for (c = 0; c < kClosure.length; ++c)
+				{
+					if (kClosure[c] != kClosureDeriv[c])
+					{
+						break;
+					}
+				}
+				if (c == kClosure.length) // equal
+				{
+					yesExplore();
+				}
+				else
+				{
+					showContinueExploreAttr("When object(s) have " + explorer.getAttrSetAsString(explorer.fromBitSetToAttributeSet(kClosure, attributes), attributes) + 
+						" attributes, object(s) also have " + explorer.getAttrSetAsString(explorer.fromBitSetToAttributeSet(
+							explorer.getBitSetDifference(kClosure, kClosureDeriv), attributes), attributes) + " attributes?");
+				}		
+						
+				return true;
+			}
+						
 			private function createAttributeColumn(attrIndex:String, attr:String): void
 			{
 				var newColumn:DataGridColumn = new DataGridColumn();
@@ -160,6 +299,11 @@
 				unsetVisibility();
 				viewLatticeButton.visible = true;
 				viewLatticeButton.includeInLayout = true;
+				beginExploreAttrButton.visible = true;
+				beginExploreAttrButton.includeInLayout = true;
+				endExploreAttrButton.visible = true;
+				endExploreAttrButton.includeInLayout = true;
+				endExploreAttrButton.enabled = false;
 				resetButton.visible = true;
 				resetButton.includeInLayout = true;
 				gridControlBar.visible = true;
@@ -211,6 +355,7 @@
 			private function popObject(): void
 			{
 				rows.removeItemAt(rows.length-1);
+				objects.pop();
 			}
 			
 			private function popAttribute(): void
@@ -387,6 +532,8 @@
 			</mx:HBox>
 			<mx:Button id="viewLatticeButton" visible="false" includeInLayout="false" label="View Lattice" click="showLattice()"/>
 			<mx:Button id="backToGridButton" visible="false" includeInLayout="false" label="Back" click="setContextGridVisibility()"/>
+			<mx:Button id="beginExploreAttrButton" visible="false" includeInLayout="false" label="Begin Exploration" click="beginExploreAttr()"/>
+			<mx:Button id="endExploreAttrButton" visible="false" enabled="false" includeInLayout="false" label="Cancel Exploration" click="endExploreAttr()"/>
 	</mx:ApplicationControlBar>
 
 	<mx:Fade id="fadeIn" alphaFrom="0.0" alphaTo="1.0"/>
