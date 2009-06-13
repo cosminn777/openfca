@@ -8,19 +8,6 @@ package logic
 		{
 			
 		}
-
-		public function FirstClosure(objects: Array, attributes: Array): Array
-		{
-			var A: Array = new Array();
-			
-			var i: int = 0;
-			for (i = 0; i < attributes.length; ++i)
-			{
-				A.push(false);
-			}	
-			
-			return A;
-		}
 		
 		// gets an object set
 		public function getExtent(A:Array, objects: Array, data: ArrayCollection): Array
@@ -77,7 +64,6 @@ package logic
 			return bitSet;
 		}
 		
-		// gets an attribute set
 		public function getIntent(B:Array, attributes: Array, data: ArrayCollection): Array
 		{
 			var A: Array = new Array();
@@ -120,7 +106,6 @@ package logic
 			return C;
 		}
 
-
 		public function getAttrSetAsString(A: Array, attributes:Array): String
 		{
 			var s:String = "";
@@ -137,59 +122,146 @@ package logic
 			}
 			return s;
 		}
+
+		public var sPremise: ArrayCollection = new ArrayCollection();
+		public var sConclusion: ArrayCollection = new ArrayCollection();
 		
-		public function NextClosure(A: Array, objects: Array, attributes: Array, data: ArrayCollection): Array
+		// A is included in X
+		private function Included(bsA: Array, bsX: Array): Boolean
 		{
-				var i: int = attributes.length;
-				var success: Boolean = false;
-				do
+			var i: int = 0;
+			for (i = 0; i < bsA.length; ++i)
+			{
+				if (bsA[i])
+				{
+					if (!bsX[i])
+					{
+						break;
+					}
+				}
+			}
+			return (i == bsA.length);
+		}
+		
+		// A <iPos B
+		private function Smaller(bsA: Array, bsB: Array, iPos: int): Boolean
+		{
+			var i: int = 0;
+			for (i = 0; i < bsA.length; ++i)
+			{
+				if (bsA[i] != bsB[i])
+				{
+					break;
+				}
+			}
+			if (i < iPos)
+			{
+				return false;
+			}
+			// i >= iPos
+			return (bsB[i]);
+		}
+		
+		private function Alpha(bsA: Array): Array
+		{
+			var i: int = 0;
+			var bsAlpha: Array = new Array();
+			for (i = 0; i < bsA.length; ++i)
+			{
+				bsAlpha.push(bsA[i]); // copy values
+			}
+			
+			for (i = 0; i < sPremise.length; ++i)
+			{
+				if (Included(sPremise[i], bsA))
 				{
 					var j: int = 0;
-					i = i - 1;
-					if (A[i] == false)
+					for (j = 0; j < sConclusion[i].length; ++j)
 					{
-						A[i] = true;
-				// begin debug
-				/*
-				var sTrace: String = "A: ";
-				for (j = 0; j < A.length; ++j)
-				{
-					sTrace += A[j] ? "1" : "0";
-				}
-				trace(sTrace);
-				//*/
-						var B: Array = fromAttributeSetToBitSet(getIntent(getExtent(fromBitSetToAttributeSet(A, attributes), objects, data), attributes, data), attributes);
-				// begin debug
-				/*	
-				sTrace = "B: ";
-				for (j = 0; j < B.length; ++j)
-				{
-					sTrace += B[j] ? "1" : "0";
-				}
-				trace(sTrace);
-				//*/	
-						for (j = 0; j < B.length; ++j)
+						if (sConclusion[i][j])
 						{
-							if ((B[j] == true) && (A[j] == false))
-							{
-								break;
-							}
+							bsAlpha[j] = true;
 						}
-				// debug
-				//trace(j + " " + i);
-				//		if (j >= i)
-				//		{
-				//			A = B;
-							success = true;
-				//		}
+					}
+				}
+			}
+			
+			return bsAlpha;
+		}
+		
+		public function FirstClosure(objects: Array, attributes: Array, data: ArrayCollection): Array
+		{
+			var bsA: Array = new Array();
+			
+			var i: int = 0;
+			for (i = 0; i < attributes.length; ++i)
+			{
+				bsA.push(false);
+			}	
+			
+			var bsADeriv: Array = fromAttributeSetToBitSet(
+							getIntent(
+								getExtent(
+									fromBitSetToAttributeSet(bsA, attributes), 
+								objects, data), 
+							attributes, data), 
+						attributes);	
+						
+			sPremise.addItem(bsA);
+			sConclusion.addItem(bsADeriv);
+						
+			return bsA;
+		}
+		
+		public function NextClosure(bsA: Array, objects: Array, attributes: Array, data: ArrayCollection): Array
+		{
+			var i: int = attributes.length;
+			var bsIA: Array = new Array(); // bsA without modifications
+			for (i = 0; i < bsA.length; ++i)
+			{
+				bsIA.push(bsA[i]);
+			}
+			
+			var success: Boolean = false;
+			do
+			{
+				var j: int = 0;
+				i = i - 1;
+				if (bsA[i] == false)
+				{
+					bsA[i] = true;
+					// bsA is now a valid A . i
+					var bsAlpha: Array = Alpha(bsA);
+					// bsAlpha is now Alpha(A . i)
+					
+					if (Smaller(bsIA, bsAlpha, i))
+					{
+						
+						var bsAlphaDeriv: Array = fromAttributeSetToBitSet(
+							getIntent(
+								getExtent(
+									fromBitSetToAttributeSet(bsAlpha, attributes), 
+								objects, data), 
+							attributes, data), 
+						attributes);	
+						
+						sPremise.addItem(bsAlpha);
+						sConclusion.addItem(bsAlphaDeriv);
+						
+						success = true;
 					}
 					else
 					{
-						A[i] = false;
+						bsA[i] = false;
 					}
-				} while ((success == false) && (i > 0))
-				
-				return A;
+				}
+				else
+				{
+					bsA[i] = false;
+				}
+			} while ((success == false) && (i > 0))
+			
+			return bsAlpha;
 		}
 	}
 }
