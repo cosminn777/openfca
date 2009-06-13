@@ -250,6 +250,7 @@
 			private function onFileSelect(event:Event): void
 			{
 				fileReference.addEventListener(Event.COMPLETE, onFileComplete);
+				cursorManager.setBusyCursor();
 				fileReference.load();
 			}
 			
@@ -331,6 +332,7 @@
 					setGrid(objects, attributes, rows);
 					setContextGridVisibility(); 
 				}
+				cursorManager.removeBusyCursor();
 			}
 			
 			private function onFileComplete(event:Event): void
