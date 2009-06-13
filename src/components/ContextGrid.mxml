@@ -101,7 +101,7 @@
 			private function beginExploreAttr(): void
 			{
 				endExploreAttrButton.enabled = true;
-				beginExploreAttrButton.label = "Continue Exploration";
+				beginExploreAttrButton.label = "Continue Attribute Exploration";
 				if (!continueExploreAttr()) // finished
 				{
 					showEndExploreAttr();
@@ -112,7 +112,7 @@
 			private function endExploreAttr(): void
 			{
 				endExploreAttrButton.enabled = false;
-				beginExploreAttrButton.label = "Begin Exploration";
+				beginExploreAttrButton.label = "Begin Attribute Exploration";
 				kExplore = 1;
 				kClosure = new Array();
 			}
@@ -530,8 +530,8 @@
 			</mx:HBox>
 			<mx:Button id="viewLatticeButton" visible="false" includeInLayout="false" label="View Lattice" click="showLattice()"/>
 			<mx:Button id="backToGridButton" visible="false" includeInLayout="false" label="Back" click="setContextGridVisibility()"/>
-			<mx:Button id="beginExploreAttrButton" visible="false" includeInLayout="false" label="Begin Exploration" click="beginExploreAttr()"/>
-			<mx:Button id="endExploreAttrButton" visible="false" enabled="false" includeInLayout="false" label="Cancel Exploration" click="endExploreAttr()"/>
+			<mx:Button id="beginExploreAttrButton" visible="false" includeInLayout="false" label="Begin Attribute Exploration" click="beginExploreAttr()"/>
+			<mx:Button id="endExploreAttrButton" visible="false" enabled="false" includeInLayout="false" label="Cancel Attribute Exploration" click="endExploreAttr()"/>
 	</mx:ApplicationControlBar>
 
 	<mx:Fade id="fadeIn" alphaFrom="0.0" alphaTo="1.0"/>
