@@ -315,8 +315,6 @@
 				endExploreAttrButton.enabled = false;
 				resetButton.visible = true;
 				resetButton.includeInLayout = true;
-				gridControlBar.visible = true;
-				gridControlBar.includeInLayout = true;
 				viewStack.selectedChild = contextCanvas;
 			}
 			
@@ -540,12 +538,6 @@
 			<mx:Button id="openButton" visible="true" includeInLayout="true" click="openClickHandler()" label="Open" />
 			<mx:Button id="saveButton" visible="true" includeInLayout="true" click="saveClickHandler()" label="Save" />
 			<mx:Button label="New Context" includeInLayout="false" visible="false" id="resetButton"  click="showCreateContext()"/>
-			<mx:HBox id="gridControlBar" includeInLayout="false" visible="false">
-				<mx:Button label="Add Object" click="showAddObject()"/>
-				<mx:Button label="Pop Object" click="popObject()"/>
-				<mx:Button label="Add Attribute" click="showAddAttribute()"/>
-				<mx:Button label="Pop Attribute" click="popAttribute()"/>
-			</mx:HBox>
 			<mx:Button id="viewLatticeButton" visible="false" includeInLayout="false" label="View Lattice" click="showLattice()"/>
 			<mx:Button id="backToGridButton" visible="false" includeInLayout="false" label="Back" click="setContextGridVisibility()"/>
 			<mx:Button id="beginExploreAttrButton" visible="false" includeInLayout="false" label="Begin Attribute Exploration" click="beginExploreAttr()"/>
@@ -566,8 +558,15 @@
 
 		<mx:VBox id="contextCanvas" width="100%"  height="100%"
 			horizontalScrollPolicy="off"
+			paddingTop="5"
 			showEffect="{fadeIn}"
 			hideEffect="{fadeOut}">
+			<mx:HBox>
+				<mx:Button label="Add Object" click="showAddObject()"/>
+				<mx:Button label="Pop Object" click="popObject()"/>
+				<mx:Button label="Add Attribute" click="showAddAttribute()"/>
+				<mx:Button label="Pop Attribute" click="popAttribute()"/>
+			</mx:HBox>
 			<mx:DataGrid lockedColumnCount="1" creationComplete="initGrid()" id="contable"
 					     horizontalScrollPolicy="on"
 					     verticalScrollPolicy="on"
