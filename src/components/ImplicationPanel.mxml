@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" layout="vertical" width="820" height="440" title="Implications" horizontalAlign="center" paddingTop="20" paddingBottom="20">
+<mx:Script>
+<![CDATA[
+	import mx.collections.ArrayCollection;
+
+	[Bindable]
+	public var implItems:ArrayCollection = new ArrayCollection();
+	
+	public function setImplItems(items: ArrayCollection): void
+	{
+		for each (var o: Object in items)
+		{
+			implItems.addItem(o);
+		}
+	}
+]]>
+</mx:Script>
+	<mx:DataGrid lockedColumnCount="1" id="implGrid"
+					     horizontalScrollPolicy="on"
+					     verticalScrollPolicy="on"
+					     variableRowHeight="true"
+					     width="100%" height="100%"
+						 dataProvider="{implItems}" editable="false">
+		<mx:columns>
+            <mx:DataGridColumn dataField="premise" headerText="Premise"/>
+            <mx:DataGridColumn dataField="conclusion" headerText="Conclusion"/>
+        </mx:columns>
+			</mx:DataGrid>
+	<mx:ControlBar horizontalAlign="right">
+		<mx:Button id="okButton" label="Ok"/>
+	</mx:ControlBar>
+	
+</mx:Panel>
