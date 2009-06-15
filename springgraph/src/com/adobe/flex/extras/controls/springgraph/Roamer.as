@@ -5,6 +5,14 @@
 //  restrictions on such code as contained in the End User License Agreement
 //  accompanying this product.
 //
+//  Copyright (C) 2009 Ovidiu Sabou
+//  This version was modified by Ovidiu Sabou in order to make it suitable for
+//  the Conflexplore program from the OpenFCA project.
+//  The modified parts are the "skip" variable and it's references. It's used
+//  for skipping a sequence of neighbors at the second level and a
+//  reimplementation of addNodes, that uses breadth first search instead of
+//  DFS, to make the component useful for graphs, not only trees.
+//  See http://code.google.com/p/openfca for more information about OpenFCA.
 ////////////////////////////////////////////////////////////////////////////////
 
 package com.adobe.flex.extras.controls.springgraph {

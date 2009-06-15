@@ -5,6 +5,13 @@
 //  restrictions on such code as contained in the End User License Agreement
 //  accompanying this product.
 //
+//  Copyright (C) 2009 Ovidiu Sabou
+//  This version was modified by Ovidiu Sabou in order to make it suitable for
+//  the Conflexplore program from the OpenFCA project.
+//  Search for "mouseOver" and "mouseOut" in this file to see the modified
+//  parts.
+//  See http://code.google.com/p/openfca for more information about OpenFCA.
+//
 ////////////////////////////////////////////////////////////////////////////////
 
 package com.adobe.flex.extras.controls.springgraph {
