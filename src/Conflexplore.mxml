@@ -5,5 +5,5 @@
 	<mx:Image  source="data/logo.PNG" />
 	<components:ContextGrid id="contextGrid" minWidth="640" width="95%" height="100%" />
 	<mx:Spacer height="2%" />
-	<mx:Label color="#AAAAAA" text="© 2009 Borza, Nadăş and Sabou" width="100%" textAlign="right" fontWeight="bold"/>
+	<mx:Label color="#AAAAAA" text="© 2009 Paul-Valentin Borza and Ovidiu Sabou" width="100%" textAlign="right" fontWeight="bold"/>
 </mx:Application>
