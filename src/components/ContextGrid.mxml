@@ -7,6 +7,7 @@
 			import logic.AttributeExplorer;
 			import logic.ConceptItem;
 			import logic.Concept;
+			import logic.ImplicationProcessor;
 			import com.adobe.flex.extras.controls.springgraph.Item;
 			import com.adobe.flex.extras.controls.springgraph.Graph;
 			import com.adobe.flex.extras.controls.forcelayout.Node;
@@ -48,6 +49,97 @@
 				{
 					contable.columns = cols;
 				}
+			}
+			
+			private function showImplications(): void
+			{
+				var panel:ImplicationPanel = new ImplicationPanel();
+				var implProcessor: ImplicationProcessor = new ImplicationProcessor();
+				var kImplClosure: Array = new Array();
+				var implications: ArrayCollection = new ArrayCollection();
+				var k: int = 1;
+				
+				var i: int = 0;
+				
+				while (true)
+				{
+					if (k == 1)
+					{
+						 var kImplClosureFirstTemp: Array = implProcessor.FirstClosure(objects, attributes, rows);
+						 kImplClosure = new Array();
+						 for each (var bFirst: Boolean in kImplClosureFirstTemp)
+						 {
+						 	kImplClosure.push(bFirst);
+						 }
+					}
+					else
+					{
+						var kImplClosureNextTemp: Array = implProcessor.NextClosure(kImplClosure, objects, attributes, rows);
+						kImplClosure = new Array();
+						for each (var bNext: Boolean in kImplClosureNextTemp)
+						{
+							kImplClosure.push(bNext);
+						}
+					}
+					++k;
+									
+					// check whether we've reached the end of the possible intents
+					for (i = 0; i < kImplClosure.length; ++i)
+					{
+						if (kImplClosure[i] == false)
+						{
+							break;
+						}
+					}
+					if (i == kImplClosure.length)
+					{
+						break; // finished
+					}
+					
+					var bsPremise:Array = implProcessor.sPremise[implProcessor.sPremise.length - 1];
+					var bsConclusion:Array = implProcessor.sConclusion[implProcessor.sConclusion.length - 1];
+					
+					var j: int = 0;
+					for (j = 0; j < kImplClosure.length; ++j)
+					{
+						if (bsPremise[j] != bsConclusion[j])
+						{
+							break;
+						}
+					}
+					if (j == bsPremise.length) // premise is equal to the conclusion
+					{
+						// skip
+					}
+					else
+					{
+						var item: Object = new Object();
+						item = ({premise: 
+							implProcessor.getAttrSetAsString(
+								implProcessor.fromBitSetToAttributeSet(
+									bsPremise, 
+								attributes), 
+							attributes), 
+								conclusion:
+							implProcessor.getAttrSetAsString(
+								implProcessor.fromBitSetToAttributeSet(
+									implProcessor.getBitSetDifference(
+										bsPremise, 
+										bsConclusion), 
+									attributes), 
+								attributes)});
+						implications.addItem(item);
+					}		
+				}
+				
+				PopUpManager.addPopUp(panel, this, true);
+				PopUpManager.centerPopUp(panel);
+				
+				panel.okButton.addEventListener(MouseEvent.CLICK,
+					function (event:Event): void {
+						PopUpManager.removePopUp(panel);
+					});
+				panel.setImplItems(implications);
 			}
 			
 			private var explorer: AttributeExplorer = new AttributeExplorer();
@@ -310,6 +402,8 @@
 				viewLatticeButton.includeInLayout = true;
 				beginExploreAttrButton.visible = true;
 				beginExploreAttrButton.includeInLayout = true;
+				implButton.visible = true;
+				implButton.includeInLayout = true;
 				endExploreAttrButton.visible = true;
 				endExploreAttrButton.includeInLayout = true;
 				endExploreAttrButton.enabled = false;
@@ -542,6 +636,7 @@
 			<mx:Button id="backToGridButton" visible="false" includeInLayout="false" label="Back" click="setContextGridVisibility()"/>
 			<mx:Button id="beginExploreAttrButton" visible="false" includeInLayout="false" label="Begin Attribute Exploration" click="beginExploreAttr()"/>
 			<mx:Button id="endExploreAttrButton" visible="false" enabled="false" includeInLayout="false" label="Cancel Attribute Exploration" click="endExploreAttr()"/>
+			<mx:Button id="implButton" visible="false" includeInLayout="false" label="View Implications" click="showImplications()"/>
 	</mx:ApplicationControlBar>
 
 	<mx:Fade id="fadeIn" alphaFrom="0.0" alphaTo="1.0"/>
