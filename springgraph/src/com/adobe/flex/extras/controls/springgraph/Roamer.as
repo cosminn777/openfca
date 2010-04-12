@@ -5,14 +5,6 @@
 //  restrictions on such code as contained in the End User License Agreement
 //  accompanying this product.
 //
-//  Copyright (C) 2009 Ovidiu Sabou
-//  This version was modified by Ovidiu Sabou in order to make it suitable for
-//  the Conflexplore program from the OpenFCA project.
-//  The modified parts are the "skip" variable and it's references. It's used
-//  for skipping a sequence of neighbors at the second level and a
-//  reimplementation of addNodes, that uses breadth first search instead of
-//  DFS, to make the component useful for graphs, not only trees.
-//  See http://code.google.com/p/openfca for more information about OpenFCA.
 ////////////////////////////////////////////////////////////////////////////////
 
 package com.adobe.flex.extras.controls.springgraph {
@@ -63,10 +55,18 @@ package com.adobe.flex.extras.controls.springgraph {
 			recreateGraph();
 		}
 		
+		public function get nodeHeight(): int {
+			return _nodeHeight;
+		}
+	
+		public function set nodeHeight(i: int): void {
+			_nodeHeight = i;
+			recreateGraph();
+		}
+		
 		public function get maxDistanceFromCurrent(): int {
 			return _maxDistanceFromCurrent;
 		}
-	
 		/**
 		 * The item that current acts as the 'center' or 'root' of the graph. 
 		 * This item defines the subset of the graph that will be visible.
@@ -463,7 +463,8 @@ package com.adobe.flex.extras.controls.springgraph {
 				dispatchEvent(new Event("historyChange"));
 			}
 		}
-
+		
+		public static var _nodeHeight: int = 50;
 		private var _currentItem: Item;
 		private var _itemLimit: int = 50;
 		private var _skip: int = 0;

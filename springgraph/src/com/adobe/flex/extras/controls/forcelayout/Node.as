@@ -47,6 +47,8 @@
  */
 
 package com.adobe.flex.extras.controls.forcelayout {
+	
+	import com.adobe.flex.extras.controls.springgraph.SpringGraph;
 
 /** Translated and adapted to Flex/ActionScript 
   * from TouchGraph's original java code
@@ -60,8 +62,10 @@ public class Node {
 	public function Node(): void {}
 
 	public var y: Number = 0;
-	public var dy: Number = 0;
+	public var dy: Number = -80;
 	public var repulsion: Number = 0;
+	public var seted:Boolean = false;
+	//public var verticalRepulsion: Number = 0;
 	public var fixed: Boolean = false;
 
 	public function refresh(): void {}

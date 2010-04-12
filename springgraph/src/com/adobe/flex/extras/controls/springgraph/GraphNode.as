@@ -14,6 +14,7 @@ package com.adobe.flex.extras.controls.springgraph {
 	import mx.controls.Alert;
 	import com.adobe.flex.extras.controls.forcelayout.Node;
 	import flash.geom.Rectangle;
+	import flash.geom.Point;
 	
 	/** Represents one node of a SpringGraph 
 	 * 
@@ -29,6 +30,7 @@ package com.adobe.flex.extras.controls.springgraph {
 			this.x = getX();
 			this.y = getY();
 			this.repulsion = getRepulsion();
+			//this.verticalRepulsion = getVerticalRepulsion();
 		}
 		
 		public override function commit(): void {
@@ -46,7 +48,6 @@ package com.adobe.flex.extras.controls.springgraph {
 		// -------------------------------------------------
 		// Private stuff 
 		// -------------------------------------------------
-
 	    private function getX(): Number {
 	    	return view.x;// + (view.width / 2); // we use the center point
 	    }
@@ -79,12 +80,22 @@ package com.adobe.flex.extras.controls.springgraph {
 		    	context.layoutChanged = true;
 		    	view.y = y; // - (view.height / 2);
 		    }
+
 	    }
+
 	    
 		private function getRepulsion(): int {
 			var result: int = (view.width + view.height) * context.repulsionFactor;
 			if(result == 0)
 				return context.defaultRepulsion;
+			return result;
+		}
+		
+		private function getVerticalRepulsion(): int {
+			//var result: int = (view.width + view.height) * context.repulsionFactor;
+			var result: int = context.verticalRepulsionFactor;
+			if(result == 0)
+				return context.defaultVerticalRepulsion;
 			return result;
 		}
 		
