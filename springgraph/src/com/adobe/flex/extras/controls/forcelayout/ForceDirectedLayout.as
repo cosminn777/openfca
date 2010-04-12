@@ -48,7 +48,9 @@
 
 package com.adobe.flex.extras.controls.forcelayout {
 
-import flash.utils.getTimer;
+import com.adobe.flex.extras.controls.springgraph.GraphNode;
+import com.adobe.flex.extras.controls.springgraph.Roamer;
+import com.adobe.flex.extras.controls.springgraph.SpringGraph;
 
 /**  TGLayout is the thread responsible for graph layout.  It updates
   *  the real coordinates of the nodes in the graphEltSet object.
@@ -88,8 +90,14 @@ public class ForceDirectedLayout implements IForEachEdge, IForEachNode, IForEach
                                     // a value that's too high will cause oscillation
     /*private*/public var newRigidity: Number = 0.25;
 	/*private*/public var dataProvider: IDataProvider;
-    /*private*/public var dragNode: Node=null;
+    /*private*/public var dragNode: Node = null;
 	/*private*/public var maxMotionA: Array;
+				private var yScale: Number = 0;
+				private var upMovement:Boolean = false;
+				private var oldVerticalDistance: Number = 110;
+				private var vContraction: Boolean = false;
+				private var contractionDistance: Number = 0;
+				private var vDistance: Number = 110;
 
   /** Constructor with a supplied TGPanel <tt>tgp</tt>.
     */
@@ -107,6 +115,7 @@ public class ForceDirectedLayout implements IForEachEdge, IForEachNode, IForEach
 
     //relaxEdges is more like tense edges up.  All edges pull nodes closes together;
     private /*synchronized*/ function relaxEdges(): void {
+    	
          dataProvider.forAllEdges(this);
     }
 
@@ -165,7 +174,7 @@ public class ForceDirectedLayout implements IForEachEdge, IForEachNode, IForEach
     }
 
     public function stopMotion(): void {  // stabilize the graph, but do so gently by setting the damper to a low value
-        damping = true;
+        damping = true;//aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
         if (damper>0.3) 
             damper = 0.3;
         else
@@ -213,7 +222,17 @@ public class ForceDirectedLayout implements IForEachEdge, IForEachNode, IForEach
 	
     private /*synchronized*/ function relax(): void {
 		//var startTime: int = getTimer();
-		//trace("relax...");
+		//trace("relax...");\
+		//-------------------------------------------------
+		//vDistance = dataProvider.defaultVerticalRepulsion * dataProvider.verticalRepulsionFactor;
+    	//if (vDistance < oldVerticalDistance) {
+	    //	contractionDistance = oldVerticalDistance - vDistance;
+	    //	vContraction = true;
+	    	//upMovement=false;
+	    //}
+	    //-------------------------------------------------
+
+         
     	dataProvider.forAllNodes(new Refresher());
         for (var i: int=0;i<5;i++) {
 			//var startTime: int = getTimer();
@@ -235,12 +254,45 @@ public class ForceDirectedLayout implements IForEachEdge, IForEachNode, IForEach
         dataProvider.forAllNodes(new Committer());
  		//var endTime: int = getTimer();
 		//trace("relax: " + String(endTime - startTime) + " ms");
+		
+		 //oldVerticalDistance = vDistance;
+         //vContraction = false;
+         //-------------------------------------------------
+         //oldVerticalDistance = vDistance;
+         //vContraction = false;
+         //upMovement=true;
+         //--------------------------------------------------
 	}
 
 	public function tick(): Boolean {
 		if (!(damper<0.1 && damping && maxMotion<motionLimit)) {
 			//trace("relax " + getTimer());
+			
+			//setting settings for contraction
+	    	vDistance = dataProvider.defaultVerticalRepulsion * dataProvider.verticalRepulsionFactor;
+			//var tmp:Boolean=upMovement;
+			//if (oldVerticalDistance != vDistance) {
+	    	//	SpringGraph(Roamer(this.dataProvider)).scroll(0,oldVerticalDistance - vDistance);
+	    	//}
+    		if (vDistance < oldVerticalDistance) {
+	    		contractionDistance = oldVerticalDistance - vDistance;
+	    		oldVerticalDistance = vDistance;
+	    		vContraction = true;
+	    		upMovement=false;
+	    	} else 
+	    	{
+	    		oldVerticalDistance = vDistance;
+	    		vContraction = false;
+	    		upMovement=false;
+	    	}
+			
 			relax();
+			
+			//oldVerticalDistance = vDistance;
+            //vContraction = tmp;
+            //vContraction = false;
+            //upMovement=true;
+			
 			//trace("relax done " + getTimer());
 			return true;
 		} else {
@@ -281,21 +333,249 @@ public class ForceDirectedLayout implements IForEachEdge, IForEachNode, IForEach
 	    // because we want the edges to be stretchy.  The edges are ideal rubberbands.  They
 	    // They don't become springs when they are too short.  That only causes the graph to
 	    // oscillate.
-	
+	    //puse de mine
+	    //var todx:Number = e.getTo().dx - dx*len;
+	    //var tody:Number = e.getTo().dy - dy*len;
+	    //var fromdx:Number = e.getFrom().dx + dx*len;
+	    //var fromdy:Number = e.getFrom().dy + dy*len;
 	    //if (e.getTo().justMadeLocal || !e.getFrom().justMadeLocal) { always true, because justMadeLocal is always false
-	        e.getTo().dx = e.getTo().dx - dx*len;
-	        e.getTo().dy = e.getTo().dy - dy*len;
+	    e.getTo().dx = e.getTo().dx - dx*len;//--------------
+	   // e.getTo().dy = e.getTo().dy - dy*len;//--------------
 	    //} else {
 	    //    e.getTo().dx = e.getTo().dx - dx*len/10;
 	    //    e.getTo().dy = e.getTo().dy - dy*len/10;
 	    //}
 	    //if (e.getFrom().justMadeLocal || !e.getTo().justMadeLocal) { // ditto
-	        e.getFrom().dx = e.getFrom().dx + dx*len;
-	        e.getFrom().dy = e.getFrom().dy + dy*len;
-	    //} else {
-	    //    e.getFrom().dx = e.getFrom().dx + dx*len/10;
-	    //    e.getFrom().dy = e.getFrom().dy + dy*len/10;
+	    //var aux:Number = e.getFrom().dy;
+	    //var auxx:Number = e.getFrom().dx;
+	    e.getFrom().dx = e.getFrom().dx + dx*len;//------------
+	    //e.getFrom().dy = e.getFrom().dy + dy*len;//-------------
+	   // var repSum: Number = e.getFrom().repulsion * e.getTo().repulsion/100;//Pentru ca Nodurile sa aiba si forta de atractie!!!!!
+	    //var factor: Number = repSum*rigidity;//Pentru ca Nodurile sa aiba si forta de atractie!!!!!
+	   	//if (Math.abs(e.getTo().y-e.getFrom().y)>factor) {//Pentru ca Nodurile sa aiba si forta de atractie!!!!!
+	   		/*if (e.getTo().dy>e.getFrom().dy) 
+	   		if (e.getTo().dy<(e.getTo().dy - dy*len)) {
+	       //	n1.dy = n1y;
+	       //	n2.dy = n2y;
+	       	e.getTo().dy = e.getTo().dy - dy*len;
+	       //	e.getFrom().dy = e.getFrom().dy + dy*len;
+	       	}
+	       	else {
+		    e.getTo().dy = e.getTo().dy - dy*len;
+	       	//e.getFrom().dy = e.getFrom().dy + dy*len;       		
+	       	}*/
+	       	//e.getTo().dy = e.getTo().dy - dy*len;//----------------------------Pentru ca Nodurile sa aiba si forta de atractie!!!!!
+	       	//e.getFrom().dy = e.getFrom().dy + dy*len;//------------------------Pentru ca Nodurile sa aiba si forta de atractie!!!!!
+	       	/*if (e.getFrom().y>e.getTo().y) {
+	       	e.getTo().dy = e.getTo().dy - dy*len;
+	       	e.getFrom().dy = e.getFrom().dy + dy*len;
+	       	} else {
+	       	e.getTo().dy = e.getTo().dy - dy*len-1;
+	       	e.getFrom().dy = e.getFrom().dy + dy*len;	       		
+	       	}*/
+	    //}Pentru ca Nodurile sa aiba si forta de atractie!!!!!
+	    //if (e.getFrom().dy>e.getTo().dy)
+	    //	e.getTo().dy = e.getTo().dy+Math.abs(dy*len);
+	    //fromdy=e.getFrom().dy;
+	    //tody=e.getTo().dy;
+	    //var todx:Number = e.getTo().dx - dx*len;
+	    //var tody:Number = e.getTo().dy - dy*len;
+	    //var fromdx:Number = e.getFrom().dx + dx*len;
+	    //var fromdy:Number = e.getFrom().dy + dy*len;//-------------------
+	    var fromId: String = SpringGraph._graph.getLinkData(GraphNode(e.getFrom()).item,GraphNode(e.getTo()).item).toString();//(e.getFrom() as GraphNode).id, (e.getTo() as GraphNode).id).toString();
+	    /*if (dragNode!=null) {
+	    	if (dragNode.y>yScale) {
+	    		upMovement=false;
+	    		yScale=dragNode.y;
+	   		}
+	    	if (dragNode.y<yScale) {
+	    		upMovement=true;
+	    		yScale=dragNode.y;
+	    	}
+	    }*/
+	    //var fromId:String = SpGraph(GraphNode(e.getFrom()).view).getLinkData(GraphNode(e.getFrom()).item,GraphNode(e.getTo()).item).toString();
+		//var vDistance:int = 110;
+		//var vDistance:int = e.getFrom().verticalRepulsion;
+		//var repSum: Number = e.getFrom().verticalRepulsion * e.getTo().verticalRepulsion/100;
+	    //var factor: Number = repSum*rigidity;
+	    //var vDistance:int = factor;
+	    //var vDistance:int = this.dataProvider.
+	    /////////////////////////var vDistance: Number = dataProvider.defaultVerticalRepulsion*dataProvider.verticalRepulsionFactor;
+	    //SpringGraph._verticalRepulsionFactor*SpringGraph.defaultVerticalRepulsion;
+		//if (Roamer._currentItem.id != fromId) 
+		//		view.y = 100;//cat de sus sa fie
+	    //if ((e.getTo().y<e.getFrom().y)) {
+	    	//e.getTo().dx = todx;
+	    	//e.getTo().dy = fromdy;
+	    	//e.getFrom().dx = fromdx;
+	    	//e.getFrom().dy = tody;
+	    //	 e.getTo().y = e.getTo().y+(e.getFrom().y-e.getTo().y);
+	    	//e.getFrom().y=e.getFrom().y+(e.getTo().y-e.getFrom().y);
 	    //}
+	    //if (dragNode == e.getFrom()) {
+	    //----------------------------------------alterated
+	 /*  if (dragNode!=null) {
+	    if ((GraphNode(dragNode).item.id==fromId) && (dragNode == e.getFrom())) {
+	    if (((e.getFrom().y+50)>e.getTo().y)&&(GraphNode(e.getFrom()).item.id == fromId)) {
+	    	 e.getTo().y=e.getTo().y-(e.getTo().y-e.getFrom().y)+50;
+	    } 
+	    if ((e.getFrom().y<e.getTo().y+50)&&(GraphNode(e.getFrom()).item.id != fromId)) {
+	    	  //e.getTo().y = e.getTo().y + (e.getFrom().y-e.getTo().y)-50;
+	    	 e.getFrom().y=e.getFrom().y-(e.getFrom().y-e.getTo().y)+50;//+50;
+	    	//e.getFrom().y=e.getFrom().y+(e.getTo().y-e.getFrom().y);
+	    }
+	    } else {
+	    	
+	    if (((e.getFrom().y+50)>e.getTo().y)&&(GraphNode(e.getFrom()).item.id == fromId)) {
+	    	 e.getFrom().y = e.getFrom().y -(e.getFrom().y-e.getTo().y)-50;
+	    	//e.getFrom().y=e.getFrom().y+(e.getTo().y-e.getFrom().y);
+	    } //else e.getTo().y = e.getTo().y + (e.getFrom().y-e.getTo().y);
+	    if ((e.getFrom().y<e.getTo().y+50)&&(GraphNode(e.getFrom()).item.id != fromId)) {
+	    	  e.getTo().y = e.getTo().y + (e.getFrom().y-e.getTo().y)-50;
+	    	//e.getFrom().y=e.getFrom().y+(e.getTo().y-e.getFrom().y);
+	    }
+	    }
+	    }else {
+
+	    if (((e.getFrom().y+50)>e.getTo().y)&&(GraphNode(e.getFrom()).item.id == fromId)) {
+	    	 e.getFrom().y = e.getFrom().y -(e.getFrom().y-e.getTo().y)-50;
+	    	//e.getFrom().y=e.getFrom().y+(e.getTo().y-e.getFrom().y);
+	    } //else e.getTo().y = e.getTo().y + (e.getFrom().y-e.getTo().y);
+	    else
+	    if ((e.getFrom().y<e.getTo().y+50)&&(GraphNode(e.getFrom()).item.id != fromId)) {
+	    	  e.getTo().y = e.getTo().y + (e.getFrom().y-e.getTo().y)-50;
+	    	//e.getFrom().y=e.getFrom().y+(e.getTo().y-e.getFrom().y);
+	    }*/
+	    //if (e.getTo().y % vDistance > 5 && (Math.abs(e.getFrom().y - e.getTo().y)) > vDistance)
+	    //	e.getTo().y = e.getTo().y - (e.getTo().y % vDistance);
+	    //see if you drag a node up or down ... the mode positioning is different (hierarchy)
+	    if (dragNode!=null) {
+	    	if (dragNode.y>yScale) {
+	    		upMovement=false;
+	    		yScale=dragNode.y;
+	   		}
+	    	if (dragNode.y<yScale) {
+	    		upMovement=true;
+	    		yScale=dragNode.y;
+	    	}
+	   	}
+	   	 //	if (vContraction == true)
+	   	 //		upMovement=false;
+	    //---------------------------------------------------------------AAAAAAAAAAAAAAAAAAAAAA :)
+	    //put nodes in a hierarchy
+	    	    //create the new nodes in concordance to parent node //LOWER NODES
+	    if ((GraphNode(e.getFrom()).item.id == fromId) && (e.getTo().seted==false)) {
+	    	e.getTo().y = e.getFrom().y + vDistance;
+	    	//e.getTo().x = e.getFrom().x - 20;
+	    	e.getTo().seted = true;
+	    } else 
+	    if ((GraphNode(e.getFrom()).item.id != fromId) && (e.getFrom().seted==false)) {
+	    	e.getFrom().y = e.getTo().y + vDistance;
+	    	//e.getFrom().x = e.getTo().x - 20;
+	    	e.getFrom().seted = true;
+	    }
+	    //create the new nodes in concordance to parent node //UPPER NODES
+	    if ((GraphNode(e.getFrom()).item.id == fromId) && (e.getFrom().seted==false)) {
+	    	var ii:Number=e.getTo().y;
+	    	e.getFrom().y = ii - vDistance;
+	    	//e.getTo().x = e.getFrom().x - 20;
+	    	e.getFrom().seted = true;
+	    } else 
+	    if ((GraphNode(e.getFrom()).item.id != fromId) && (e.getTo().seted==false)) {
+	    	e.getTo().y = e.getFrom().y - vDistance;
+	    	//e.getFrom().x = e.getTo().x - 20;
+	    	e.getTo().seted = true;
+	    }
+		if (GraphNode(e.getFrom()).item.id == fromId) { //&& dragNode!=null) {
+	    	if ((e.getFrom().y+vDistance)>e.getTo().y) {
+	    		  if (upMovement==false) 
+	    		  	e.getTo().y=e.getTo().y-(e.getTo().y-e.getFrom().y)+vDistance;//pentru radacina sa coboare frunzele
+	    		  if (upMovement==true) 
+	    		  	e.getFrom().y = e.getFrom().y -(e.getFrom().y-e.getTo().y)-vDistance;//pentru frunze sa ridice radacina
+	    	}
+	    } 
+	    else
+	    	if (e.getFrom().y<e.getTo().y+vDistance) {
+	    		  if (upMovement==false) 
+	    		  	e.getFrom().y=e.getFrom().y-(e.getFrom().y-e.getTo().y)+vDistance;//pentru radacina sa coboare frunzele
+	    		  if (upMovement==true) 
+	    		  	e.getTo().y = e.getTo().y - (e.getTo().y-e.getFrom().y)-vDistance;//pentru frunze sa ridice radacina
+	    	}
+
+	    //contracts the nodes
+	    var tmp:Number=Math.abs(e.getTo().y-e.getFrom().y);
+	    //var tmp2:Number=tmp % vDistance;
+	    if ((vContraction == true)) {
+	    	if (tmp > vDistance) {
+	    		if (GraphNode(e.getFrom()).item.id == fromId)
+	    			e.getTo().y=e.getTo().y - contractionDistance; 
+	    		else e.getFrom().y=e.getFrom().y - contractionDistance;
+	    	}
+	    }
+	    //----------------------------------------
+	    /*if (vDistance < oldVerticalDistance) {
+	    	if (GraphNode(e.getFrom()).item.id == fromId)
+	    		e.getTo().y=e.getTo().y-(oldVerticalDistance - vDistance); 
+	    	else e.getFrom().y=e.getFrom().y-(oldVerticalDistance - vDistance);
+	    	oldVerticalDistance=vDistance;
+	    } else oldVerticalDistance=vDistance;*/
+//------------------------------------------------------backup 2
+/*			if (GraphNode(e.getFrom()).item.id == fromId) { //&& dragNode!=null) {
+	    	if ((e.getFrom().y+50)>e.getTo().y)
+	    		  e.getTo().y=e.getTo().y-(e.getTo().y-e.getFrom().y)+50;//pentru radacina sa coboare frunzele
+	    		  //e.getFrom().y = e.getFrom().y -(e.getFrom().y-e.getTo().y)-50;//pentru frunze sa ridice radacina
+	    } 
+	    else
+	    	if (e.getFrom().y<e.getTo().y+50) 
+	    		  e.getFrom().y=e.getFrom().y-(e.getFrom().y-e.getTo().y)+50;//pentru radacina sa coboare frunzele
+	    		  //e.getTo().y = e.getTo().y - (e.getTo().y-e.getFrom().y)-50;//pentru frunze sa ridice radacina
+	    */
+
+	    //--------------------------------------------------backup to previous
+	    /*
+	    	    if (dragNode == e.getFrom()) {
+	    if (((e.getFrom().y+50)>e.getTo().y)&&(GraphNode(e.getFrom()).item.id == fromId)) {
+	    	 e.getTo().y=e.getTo().y-(e.getTo().y-e.getFrom().y)+50;
+	    } 
+	    if ((e.getFrom().y<e.getTo().y+50)&&(GraphNode(e.getFrom()).item.id != fromId)) {
+	    	  //e.getTo().y = e.getTo().y + (e.getFrom().y-e.getTo().y)-50;
+	    	 e.getFrom().y=e.getFrom().y-(e.getFrom().y-e.getTo().y)+50;//+50;
+	    	//e.getFrom().y=e.getFrom().y+(e.getTo().y-e.getFrom().y);
+	    }
+	    } else
+		{
+	    if (((e.getFrom().y+50)>e.getTo().y)&&(GraphNode(e.getFrom()).item.id == fromId)) {
+	    	 e.getFrom().y = e.getFrom().y -(e.getFrom().y-e.getTo().y)-50;
+	    	//e.getFrom().y=e.getFrom().y+(e.getTo().y-e.getFrom().y);
+	    } //else e.getTo().y = e.getTo().y + (e.getFrom().y-e.getTo().y);
+	    if ((e.getFrom().y<e.getTo().y+50)&&(GraphNode(e.getFrom()).item.id != fromId)) {
+	    	  e.getTo().y = e.getTo().y + (e.getFrom().y-e.getTo().y)-50;
+	    	//e.getFrom().y=e.getFrom().y+(e.getTo().y-e.getFrom().y);
+	    }
+	    }
+*/
+//end of backup
+	    //else {
+	    	//e.getTo().dx = todx;
+	    	//e.getFrom().dx = fromdx;
+	    //}
+	    //---------------------------
+	    //if (e.getTo().dy<e.getFrom().dy) {
+	    //    e.getTo().dy = e.getTo().dy - 10;
+	    //    e.getFrom().dy = e.getFrom().dy-aux;
+	        //e.getFrom().dy = e.getFrom().dy+5;
+	       // e.getFrom().dy = 200;
+	        //e.getFrom().dy=e.getFrom().dy+10;
+	    //}
+	  /*  if (e.getFrom().dy>e.getTo().dy) {
+	        e.getTo().dy = e.getTo().dy - 1;
+	    //}
+	    //e.getFrom().dy=aux;
+	    //e.getFrom().dx=auxx;
+	    } else {
+	        //e.getFrom().dx = e.getFrom().dx + dx*len/10;
+	        //e.getFrom().dy = e.getFrom().dy + dy*len/10;
+	    }*/
 	}
 
 	 public function forEachNode(n: Node): void {
@@ -304,21 +584,38 @@ public class ForceDirectedLayout implements IForEachEdge, IForEachNode, IForEach
 	    dx*=damper;  //The damper slows things down.  It cuts down jiggling at the last moment, and optimizes
 	    dy*=damper;  //layout.  As an experiment, get rid of the damper in these lines, and make a
 	                 //long straight line of nodes.  It wiggles too much and doesn't straighten out.
-	
+
 	    n.dx = dx/2;   //Slow down, but dont stop.  Nodes in motion store momentum.  This helps when the force
 	    n.dy = dy/2;   //on a node is very low, but you still want to get optimal layout.
 	
 	    var distMoved: Number = Math.sqrt(dx*dx+dy*dy); //how far did the node actually move?
 	
 	     if (!n.fixed && !(n==dragNode) ) {
+	    	
+	     	//var upNodeX: Number = IEdge(this).getFrom().x;
+	     	//var upNodeY: Number = IEdge(this).getFrom().y;
+	    	//var vy: Number = e.getTo().y - e.getFrom().y;
+			//var edges: Array = this.dataProvider.dataProvider.getEdges();
+			//for each (var edge: GraphEdge in edges) {
+			//	var fromNode: GraphNode = GraphNode(edge.getFrom());
+			//	var toNode: GraphNode = GraphNode(edge.getTo());
+			//	var color: int = ((fromNode.item == distinguishedItem) || (toNode.item == distinguishedItem))
+			//		? distinguishedLineColor : _lineColor;
+			//	drawEdge(fromNode.view, toNode.view, color);
+			//}
+	     	//actual coordinates positioning !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	        n.x = n.x + Math.max(-30, Math.min(30, dx)); //don't move faster then 30 units at a time.
-	        n.y = n.y + Math.max(-30, Math.min(30, dy)); //I forget when this is important.  Stopping severed nodes from
+	        //n.y = n.y + Math.max(-30, Math.min(30, dy)); //I forget when this is important.  Stopping severed nodes from
 	                                            //flying away?
+	        //if (n==dragNode) {
+	        //	n.x=dx;
+	        //}
 	     }
 	     maxMotionA[0]=Math.max(distMoved,maxMotionA[0]);
 	}
 	
-	public function forEachNodePair(n1: Node, n2: Node): void {
+	public function forEachNodePair(n2: Node, n1: Node): void { //face sa se departeze
+		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		//trace(Object(n1).item.id + "," + String(n1.x) + "," + String(n1.y) + " ... " + Object(n2).item.id + "," + String(n2.x) + "," + String(n2.y));
 	    var dx: Number=0;
 	    var dy: Number=0;
@@ -335,21 +632,82 @@ public class ForceDirectedLayout implements IForEachEdge, IForEachNode, IForEach
 	                        // linear function does not fall off fast enough, so you get rough edges
 	                        // in the 'force field'
 	    }
+	   /* var neighborsN1: Object = SpringGraph._graph.neighbors(GraphNode(n1).item.id);
+	    var neighborsN2: Object = SpringGraph._graph.neighbors(GraphNode(n2).item.id);
+	    var auxBol:Boolean = false;
+	    for (var i: String in neighborsN1) { 
+			for (var j: String in neighborsN2) { 
+				if (i==j) {
+					var fromId: String = SpringGraph._graph.getLinkData(SpringGraph._graph.find(i), GraphNode(n1).item).toString();
+					var fromIdSecond: String = SpringGraph._graph.getLinkData(SpringGraph._graph.find(j), GraphNode(n2).item).toString();
+					if (fromId==fromIdSecond) auxBol = true;
+					//auxBol = true;
+				} 
+			}
+		}*/
+	    //if (GraphNode(n2).item.id == fromId)
+	    if ((n1.y < n2.y+Roamer._nodeHeight) && (n1.y>n2.y-Roamer._nodeHeight)) { //&& (auxBol == true)) {
 	
 	    var repSum: Number = n1.repulsion * n2.repulsion/100;
 	    var factor: Number = repSum*rigidity;
 	
 	    //if(n1.justMadeLocal || !n2.justMadeLocal) { always true, because justMadeLocal is always false
 	        n1.dx += dx*factor;
-	        n1.dy += dy*factor;
+	        //var a1:int = n1.dx + dx*factor;
+	        //n1.dy += dy*factor;
 	    //}
 	    //else {
 	    //    n1.dx = n1.dx + dx*repSum*rigidity/10;
 	    //    n1.dy = n1.dy + dy*repSum*rigidity/10;
 	    //}
 	    //if (n2.justMadeLocal || !n1.justMadeLocal) { always true, because justMadeLocal is always false
-	        n2.dx -= dx*factor;
-	        n2.dy -= dy*factor;
+	       n2.dx -= dx*factor;
+	       //var a2:int = n2.dx - dx*factor;
+	       /*if (Math.abs(n1.x - n2.x) < 30) {
+	       		if (n1.x > n2.x)
+	       			n2.x=n2.x+1;
+	       		else n1.x=n1.x-1;
+	       }*/
+	     }
+	        //n2.dy -= dy*factor;
+	       //var n1y:Number = n1.y;
+	       //var n2y:Number = n2.y;
+	       //face nodurile mai apropiate de 100 sa se departeze
+	       	//var fromId:String = SpringGraph._graph.getLinkData(Item(n1), Item(n2)).toString();
+			//if (Item.(n1).id == fromId && n1.y > n2.y) { 
+			//n2.y=n2.y+100
+			// }
+			//	view.y = 100;//cat de sus sa fie
+			//pentru construirea pe nivele se comenteaza ca este inauntrul isului:
+			
+			
+			
+	       /*if (Math.abs(n1.y-n2.y)<factor) {//DECOMENTARE PT REPULSIE PE SI PE X I PE Y
+	       //	n1.dy = n1y;
+	       //	n2.dy = n2y;
+	       	n1.dy += dy*factor;//pentru separarea de pe nivele
+	       	n2.dy -= dy*factor;//akininarea acestor linii duce la crearea unei latici pe nivele
+	       }*/
+	       
+	       
+	       
+	      /* var n1x:Number = n1.dx + dx*factor;
+	       var n1y:Number = n1.dy + dy*factor;
+	       var n2x:Number = n2.dx - dx*factor;
+	       var n2y:Number = n2.dy - dy*factor;
+	       if (n2y<n1y) {
+	       	n1.dx = n1x;
+	       	n1.dy = n2y;
+	       	n2.dx = n2x;
+	       	n2.dy = n1y;
+	       	
+	       } else {
+	        n1.dx = n1x;
+	       	n1.dy = n1y;
+	       	n2.dx = n2x;
+	       	n2.dy = n2y;
+	       }*/
+	       
 	    //}
 	    //else {
 	    //    n2.dx = n2.dx - dx*repSum*rigidity/10;

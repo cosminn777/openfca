@@ -47,7 +47,7 @@ package renderers
 			var linePoints:Array = [computeLinePoint(fromX, fromY, fromView, toX, toY),
 									computeLinePoint(toX, toY, toView, fromX, fromY)];
 			
-			// check orientation
+			//check orientation
 			var fromId:String = graph.getLinkData(item1, item2).toString();
 			if (item1.id != fromId) {
 				linePoints.reverse();

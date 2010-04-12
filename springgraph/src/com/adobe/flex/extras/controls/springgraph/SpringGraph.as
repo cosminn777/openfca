@@ -5,13 +5,6 @@
 //  restrictions on such code as contained in the End User License Agreement
 //  accompanying this product.
 //
-//  Copyright (C) 2009 Ovidiu Sabou
-//  This version was modified by Ovidiu Sabou in order to make it suitable for
-//  the Conflexplore program from the OpenFCA project.
-//  Search for "mouseOver" and "mouseOut" in this file to see the modified
-//  parts.
-//  See http://code.google.com/p/openfca for more information about OpenFCA.
-//
 ////////////////////////////////////////////////////////////////////////////////
 
 package com.adobe.flex.extras.controls.springgraph {
@@ -30,7 +23,7 @@ package com.adobe.flex.extras.controls.springgraph {
 	import mx.core.UIComponent;
 	import mx.effects.Effect;
 	import mx.events.EffectEvent;
-
+import com.adobe.flex.extras.controls.forcelayout.Node;
 	//[Event(name="doubleClick", type="flash.events.Event")]
 
 /**
@@ -130,7 +123,7 @@ package com.adobe.flex.extras.controls.springgraph {
 			var fromY: int = f.y + (f.height / 2);
 			var toX: int = t.x + (t.width / 2);
 			var toY: int = t.y + (t.height / 2);
-			if((_edgeRenderer != null) && _edgeRenderer.draw(drawingSurface.graphics, f, t, fromX, fromY, toX, toY, _graph))
+			if((_edgeRenderer != null) && _edgeRenderer.draw(drawingSurface.graphics, f, t, fromX, fromY, toX, toY, _graph)) {}
 				return;
 			var fromItem: Item = (f as IDataRenderer).data as Item;
 			var toItem: Item = (t as IDataRenderer).data as Item;
@@ -264,9 +257,13 @@ package com.adobe.flex.extras.controls.springgraph {
    				// it's a double-click
    				var node: GraphNode = _dataProvider.findNode(UIComponent(event.currentTarget));
    				if(node != null) {
+   					
    					dragEnd(event);
-   					if(Object(node.view).hasOwnProperty("doubleClick"))
+   					if(Object(node.view).hasOwnProperty("doubleClick")) {
    						Object(node.view).doubleClick(event);	   	
+   					}
+   					doubleClick = true;
+   					showGraph = 0;
    				}
    				return;
    			}
@@ -316,6 +313,7 @@ package com.adobe.flex.extras.controls.springgraph {
    		}
    		
    		private function dragEnd(event: MouseEvent):void  {
+   			mouseDown = false;
    			if(backgroundDragInProgress) {
    				backgroundDragEnd(event);
    				return;
@@ -326,6 +324,7 @@ package com.adobe.flex.extras.controls.springgraph {
 
    		private function backgroundMouseDownEvent(event: MouseEvent):void  {
    			var now: int = getTimer();
+   			mouseDown = true;
    			if((now - lastMouseDownTime) < 300) {
    				// it's a double-click
    				//var node: GraphNode = _dataProvider.findNode(UIComponent(event.currentTarget));
@@ -335,6 +334,7 @@ package com.adobe.flex.extras.controls.springgraph {
    				//}
    				return;
    			}
+   			doubleClick = false;
    			lastMouseDownTime = now;
    			backgroundDragBegin(event);
    			event.stopImmediatePropagation();
@@ -373,7 +373,7 @@ package com.adobe.flex.extras.controls.springgraph {
    		}
   		
  		/** @private */
-  		protected function scroll(deltaX: int, deltaY: int): void {
+  		public function scroll(deltaX: int, deltaY: int): void {//aaaaaaaaaaaaaaaaaaaaaaaaaaa
    			var c: Array = this.getChildren();
    			for (var i: int = 1; i < c.length; i++) {
    				var itemView: Object = c[i];
@@ -398,15 +398,17 @@ package com.adobe.flex.extras.controls.springgraph {
             timer = new Timer(10, 2);
             timer.addEventListener(TimerEvent.TIMER_COMPLETE, tick);
             timer.start();
+            creationComplete=true;
         }
 		
 		/** @private */
         protected function tick(event:TimerEvent = null):void {
-        	if(_autoFit) {
-        		autoFitTick();
-        	} else {
-				forceDirectedLayout.tick();
-        	}
+        	//if(_autoFit) {//THESE LINES WERE UNCOMMENTED
+        	//	autoFitTick();
+        	//} else {
+			//	forceDirectedLayout.tick();//--------------------
+			autoFitTickSecond();
+        	//}
 			this.invalidateDisplayList();
 			startTimer();
        }
@@ -558,6 +560,11 @@ package com.adobe.flex.extras.controls.springgraph {
 			refresh();
 		}
 		
+		public function set verticalRepulsionFactor(factor: Number): void {
+			_verticalRepulsionFactor = factor;
+			refresh();
+		}
+		
 		[Bindable(event="repulsionFactorChanged")]
 		public function get repulsionFactor(): Number {
 			return _repulsionFactor;
@@ -663,7 +670,7 @@ package com.adobe.flex.extras.controls.springgraph {
 				}
 				prevCoverage = coverage;
 
-				if((itemBounds.left < 0) || (itemBounds.top < 0) || (itemBounds.bottom > this.height) || (itemBounds.right > this.width)) {
+				if((itemBounds.left < 0) || (itemBounds.top < 0) || (itemBounds.bottom > this.height) && (forceDirectedLayout.dragNode == null)) {
 					// some items are off the screen. Let's auto-scroll the display.
 					
 					// calculate how far we have to center all the items on screen in the X direction
@@ -688,6 +695,120 @@ package com.adobe.flex.extras.controls.springgraph {
 			}
         }
 		
+		private function autoFitTickSecond():void {
+ 			// do a layout pass
+			forceDirectedLayout.tick();
+			
+			// find out the current rect occupied by all items
+			var itemBounds: Rectangle = calcItemsBoundingRect();
+			//trace("top: " + itemBounds.top + "left, : " + itemBounds.left + "bottom, : " + itemBounds.bottom + "right, : " + itemBounds.right);
+			if(itemBounds != null) {
+				// find out how much of the available space is currently in use
+				var vCoverage: Number = (itemBounds.bottom - itemBounds.top) / this.height;
+				var hCoverage: Number = (itemBounds.right - itemBounds.left) / this.width;
+				var coverage: Number = Math.max(hCoverage, vCoverage);
+				prevCoverage = coverage;
+				/*var distance:Number = Roamer(this).maxDistanceFromCurrent;
+				var itemLimit:Number = Roamer(this).itemLimit;
+				if ((distance > distanceFromCurrent) || (itemLimit>maxItems)) {
+					upScrolling = true;
+					distanceFromCurrent = distance;
+					maxItems = itemLimit;
+				} else {
+					distanceFromCurrent = distance;
+					maxItems = itemLimit;		
+				}
+				if (upScrolling == true && (itemBounds.bottom > this.height)) {
+						scroll(0, -5)
+				} else upScrolling = false;*/
+				var distance:Number = Roamer(this).maxDistanceFromCurrent;
+				var itemLimit:Number = Roamer(this).itemLimit;
+				//settings to show the newer created nodes (scroll up) or to scroll down (if we have less nodes)
+				if ((distance > distanceFromCurrent) || (itemLimit > maxItems)) {
+					showGraph = 1;
+					maxItems = itemLimit;
+					distanceFromCurrent = distance;
+				} 
+				if ((distance < distanceFromCurrent) || (itemLimit < maxItems)) {
+					showGraph = -1;
+					maxItems = itemLimit;
+					distanceFromCurrent = distance;
+				}
+				//if (_dataProvider.findNode(dragComponent)==null)
+				if ((mouseDown==false) && (forceDirectedLayout.dragNode==null) && (creationComplete==true)) {
+						var scrollX: int = 0;
+						var scrollY: int = 0;
+						if (showGraph == 1) {
+							if (itemBounds.bottom > this.height+5) {
+								scroll(0, -5);
+								//doubleClick = false;
+								refresh();
+							}
+							else showGraph = 0;
+						} else 
+						if((itemBounds.left < 0) || (itemBounds.top < 0) || (itemBounds.bottom > this.height) || (itemBounds.right > this.width)) {
+						// some items are off the screen. Let's auto-scroll the display.
+							scrollX = 0;
+							scrollY = 0;
+							if ((itemBounds.left < 0) && (itemBounds.right < this.width))
+								scrollX=scrollX + 5;
+							if ((itemBounds.left > 0) && (itemBounds.right > this.width))
+								scrollX=scrollX - 5;
+							if ((itemBounds.top < 0) && (itemBounds.bottom < this.height))
+								scrollY=scrollY + 5;
+							if ((itemBounds.top > 0) && (itemBounds.bottom > this.height))
+								scrollY=scrollY - 5;
+							// do the scrolling
+							if((scrollX != 0) || (scrollY != 0)) {
+								scroll(scrollX, scrollY);
+								//doubleClick = false;
+								refresh();
+							}
+						} /*else
+						if (((itemBounds.left > 0) && (itemBounds.top > 0) && (itemBounds.bottom < this.height) && (itemBounds.right < this.width))) {
+							scrollX = 0;
+							scrollY = 0;
+							if ((itemBounds.left + itemBounds.right) / 2 < this.width / 2 + 5)
+								scrollX=scrollX + 5;
+							if ((itemBounds.left + itemBounds.right) / 2 > this.width / 2 - 5)
+								scrollX=scrollX - 5;
+							if ((itemBounds.top + itemBounds.bottom) / 2 < this.height / 2 + 5)
+								scrollY=scrollY + 5;
+							if ((itemBounds.top + itemBounds.bottom) / 2 > this.height / 2 - 5)
+								scrollY=scrollY - 5;
+							// do the scrolling
+							if((scrollX != 0) || (scrollY != 0)) {
+								scroll(scrollX, scrollY);
+								doubleClick = false;
+								refresh();
+							}
+						}  */
+						if (doubleClick==true) {
+							scrollX = 0;
+							scrollY = 0;
+							var currentNode:GraphNode = _dataProvider.findNodeUsingItem(Roamer(this).currentItem);
+							//if (i!=null) {
+							//var int:Number = Node(Roamer(this).currentItem).x;}
+							//var int:Number = GraphNode(Roamer(this).currentItem).x;
+							if (currentNode.x < this.width / 2 + 5)
+								scrollX=scrollX + 5;
+							if (currentNode.x > this.width / 2 - 5)
+								scrollX=scrollX - 5;
+							if (currentNode.y < this.height / 2 + 5)
+								scrollY=scrollY + 5;
+							if (currentNode.y > this.height / 2 - 5)
+								scrollY=scrollY - 5;
+							// do the scrolling
+							if((scrollX != 0) || (scrollY != 0)) {
+								scroll(scrollX, scrollY);
+								//doubleClick = false;
+								refresh();
+							} else doubleClick = false;
+						}
+				}
+ 			}
+        }
+		
   		private function calcItemsBoundingRect(): Rectangle {
    			var c: Array = this.getChildren();
    			if(c.length == 0) return null;
@@ -703,10 +824,18 @@ package com.adobe.flex.extras.controls.springgraph {
    				}
    			}
    			return result;
+   			var nn:Number = _graph._xmouse;
   		}
-
+  		
+  		//public static function getDataProvider():GraphDataProvider{
+  		//	return _dataProvider;
+  		//}
+  		
+  		//public function getVerticalRepulsion():int {
+  		//	return _verticalRepulsionFactor*defaultVerticalRepulsion;
+  		//}
 	    /** @private */
-		protected var _dataProvider:GraphDataProvider = null;
+		public static var _dataProvider:GraphDataProvider = null;
 	    /** @private */
 		public var distinguishedItem: Item;
 	    /** @private */
@@ -716,17 +845,28 @@ package com.adobe.flex.extras.controls.springgraph {
 	    /** @private */
 		public var _repulsionFactor: Number = 0.75;
 	    /** @private */
+		public var _verticalRepulsionFactor: Number = 1.1;
+	    /** @private */
 		public var defaultRepulsion: Number = 100;
+		/** @private */
+		public var defaultVerticalRepulsion: Number = 100;
 	    /** @private */
 		protected var forceDirectedLayout: ForceDirectedLayout = null;
 		/** @private */
 		protected var drawingSurface: UIComponent; // we can't use our own background for drawing, because it doesn't scroll
 		/** @private */
-		protected var _graph: Graph;
+		public static var _graph: Graph;
 		/** @private */
 		protected var _xmlNames: Array;
 
-        private var timer:Timer;      
+        private var distanceFromCurrent:Number = 2;
+        private var maxItems:Number = 20;
+        //private var upScrolling:Boolean = true;
+        private var showGraph:int = 0;
+        private var mouseDown:Boolean = false;
+        private var doubleClick:Boolean = false;
+        private var creationComplete:Boolean = false;
+        private var timer:Timer;    
 		private var itemRendererFactory: IFactory = null;
         private var dragComponent: UIComponent;
         private var dragStartX: int;

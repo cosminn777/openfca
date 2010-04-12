@@ -54,7 +54,7 @@ public class GraphDataProvider implements IDataProvider {
 			fen.forEachNode(node);
 		}
 	}
-	
+	//-------------------------
 	public function forAllEdges(fee: IForEachEdge): void {
 		for each (var edge: IEdge in edges) {
 			fee.forEachEdge(edge);
@@ -120,6 +120,15 @@ public class GraphDataProvider implements IDataProvider {
 		}
 		return null;
 	}
+	
+	public function findNodeUsingItem(item: Item): GraphNode {
+		for (var i: int = 0; i < nodes.length; i++) {
+			var node: GraphNode = GraphNode(nodes[i]);
+			if(node.item == item)
+				return node;
+		}
+		return null;
+	}
 
 	public function get layoutChanged(): Boolean {
 		return _layoutChanged;
@@ -133,8 +142,16 @@ public class GraphDataProvider implements IDataProvider {
 		return SpringGraph(host)._repulsionFactor;
 	}
 	
+	public function get verticalRepulsionFactor(): Number {
+		return SpringGraph(host)._verticalRepulsionFactor;
+	}
+	
 	public function get defaultRepulsion(): Number {
 		return SpringGraph(host).defaultRepulsion;
+	}
+	
+	public function get defaultVerticalRepulsion(): Number {
+		return SpringGraph(host).defaultVerticalRepulsion;
 	}
 	
 	public function get hasNodes(): Boolean {
