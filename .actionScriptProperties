@@ -1,17 +1,18 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<actionScriptProperties mainApplicationPath="Conflexplore.mxml" version="3">
-<compiler additionalCompilerArguments="-locale en_US -default-script-limits 1000 600 -use-network=false" copyDependentFiles="true" enableModuleDebug="true" flexSDK="Flex 3.2" generateAccessible="false" htmlExpressInstall="true" htmlGenerate="true" htmlHistoryManagement="true" htmlPlayerVersion="10.0.0" htmlPlayerVersionCheck="true" outputFolderPath="bin-debug" sourceFolderPath="src" strict="true" useApolloConfig="false" verifyDigests="true" warn="true">
-<compilerSourcePath/>
-<libraryPath defaultLinkType="1">
-<libraryPathEntry kind="4" path=""/>
-<libraryPathEntry kind="1" linkType="1" path="libs"/>
-<libraryPathEntry kind="3" linkType="1" path="springgraph/bin/SpringGraph.swc" useDefaultLinkType="false"/>
-</libraryPath>
-<sourceAttachmentPath/>
-</compiler>
-<applications>
-<application path="Conflexplore.mxml"/>
-</applications>
-<modules/>
-<buildCSSFiles/>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<actionScriptProperties mainApplicationPath="Conflexplore.mxml" projectUUID="7de70ab0-e7bc-4092-81e5-bb1e918da2ac" version="6">
+  <compiler additionalCompilerArguments="-locale en_US -default-script-limits 1000 600 -use-network=false" autoRSLOrdering="false" copyDependentFiles="true" flexSDK="Flex 4.0" fteInMXComponents="false" generateAccessible="false" htmlExpressInstall="true" htmlGenerate="true" htmlHistoryManagement="true" htmlPlayerVersionCheck="true" includeNetmonSwc="false" outputFolderPath="bin-debug" sourceFolderPath="src" strict="true" targetPlayerVersion="10.0.45" useApolloConfig="false" useDebugRSLSwfs="true" verifyDigests="true" warn="true">
+    <compilerSourcePath/>
+    <libraryPath defaultLinkType="1">
+      <libraryPathEntry kind="4" path=""/>
+      <libraryPathEntry kind="1" linkType="1" path="libs"/>
+      <libraryPathEntry kind="3" linkType="1" path="springgraph/bin/SpringGraph.swc" useDefaultLinkType="false"/>
+    </libraryPath>
+    <sourceAttachmentPath/>
+  </compiler>
+  <theme themeIsDefault="false" themeIsSDK="true" themeLocation="${SDK_THEMES_DIR}/frameworks/themes/Halo"/>
+  <applications>
+    <application path="Conflexplore.mxml"/>
+  </applications>
+  <modules/>
+  <buildCSSFiles/>
 </actionScriptProperties>
