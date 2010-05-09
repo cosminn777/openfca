@@ -809,7 +809,7 @@ import com.adobe.flex.extras.controls.forcelayout.Node;
  			}
         }
 		
-  		private function calcItemsBoundingRect(): Rectangle {
+  		public function calcItemsBoundingRect(): Rectangle {
    			var c: Array = this.getChildren();
    			if(c.length == 0) return null;
 
