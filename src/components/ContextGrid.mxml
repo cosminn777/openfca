@@ -3,6 +3,7 @@
 	initialize="init()" horizontalAlign="center">
 	<mx:Script>
 		<![CDATA[
+			import mx.effects.Pause;
 			import mx.messaging.management.Attribute;
 			import logic.AttributeExplorer;
 			import logic.ConceptItem;
@@ -11,6 +12,8 @@
 			import com.adobe.flex.extras.controls.springgraph.Item;
 			import com.adobe.flex.extras.controls.springgraph.Graph;
 			import com.adobe.flex.extras.controls.forcelayout.Node;
+			import com.adobe.flex.extras.controls.springgraph.SpringGraph;
+			import com.adobe.flex.extras.controls.springgraph.Roamer;
 			import mx.controls.Alert;
 			import mx.core.UIComponent;
 			import mx.core.ComponentDescriptor;
@@ -18,12 +21,19 @@
 			import events.NewContextEvent;
 			import mx.utils.StringUtil;
 			import mx.events.FlexEvent;
+			import mx.events.FlexMouseEvent;
 			import mx.containers.Panel;
 			import mx.managers.PopUpManager;
 			import mx.controls.TextInput;
 			import mx.controls.CheckBox;
 			import mx.controls.dataGridClasses.DataGridColumn;
 			import mx.collections.ArrayCollection;
+			import mx.graphics.codec.JPEGEncoder;
+			import flash.geom.Rectangle;
+			import flash.utils.Timer;
+			import flash.utils.getTimer;
+			import mx.containers.Canvas;
+			import flash.geom.Rectangle;
 			
 			private var objects:Array;
 			private var attributes:Array;
@@ -404,6 +414,8 @@
 				beginExploreAttrButton.includeInLayout = true;
 				implButton.visible = true;
 				implButton.includeInLayout = true;
+				exportImageButton.visible = false;
+				exportImageButton.includeInLayout = false;
 				endExploreAttrButton.visible = true;
 				endExploreAttrButton.includeInLayout = true;
 				endExploreAttrButton.enabled = false;
@@ -431,6 +443,8 @@
 				unsetVisibility();
 				backToGridButton.visible = true;
 				backToGridButton.includeInLayout = true;
+				exportImageButton.visible = true;
+				exportImageButton.includeInLayout = true
 				viewStack.selectedChild = lattice;
 			}
 			
@@ -626,6 +640,45 @@
 				out.writeUTFBytes(lattice.getGraphRepresentation());
 				fileReference.save(out, "data.con");
 			}
+			
+			private function changeRes(): void {
+				//lattice.s.width=lattice.s.AA.right+5;
+        		//lattice.s.height=lattice.s.AA.bottom+5;
+        		var bd:BitmapData = new BitmapData(lattice.s.width, lattice.s.height);
+        		bd.draw(lattice.s);
+        		var ba:ByteArray = (new JPEGEncoder(100)).encode(bd);
+        		var fr:FileReference = new FileReference();
+        		fr.save(ba, "lattice.jpg");
+			}
+			private function exportImageLattice(): void
+			{
+				//pt ce se vede
+				//var bd:BitmapData = new BitmapData(lattice.s.width,lattice.s.height);
+        		//bd.draw(lattice.s);
+        		//lattice.s.height=lattice.s.getVisibleRect().height;
+        		//lattice.s.width=lattice.getBounds(lattice.s).width;
+        		
+        		var w:int = lattice.s.width;
+        		var h:int = lattice.s.height;
+				//lattice.s.height=1000;
+				//lattice.s.width=1000;
+				var bd:BitmapData = new BitmapData(lattice.s.width, lattice.s.height);
+				bd.draw(lattice.s);
+				var ba:ByteArray = (new JPEGEncoder(100)).encode(bd);
+				var fr:FileReference = new FileReference();
+				fr.save(ba, "lattice.jpg");
+        		
+        		//setInterval (changeRes, 1000);
+        		//setInterval (changeRes, 1000);
+        		//setTimeout (function (): void {changeRes();}, 2000);
+        		//setTimeout (function (): void {changeRes();}, 2000);
+        		//lattice.s.width=lattice.s.AA.right+5;
+        		//lattice.s.height=lattice.s.AA.bottom+5;
+        		//this.commitProperties();
+        		//exportImageButton.addEventListener(Event.COMPLETE, changeRes);
+        		//exportImageButton.dispatchEvent(new Event(Event.COMPLETE));
+			}
+			
 		]]>
 	</mx:Script>
 	<mx:ApplicationControlBar id="appControlBar" width="100%">
@@ -633,6 +686,7 @@
 			<mx:Button id="saveButton" visible="true" includeInLayout="true" click="saveClickHandler()" label="Save" />
 			<mx:Button label="New Context" includeInLayout="false" visible="false" id="resetButton"  click="showCreateContext()"/>
 			<mx:Button id="viewLatticeButton" visible="false" includeInLayout="false" label="View Lattice" click="showLattice()"/>
+			<mx:Button id="exportImageButton" visible="false" includeInLayout="false" label="Export to Image" click="exportImageLattice()"/>
 			<mx:Button id="backToGridButton" visible="false" includeInLayout="false" label="Back" click="setContextGridVisibility()"/>
 			<mx:Button id="beginExploreAttrButton" visible="false" includeInLayout="false" label="Begin Attribute Exploration" click="beginExploreAttr()"/>
 			<mx:Button id="endExploreAttrButton" visible="false" enabled="false" includeInLayout="false" label="Cancel Attribute Exploration" click="endExploreAttr()"/>

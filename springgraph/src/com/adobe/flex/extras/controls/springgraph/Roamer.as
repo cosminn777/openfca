@@ -9,6 +9,10 @@
 
 package com.adobe.flex.extras.controls.springgraph {
 	import flash.events.Event;
+	import mx.core.UIComponent;
+	import mx.containers.Canvas;
+	import flash.geom.Rectangle;
+	import com.adobe.flex.extras.controls.springgraph.SpringGraph;
 
 	/**
 	 *  Dispatched when there is any change to the nodes and/or links of this graph.
@@ -462,6 +466,10 @@ package com.adobe.flex.extras.controls.springgraph {
 				historyCurrentlyViewed = _history.length - 1;
 				dispatchEvent(new Event("historyChange"));
 			}
+		}
+		
+		public function get AA(): Rectangle {
+			return this.calcItemsBoundingRect();
 		}
 		
 		public static var _nodeHeight: int = 50;
