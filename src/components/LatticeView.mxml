@@ -216,81 +216,82 @@
 		</mx:GridRow>
 	</mx:Grid>
 
-	<mx:HDividedBox width="100%" height="100%" horizontalScrollPolicy="off" dividerAlpha="1.0" dividerColor="#FFFFFF">
-		<fc:Roamer id="s" width="100%" height="100%"
-			lineColor="#8888ff" 
-			repulsionFactor="{repulsionSlider.value}"
-			verticalRepulsionFactor="{verticalRepulsionSlider.value}"
-			itemLimit="{maxVisible.value}"
-			skip="{skipCount.value}"
-			maxDistanceFromCurrent="{maxDistanceFromCurrent.value}"
-			nodeHeight="{heightSlider.value}"
-			creationComplete="init()">
-	        <fc:removeItemEffect>
-	            <mx:Fade alphaFrom="1" alphaTo="0" duration="1000"/>                
-	        </fc:removeItemEffect>
-	        
-	        <fc:addItemEffect>
-	            <mx:Fade alphaFrom="0" alphaTo="1" duration="1000"/>
-	        </fc:addItemEffect>
-	  		<fc:itemRenderer>
-				<mx:Component>
-					<mx:VBox backgroundAlpha="0.3" backgroundColor="0x444444" height="{outerDocument.heightSlider.value}"
-						 verticalScrollPolicy="off" horizontalScrollPolicy="off"
-						 filters="{calcFilters(outerDocument.s.currentItem, data as Item)}"
-						 paddingBottom="2" paddingLeft="2" paddingRight="2" paddingTop="2">
-						<mx:Script>
-							<![CDATA[
-								import mx.core.UIComponent;
-								import com.adobe.flex.extras.controls.springgraph.Item;
-								public function doubleClick(event:Event): void
-								{
-									outerDocument.s.currentItem = event.currentTarget.data;
-									outerDocument.setActiveItem(event.currentTarget.data.id);
-								}
-
-								public function mouseOver(event:Event): void
-								{
-									outerDocument.setActiveItem(event.currentTarget.data.id);
-									outerDocument.focusedItem = event.currentTarget.data;
-									(event.currentTarget as UIComponent).filters = [new GlowFilter(0xFF3300, 0.5, 8, 8, 2, 1)]
-								}
-								
-								public function mouseOut(event:Event): void
-								{
-									outerDocument.focusedItem = null;
-									(event.currentTarget as UIComponent).filters = calcFilters(outerDocument.s.currentItem, data as Item);
-								}
-
-								private function calcFilters(currentItem: Item, item: Item): Array {
-					                if(outerDocument.s.currentItem == item) {
-					                    return [new GlowFilter(0xFFFF00, 0.5, 8, 8, 2, 1)];
-					                } else if(outerDocument.s.hasBeenCurrentItem(item)) {
-					                    return [new GlowFilter(0x0000FF, 0.3, 6, 6, 2, 1)];
-					                } else {
-					                    return null;
-					                }
-					            }
-							]]>
-						</mx:Script>
-						<mx:TextArea selectable="false" text="{data.labelAttribute}" fontSize="{outerDocument.fontSizeSlider.value}" backgroundAlpha="0.2"
-							textAlign="center" width="{outerDocument.widthSlider.value}" editable="false" horizontalScrollPolicy="off"
-							verticalScrollPolicy="auto" height="100%" minHeight="0"/>					
-						<mx:TextArea selectable="false" text="{data.labelObject}" fontSize="{outerDocument.fontSizeSlider.value}" backgroundAlpha="0.2"
-							textAlign="center" width="{outerDocument.widthSlider.value}" editable="false" horizontalScrollPolicy="off"
-							verticalScrollPolicy="auto" height="100%" minHeight="0"/>					
-					</mx:VBox>
-				</mx:Component>
-			</fc:itemRenderer>
-		</fc:Roamer>
-		<mx:VBox horizontalScrollPolicy="off" height="100%" verticalScrollPolicy="off" width="10%" minWidth="70" backgroundColor="#909090"
-				 paddingLeft="5" paddingRight="5" paddingTop="5" paddingBottom="5">
+	<mx:HDividedBox width="100%" height="100%" dividerAlpha="1.0" dividerColor="#FFFFFF"  verticalScrollPolicy="off" horizontalScrollPolicy="off">
+		<mx:VBox height="100%" width="140" minWidth="0" backgroundColor="#909090"
+				 paddingLeft="5" paddingRight="5" paddingTop="5" paddingBottom="5"
+				 verticalScrollPolicy="auto" horizontalScrollPolicy="auto">
 			<mx:Label text="Attributes" />
 			<mx:List id="attributesList" width="100%" height="100%">
 			</mx:List>
 			<mx:Label text="Objects" />
 			<mx:List id="objectsList" width="100%" height="100%">
 			</mx:List>
+		</mx:VBox>
+		<mx:VBox id="latticeContainer" verticalScrollPolicy="off" horizontalScrollPolicy="off" width="100%" height="100%">
+			<fc:Roamer id="s" width="100%" height="100%" verticalScrollPolicy="auto" horizontalScrollPolicy="auto"
+				lineColor="#8888ff" 
+				repulsionFactor="{repulsionSlider.value}"
+				verticalRepulsionFactor="{verticalRepulsionSlider.value}"
+				itemLimit="{maxVisible.value}"
+				skip="{skipCount.value}"
+				maxDistanceFromCurrent="{maxDistanceFromCurrent.value}"
+				nodeHeight="{heightSlider.value}"
+				creationComplete="init()">
+		        <fc:removeItemEffect>
+		            <mx:Fade alphaFrom="1" alphaTo="0" duration="1000"/>                
+		        </fc:removeItemEffect>
+		        <fc:addItemEffect>
+		            <mx:Fade alphaFrom="0" alphaTo="1" duration="1000"/>
+		        </fc:addItemEffect>
+		  		<fc:itemRenderer>
+					<mx:Component>
+						<mx:VBox backgroundAlpha="0.3" backgroundColor="0x444444" height="{outerDocument.heightSlider.value}"
+							 filters="{calcFilters(outerDocument.s.currentItem, data as Item)}"
+							 paddingBottom="2" paddingLeft="2" paddingRight="2" paddingTop="2">
+							<mx:Script>
+								<![CDATA[
+									import mx.core.UIComponent;
+									import com.adobe.flex.extras.controls.springgraph.Item;
+									public function doubleClick(event:Event): void
+									{
+										outerDocument.s.currentItem = event.currentTarget.data;
+										outerDocument.setActiveItem(event.currentTarget.data.id);
+									}
+	
+									public function mouseOver(event:Event): void
+									{
+										outerDocument.setActiveItem(event.currentTarget.data.id);
+										outerDocument.focusedItem = event.currentTarget.data;
+										(event.currentTarget as UIComponent).filters = [new GlowFilter(0xFF3300, 0.5, 8, 8, 2, 1)]
+									}
+									
+									public function mouseOut(event:Event): void
+									{
+										outerDocument.focusedItem = null;
+										(event.currentTarget as UIComponent).filters = calcFilters(outerDocument.s.currentItem, data as Item);
+									}
+	
+									private function calcFilters(currentItem: Item, item: Item): Array {
+						                if(outerDocument.s.currentItem == item) {
+						                    return [new GlowFilter(0xFFFF00, 0.5, 8, 8, 2, 1)];
+						                } else if(outerDocument.s.hasBeenCurrentItem(item)) {
+						                    return [new GlowFilter(0x0000FF, 0.3, 6, 6, 2, 1)];
+						                } else {
+						                    return null;
+						                }
+						            }
+								]]>
+							</mx:Script>
+							<mx:TextArea selectable="false" text="{data.labelAttribute}" fontSize="{outerDocument.fontSizeSlider.value}" backgroundAlpha="0.2"
+								textAlign="center" width="{outerDocument.widthSlider.value}" editable="false" horizontalScrollPolicy="off"
+								verticalScrollPolicy="auto" height="100%" minHeight="0"/>					
+							<mx:TextArea selectable="false" text="{data.labelObject}" fontSize="{outerDocument.fontSizeSlider.value}" backgroundAlpha="0.2"
+								textAlign="center" width="{outerDocument.widthSlider.value}" editable="false" horizontalScrollPolicy="off"
+								verticalScrollPolicy="auto" height="100%" minHeight="0"/>					
+						</mx:VBox>
+					</mx:Component>
+				</fc:itemRenderer>
+			</fc:Roamer>
 		</mx:VBox>
 	</mx:HDividedBox>
 </mx:VBox>

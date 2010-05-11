@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" scriptTimeLimit="600"
 				xmlns:components="components.*" layout="vertical"
-				backgroundGradientColors="[#888888,#333333]" verticalAlign="top">
+				backgroundGradientColors="[#888888,#333333]" verticalAlign="top" viewSourceURL="srcview/index.html">
 	<mx:Style source="Conflexplore.css"/>
 	<mx:Style source="Conflexplore_1.css"/>
 	<mx:Image  source="data/logo.PNG" />
