@@ -34,6 +34,8 @@
 			import flash.utils.getTimer;
 			import mx.containers.Canvas;
 			import flash.geom.Rectangle;
+			import mx.managers.CursorManager;
+
 			
 			private var objects:Array;
 			private var attributes:Array;
@@ -658,15 +660,18 @@
         		//lattice.s.height=lattice.s.getVisibleRect().height;
         		//lattice.s.width=lattice.getBounds(lattice.s).width;
         		
+				CursorManager.setBusyCursor();
         		var w:int = lattice.s.width;
         		var h:int = lattice.s.height;
-				//lattice.s.height=1000;
-				//lattice.s.width=1000;
+				lattice.s.height=1000;
+				lattice.s.width=1000;
 				var bd:BitmapData = new BitmapData(lattice.s.width, lattice.s.height);
 				bd.draw(lattice.s);
 				var ba:ByteArray = (new JPEGEncoder(100)).encode(bd);
 				var fr:FileReference = new FileReference();
 				fr.save(ba, "lattice.jpg");
+				CursorManager.removeBusyCursor();
+
         		
         		//setInterval (changeRes, 1000);
         		//setInterval (changeRes, 1000);

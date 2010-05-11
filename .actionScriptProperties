@@ -15,4 +15,31 @@
   </applications>
   <modules/>
   <buildCSSFiles/>
+  <publishSource>
+    <sourcePathIncludes/>
+    <sourceExcludes>
+      <exclude path="conexplore"/>
+      <exclude path="html-template"/>
+      <exclude path="libs"/>
+      <exclude path="springgraph"/>
+      <exclude path="src/components/AddAttributePanel.mxml"/>
+      <exclude path="src/components/AddObjectPanel.mxml"/>
+      <exclude path="src/components/CenteredCheckBox.mxml"/>
+      <exclude path="src/components/ExplorationFinishedPanel.mxml"/>
+      <exclude path="src/components/ExplorationPanel.mxml"/>
+      <exclude path="src/components/ImplicationPanel.mxml"/>
+      <exclude path="src/components/LatticeView.mxml"/>
+      <exclude path="src/components/NewContextPanel.mxml"/>
+      <exclude path="src/data"/>
+      <exclude path="src/events"/>
+      <exclude path="src/logic"/>
+      <exclude path="src/renderers"/>
+      <exclude path="src/Conflexplore.css"/>
+      <exclude path="src/Conflexplore.mxml"/>
+      <exclude path="src/Conflexplore_1.css"/>
+      <exclude path="build.bat"/>
+      <exclude path="LICENSE.txt"/>
+      <exclude path="README.txt"/>
+    </sourceExcludes>
+  </publishSource>
 </actionScriptProperties>

@@ -16,14 +16,13 @@ package com.adobe.flex.extras.controls.springgraph {
 	import flash.geom.Rectangle;
 	import flash.utils.Timer;
 	import flash.utils.getTimer;
-	
 	import mx.containers.Canvas;
 	import mx.core.IDataRenderer;
 	import mx.core.IFactory;
 	import mx.core.UIComponent;
 	import mx.effects.Effect;
 	import mx.events.EffectEvent;
-import com.adobe.flex.extras.controls.forcelayout.Node;
+	import com.adobe.flex.extras.controls.forcelayout.Node;
 	//[Event(name="doubleClick", type="flash.events.Event")]
 
 /**
@@ -85,8 +84,8 @@ import com.adobe.flex.extras.controls.forcelayout.Node;
             this.addEventListener("mouseDown", backgroundMouseDownEvent);
 
 			this.addChild(drawingSurface);
-			this.verticalScrollPolicy = "off";
-			this.horizontalScrollPolicy = "off";
+			this.verticalScrollPolicy = "auto";
+			this.horizontalScrollPolicy = "auto";
 
   			//this.addEventListener("mouseDown", backgroundMouseDownEvent);
 			this.addEventListener("mouseUp", dragEnd);
@@ -241,7 +240,7 @@ import com.adobe.flex.extras.controls.forcelayout.Node;
  		public function newComponent(item: Item): UIComponent {
  			var component: UIComponent = createComponent(item);
             component.x = this.width / 2;
-            component.y = this.height / 2;
+            component.y = 3;
             component.addEventListener("mouseDown", mouseDownEvent);
             component.addEventListener(MouseEvent.MOUSE_OVER, mouseOver);
             component.addEventListener(MouseEvent.MOUSE_OUT, mouseOut);
@@ -253,6 +252,7 @@ import com.adobe.flex.extras.controls.forcelayout.Node;
    	
    		private function mouseDownEvent(event: MouseEvent):void  {
    			var now: int = getTimer();
+   			mouseDown=true;
    			if((now - lastMouseDownTime) < 300) {
    				// it's a double-click
    				var node: GraphNode = _dataProvider.findNode(UIComponent(event.currentTarget));
@@ -374,6 +374,19 @@ import com.adobe.flex.extras.controls.forcelayout.Node;
   		
  		/** @private */
   		public function scroll(deltaX: int, deltaY: int): void {//aaaaaaaaaaaaaaaaaaaaaaaaaaa
+   			/*var c: Array = this.getChildren();
+   			for (var i: int = 1; i < c.length; i++) {
+   				var itemView: Object = c[i];
+   				if(itemView != drawingSurface) {
+   					itemView.x = itemView.x + deltaX;
+   					itemView.y = itemView.y + deltaY;
+   				}
+   			}*/
+   			this.verticalScrollPosition=this.verticalScrollPosition-deltaY;
+   			this.horizontalScrollPosition=this.horizontalScrollPosition-deltaX;
+  		}
+  		
+  		 public function scrollLattice(deltaX: int, deltaY: int): void {//aaaaaaaaaaaaaaaaaaaaaaaaaaa
    			var c: Array = this.getChildren();
    			for (var i: int = 1; i < c.length; i++) {
    				var itemView: Object = c[i];
@@ -407,7 +420,7 @@ import com.adobe.flex.extras.controls.forcelayout.Node;
         	//	autoFitTick();
         	//} else {
 			//	forceDirectedLayout.tick();//--------------------
-			autoFitTickSecond();
+			autoFitTickThird();
         	//}
 			this.invalidateDisplayList();
 			startTimer();
@@ -746,7 +759,7 @@ import com.adobe.flex.extras.controls.forcelayout.Node;
 							}
 							else showGraph = 0;
 						} else 
-						if((itemBounds.left < 0) || (itemBounds.top < 0) || (itemBounds.bottom > this.height) || (itemBounds.right > this.width)) {
+						if(((itemBounds.left < 0) || (itemBounds.top < 0) || (itemBounds.bottom > this.height) || (itemBounds.right > this.width))) {
 						// some items are off the screen. Let's auto-scroll the display.
 							scrollX = 0;
 							scrollY = 0;
@@ -808,6 +821,76 @@ import com.adobe.flex.extras.controls.forcelayout.Node;
 				}
  			}
         }
+        
+		private function autoFitTickThird():void {
+ 			// do a layout pass
+			forceDirectedLayout.tick();
+			
+			// find out the current rect occupied by all items
+			var itemBounds: Rectangle = calcItemsBoundingRect();
+			//trace("top: " + itemBounds.top + "left, : " + itemBounds.left + "bottom, : " + itemBounds.bottom + "right, : " + itemBounds.right);
+			if(itemBounds != null) {
+				// find out how much of the available space is currently in use
+				var vCoverage: Number = (itemBounds.bottom - itemBounds.top) / this.height;
+				var hCoverage: Number = (itemBounds.right - itemBounds.left) / this.width;
+				var coverage: Number = Math.max(hCoverage, vCoverage);
+				prevCoverage = coverage;
+ 			}
+ 			if((itemBounds.left < 0) || (itemBounds.top < 0)) {
+				// some items are off the screen. Let's auto-scroll the display.
+				var scrollX: int = 0;
+				var scrollY: int = 0;
+				if ((itemBounds.left < 0))
+					scrollX=scrollX + 5;
+				//if ((itemBounds.left > 3))
+				//	scrollX=scrollX - 5;
+				//if ((itemBounds.left > 0) && (itemBounds.right > this.width-5))
+				//	scrollX=scrollX - 5;
+				//if ((itemBounds.top > 7) && (itemBounds.bottom > this.height))
+				//	scrollY=scrollY - 5;
+				if ((itemBounds.top < 0))
+					scrollY=scrollY + 5;
+				//if ((itemBounds.top + itemBounds.bottom) / 2 > this.height / 2 - 5)
+								//scrollY=scrollY + 10;
+				//if ((itemBounds.top > 0))
+				//	scrollY=scrollY - 5;
+				//if ((itemBounds.top < 0) && (itemBounds.bottom < this.height))
+				//	scrollY=scrollY + 5;
+				// do the scrolling
+				if((scrollX != 0) || (scrollY != 0)) {
+					scrollLattice(scrollX, scrollY);
+					//doubleClick = false;
+					refresh();
+					}
+			} 
+			/*if(((itemBounds.left > 10) || (itemBounds.top > 10)) && (creationComplete==true) && (mouseDown==false)) {
+				// some items are off the screen. Let's auto-scroll the display.
+				var scrollX: int = 0;
+				var scrollY: int = 0;
+				if ((itemBounds.left > 10))
+					scrollX=scrollX - 5;
+				//if ((itemBounds.left > 3))
+				//	scrollX=scrollX - 5;
+				//if ((itemBounds.left > 0) && (itemBounds.right > this.width-5))
+				//	scrollX=scrollX - 5;
+				//if ((itemBounds.top > 7) && (itemBounds.bottom > this.height))
+				//	scrollY=scrollY - 5;
+				if ((itemBounds.top > 10))
+					scrollY=scrollY - 5;
+				//if ((itemBounds.top + itemBounds.bottom) / 2 > this.height / 2 - 5)
+								//scrollY=scrollY + 10;
+				//if ((itemBounds.top > 0))
+				//	scrollY=scrollY - 5;
+				//if ((itemBounds.top < 0) && (itemBounds.bottom < this.height))
+				//	scrollY=scrollY + 5;
+				// do the scrolling
+				if((scrollX != 0) || (scrollY != 0)) {
+					scrollLattice(scrollX, scrollY);
+					//doubleClick = false;
+					refresh();
+					}
+			}*/
+        }
 		
   		public function calcItemsBoundingRect(): Rectangle {
    			var c: Array = this.getChildren();
@@ -827,6 +910,24 @@ import com.adobe.flex.extras.controls.forcelayout.Node;
    			var nn:Number = _graph._xmouse;
   		}
   		
+  		/*public static function get calcWidth(): int {
+   			var c: Array = this.getChildren();
+   			if(c.length == 0) return null;
+
+			var result: Rectangle = new Rectangle(9999999, 9999999, -9999999, -9999999);
+   			for (var i: int = 1; i < c.length; i++) {
+   				var itemView: Object = c[i];
+   				if(itemView != drawingSurface) {
+		    		if(itemView.x < result.left) result.left = itemView.x;
+		    		if((itemView.x + itemView.width) > result.right) result.right = itemView.x + itemView.width;
+		    		if(itemView.y < result.top) result.top = itemView.y;
+		    		if((itemView.y + itemView.height) > result.bottom) result.bottom = itemView.y + itemView.height;
+   				}
+   			}
+   			return drawingSurface.width;
+   			var nn:Number = _graph._xmouse;
+  		}*/
+  		
   		//public static function getDataProvider():GraphDataProvider{
   		//	return _dataProvider;
   		//}
@@ -835,7 +936,7 @@ import com.adobe.flex.extras.controls.forcelayout.Node;
   		//	return _verticalRepulsionFactor*defaultVerticalRepulsion;
   		//}
 	    /** @private */
-		public static var _dataProvider:GraphDataProvider = null;
+		public var _dataProvider:GraphDataProvider = null;
 	    /** @private */
 		public var distinguishedItem: Item;
 	    /** @private */
