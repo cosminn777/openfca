@@ -239,8 +239,8 @@ package com.adobe.flex.extras.controls.springgraph {
 	    /** @private */
  		public function newComponent(item: Item): UIComponent {
  			var component: UIComponent = createComponent(item);
-            component.x = this.width / 2;
-            component.y = 3;
+            component.x = this.width/7;
+            component.y = 5;
             component.addEventListener("mouseDown", mouseDownEvent);
             component.addEventListener(MouseEvent.MOUSE_OVER, mouseOver);
             component.addEventListener(MouseEvent.MOUSE_OUT, mouseOut);
@@ -836,11 +836,13 @@ package com.adobe.flex.extras.controls.springgraph {
 				var coverage: Number = Math.max(hCoverage, vCoverage);
 				prevCoverage = coverage;
  			}
- 			if((itemBounds.left < 0) || (itemBounds.top < 0)) {
+			var scrollX: int = 0;
+			var scrollY: int = 0;
+ 			if((itemBounds.left < 5) || (itemBounds.top < 5) && (creationComplete==true)) {
 				// some items are off the screen. Let's auto-scroll the display.
-				var scrollX: int = 0;
-				var scrollY: int = 0;
-				if ((itemBounds.left < 0))
+				scrollX = 0;
+				scrollY = 0;
+				if ((itemBounds.left < 5))
 					scrollX=scrollX + 5;
 				//if ((itemBounds.left > 3))
 				//	scrollX=scrollX - 5;
@@ -848,7 +850,7 @@ package com.adobe.flex.extras.controls.springgraph {
 				//	scrollX=scrollX - 5;
 				//if ((itemBounds.top > 7) && (itemBounds.bottom > this.height))
 				//	scrollY=scrollY - 5;
-				if ((itemBounds.top < 0))
+				if ((itemBounds.top < 5))
 					scrollY=scrollY + 5;
 				//if ((itemBounds.top + itemBounds.bottom) / 2 > this.height / 2 - 5)
 								//scrollY=scrollY + 10;
@@ -863,12 +865,12 @@ package com.adobe.flex.extras.controls.springgraph {
 					refresh();
 					}
 			} 
-			/*if(((itemBounds.left > 10) || (itemBounds.top > 10)) && (creationComplete==true) && (mouseDown==false)) {
+			if(((itemBounds.left > 10) || (itemBounds.top > 10)) && (creationComplete==true)) {
 				// some items are off the screen. Let's auto-scroll the display.
-				var scrollX: int = 0;
-				var scrollY: int = 0;
-				if ((itemBounds.left > 10))
-					scrollX=scrollX - 5;
+				scrollX = 0;
+				scrollY = 0;
+				if ((itemBounds.left > 13))
+					scrollX=scrollX - 2;
 				//if ((itemBounds.left > 3))
 				//	scrollX=scrollX - 5;
 				//if ((itemBounds.left > 0) && (itemBounds.right > this.width-5))
@@ -876,7 +878,7 @@ package com.adobe.flex.extras.controls.springgraph {
 				//if ((itemBounds.top > 7) && (itemBounds.bottom > this.height))
 				//	scrollY=scrollY - 5;
 				if ((itemBounds.top > 10))
-					scrollY=scrollY - 5;
+					scrollY=scrollY - 2;
 				//if ((itemBounds.top + itemBounds.bottom) / 2 > this.height / 2 - 5)
 								//scrollY=scrollY + 10;
 				//if ((itemBounds.top > 0))
@@ -889,7 +891,7 @@ package com.adobe.flex.extras.controls.springgraph {
 					//doubleClick = false;
 					refresh();
 					}
-			}*/
+			}
         }
 		
   		public function calcItemsBoundingRect(): Rectangle {
@@ -909,7 +911,7 @@ package com.adobe.flex.extras.controls.springgraph {
    			return result;
    			var nn:Number = _graph._xmouse;
   		}
-  		
+		
   		/*public static function get calcWidth(): int {
    			var c: Array = this.getChildren();
    			if(c.length == 0) return null;
@@ -928,13 +930,10 @@ package com.adobe.flex.extras.controls.springgraph {
    			var nn:Number = _graph._xmouse;
   		}*/
   		
-  		//public static function getDataProvider():GraphDataProvider{
-  		//	return _dataProvider;
-  		//}
-  		
   		//public function getVerticalRepulsion():int {
   		//	return _verticalRepulsionFactor*defaultVerticalRepulsion;
   		//}
+		
 	    /** @private */
 		public var _dataProvider:GraphDataProvider = null;
 	    /** @private */

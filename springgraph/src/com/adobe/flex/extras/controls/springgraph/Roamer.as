@@ -468,7 +468,7 @@ package com.adobe.flex.extras.controls.springgraph {
 			}
 		}
 		
-		public function get AA(): Rectangle {
+		public function get getLatticeDimensions(): Rectangle {
 			return this.calcItemsBoundingRect();
 		}
 		

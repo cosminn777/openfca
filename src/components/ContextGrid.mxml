@@ -1,41 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" xmlns:components="components.*"
 	initialize="init()" horizontalAlign="center">
+	
 	<mx:Script>
 		<![CDATA[
-			import mx.effects.Pause;
-			import mx.messaging.management.Attribute;
-			import logic.AttributeExplorer;
-			import logic.ConceptItem;
-			import logic.Concept;
-			import logic.ImplicationProcessor;
-			import com.adobe.flex.extras.controls.springgraph.Item;
-			import com.adobe.flex.extras.controls.springgraph.Graph;
 			import com.adobe.flex.extras.controls.forcelayout.Node;
-			import com.adobe.flex.extras.controls.springgraph.SpringGraph;
+			import com.adobe.flex.extras.controls.springgraph.Graph;
+			import com.adobe.flex.extras.controls.springgraph.Item;
 			import com.adobe.flex.extras.controls.springgraph.Roamer;
-			import mx.controls.Alert;
-			import mx.core.UIComponent;
-			import mx.core.ComponentDescriptor;
-			import mx.containers.ControlBar;
+			import com.adobe.flex.extras.controls.springgraph.SpringGraph;
+			
 			import events.NewContextEvent;
-			import mx.utils.StringUtil;
-			import mx.events.FlexEvent;
-			import mx.events.FlexMouseEvent;
-			import mx.containers.Panel;
-			import mx.managers.PopUpManager;
-			import mx.controls.TextInput;
-			import mx.controls.CheckBox;
-			import mx.controls.dataGridClasses.DataGridColumn;
-			import mx.collections.ArrayCollection;
-			import mx.graphics.codec.JPEGEncoder;
+			
 			import flash.geom.Rectangle;
 			import flash.utils.Timer;
 			import flash.utils.getTimer;
+			
+			import logic.AttributeExplorer;
+			import logic.Concept;
+			import logic.ConceptItem;
+			import logic.ImplicationProcessor;
+			
+			import mx.collections.ArrayCollection;
 			import mx.containers.Canvas;
-			import flash.geom.Rectangle;
+			import mx.containers.ControlBar;
+			import mx.containers.Panel;
+			import mx.controls.Alert;
+			import mx.controls.CheckBox;
+			import mx.controls.TextInput;
+			import mx.controls.dataGridClasses.DataGridColumn;
+			import mx.core.ComponentDescriptor;
+			import mx.core.UIComponent;
+			import mx.effects.Pause;
+			import mx.events.FlexEvent;
+			import mx.events.FlexMouseEvent;
+			import mx.graphics.ImageSnapshot;
+			import mx.graphics.codec.JPEGEncoder;
 			import mx.managers.CursorManager;
-
+			import mx.managers.PopUpManager;
+			import mx.messaging.management.Attribute;
+			import mx.utils.StringUtil;
 			
 			private var objects:Array;
 			private var attributes:Array;
@@ -53,6 +57,9 @@
 				cols = new Array();
 				objects = new Array();
 				attributes = new Array();
+				addEventListener("myCustomEvent1",onMyCustomEvent1);
+				addEventListener("myCustomEvent1",onMyCustomEvent2);
+				addEventListener("myCustomEvent1",onMyCustomEvent3);
 			}
 			
 			private function initGrid(): void
@@ -642,50 +649,95 @@
 				out.writeUTFBytes(lattice.getGraphRepresentation());
 				fileReference.save(out, "data.con");
 			}
-			
-			private function changeRes(): void {
-				//lattice.s.width=lattice.s.AA.right+5;
-        		//lattice.s.height=lattice.s.AA.bottom+5;
-        		var bd:BitmapData = new BitmapData(lattice.s.width, lattice.s.height);
-        		bd.draw(lattice.s);
-        		var ba:ByteArray = (new JPEGEncoder(100)).encode(bd);
-        		var fr:FileReference = new FileReference();
-        		fr.save(ba, "lattice.jpg");
-			}
-			private function exportImageLattice(): void
-			{
-				//pt ce se vede
-				//var bd:BitmapData = new BitmapData(lattice.s.width,lattice.s.height);
-        		//bd.draw(lattice.s);
-        		//lattice.s.height=lattice.s.getVisibleRect().height;
-        		//lattice.s.width=lattice.getBounds(lattice.s).width;
-        		
+	
+			private function onMyCustomEvent1(event:Event):void {
+				//mx.controls.Alert.show('I heard that!');
 				CursorManager.setBusyCursor();
-        		var w:int = lattice.s.width;
-        		var h:int = lattice.s.height;
+			}
+			
+			private function onMyCustomEvent2(event:Event):void {
+				//mx.controls.Alert.show('I heard that!');
 				lattice.s.height=1000;
 				lattice.s.width=1000;
+			}
+			private function onMyCustomEvent3(event:Event):void {
+				//mx.controls.Alert.show('I heard that!');
+				//CursorManager.setBusyCursor();
 				var bd:BitmapData = new BitmapData(lattice.s.width, lattice.s.height);
 				bd.draw(lattice.s);
 				var ba:ByteArray = (new JPEGEncoder(100)).encode(bd);
 				var fr:FileReference = new FileReference();
 				fr.save(ba, "lattice.jpg");
 				CursorManager.removeBusyCursor();
+			}
 
-        		
-        		//setInterval (changeRes, 1000);
-        		//setInterval (changeRes, 1000);
-        		//setTimeout (function (): void {changeRes();}, 2000);
-        		//setTimeout (function (): void {changeRes();}, 2000);
-        		//lattice.s.width=lattice.s.AA.right+5;
-        		//lattice.s.height=lattice.s.AA.bottom+5;
-        		//this.commitProperties();
-        		//exportImageButton.addEventListener(Event.COMPLETE, changeRes);
-        		//exportImageButton.dispatchEvent(new Event(Event.COMPLETE));
+			
+			private function exportImageLattice(): void
+			{
+				/*var myEventObj1:Event = new Event("myCustomEvent1");
+				dispatchEvent(myEventObj1);
+				var myEventObj2:Event = new Event("myCustomEvent2");
+				dispatchEvent(myEventObj2);
+				var myEventObj3:Event = new Event("myCustomEvent3");
+				dispatchEvent(myEventObj3);*/
+				
+				/*//CE SE VEDE
+				var w:int = lattice.s.width;
+				var h:int = lattice.s.height;
+				lattice.s.width=lattice.s.getLatticeDimensions.right+5;
+				lattice.s.height=lattice.s.getLatticeDimensions.bottom+5;
+				var bd:BitmapData = new BitmapData(lattice.s.width, lattice.s.height);
+				var fr:FileReference = new FileReference();
+				var jpegEnc:JPEGEncoder = new JPEGEncoder(100);
+				bd.draw(lattice.s);
+				var ba:ByteArray = jpegEnc.encode(bd);
+				fr.save(ba, "lattice.jpg");
+				lattice.s.width=w;
+				lattice.s.height=h;*/
+				
+				var w:int = lattice.s.width;
+				var h:int = lattice.s.height;
+				lattice.s.width=lattice.s.getLatticeDimensions.right+5;
+				lattice.s.height=lattice.s.getLatticeDimensions.bottom+5;
+				var jpegEnc:JPEGEncoder = new JPEGEncoder(100);
+				var fileReference:FileReference = new FileReference();
+				var imagSnap:ImageSnapshot = ImageSnapshot.captureImage(lattice.s, null, jpegEnc, false);
+				fileReference.save(imagSnap.data, "lattice.jpg");
+				lattice.s.width=w;
+				lattice.s.height=h;
+				
+				/*var w:int = lattice.s.width;
+				var h:int = lattice.s.height;
+				lattice.s.width=lattice.s.getLatticeDimensions.right+5;
+				lattice.s.height=lattice.s.getLatticeDimensions.bottom+5;
+				var colorTransformer:ColorTransform = new ColorTransform();
+				//colorTransformer.color=0x663399;
+				//colorTransformer.redMultiplier = 0;
+				//colorTransformer.greenMultiplier = 0;
+				//colorTransformer.blueMultiplier = 0;
+				//colorTransformer.redOffset=255;
+				//colorTransformer.greenOffset=255;
+				//colorTransformer.blueOffset=255;
+				
+				var imageSnap2:ImageSnapshot = ImageSnapshot.captureBitmapData(lattice.s,null,colorTransformer,null,null,true);
+				//var color:int = imageSnap2.getPixel(200, 200);
+				//var red:uint = 0xFF0000;
+				//imageSnap2.setPixel(1, 1, red);
+				//imageSnap2.setPixel(1, 1, red);
+				//imageSnap2.setPixel(1,1,A64E26);
+
+				//var imageSnap:ImageSnapshot = ImageSnapshot.captureBitmapData(lattice.s,null,null,null,null,true);
+				//imageSnap2.draw(lattice.s);
+				var ba:ByteArray = (new JPEGEncoder(100)).encode(imageSnap2);
+				fileReference.save(ba, "lattice.jpg");
+				//fileReference.save(imageSnap.data, "lattice.jpg");
+				lattice.s.width=w;
+				lattice.s.height=h;*/
 			}
 			
 		]]>
 	</mx:Script>
+	
 	<mx:ApplicationControlBar id="appControlBar" width="100%">
 			<mx:Button id="openButton" visible="true" includeInLayout="true" click="openClickHandler()" label="Open" />
 			<mx:Button id="saveButton" visible="true" includeInLayout="true" click="saveClickHandler()" label="Save" />

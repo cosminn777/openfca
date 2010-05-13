@@ -165,26 +165,26 @@
 				<mx:Label text="Maximum edge distance"/>
 			</mx:GridItem>
 			<mx:GridItem width="100%" height="100%">
-				<mx:HSlider id="maxDistanceFromCurrent" value="2" minimum="1" maximum="20" 
+				<mx:HSlider id="maxDistanceFromCurrent" value="6" minimum="1" maximum="27" 
         					liveDragging="true" snapInterval="1" change="s.refresh()" width="100%"/>
 			</mx:GridItem>
 			<mx:GridItem>
 				<mx:Label text="Item width"/>
 			</mx:GridItem>
 			<mx:GridItem width="100%" height="100%">
-				<mx:HSlider id="widthSlider" value="70" minimum="20" maximum="200" change="s.refresh()" liveDragging="true" width="100%"/>
+				<mx:HSlider id="widthSlider" value="97" minimum="20" maximum="200" change="s.refresh()" liveDragging="true" width="100%"/>
 			</mx:GridItem>
 			<mx:GridItem>
 				<mx:Label text="Item height"/>
 			</mx:GridItem>
 			<mx:GridItem width="100%" height="100%">
-				<mx:HSlider id="heightSlider" value="50" minimum="20" maximum="200" change="s.refresh()" liveDragging="true" width="100%"/>
+				<mx:HSlider id="heightSlider" value="52" minimum="20" maximum="200" change="s.refresh()" liveDragging="true" width="100%"/>
 			</mx:GridItem>
 			<mx:GridItem>
 				<mx:Label text="Font Size"/>
 			</mx:GridItem>
 			<mx:GridItem width="100%" height="100%">
-				<mx:HSlider id="fontSizeSlider" value="10" minimum="8" maximum="70" change="s.refresh()" liveDragging="true" width="100%"/>
+				<mx:HSlider id="fontSizeSlider" value="11.5" minimum="8" maximum="70" change="s.refresh()" liveDragging="true" width="100%"/>
 			</mx:GridItem>
 		</mx:GridRow>
 		<mx:GridRow width="100%" height="100%">
@@ -192,7 +192,7 @@
 				<mx:Label text="Visible concepts limit"/>
 			</mx:GridItem>
 			<mx:GridItem width="100%" height="100%">
-				<mx:HSlider id="maxVisible" snapInterval="1" value="20" minimum="10" maximum="100" 
+				<mx:HSlider id="maxVisible" snapInterval="1" value="20" minimum="7" maximum="170" 
         					liveDragging="true" change="s.refresh()" width="100%"/>
 			</mx:GridItem>
 			<mx:GridItem>
@@ -205,13 +205,13 @@
 				<mx:Label text="Horizontal repulsion"/>
 			</mx:GridItem>
 			<mx:GridItem width="100%" height="100%">
-				<mx:HSlider id="repulsionSlider" value="0.97" minimum="0.02" maximum="4.5" change="s.refresh()" liveDragging="true" width="100%"/>
+				<mx:HSlider id="repulsionSlider" value="1.37" minimum="0.02" maximum="4.5" change="s.refresh()" liveDragging="true" width="100%"/>
 			</mx:GridItem>
 			<mx:GridItem>
 				<mx:Label text="Vertical repulsion"/>
 			</mx:GridItem>
 			<mx:GridItem width="100%" height="100%">
-				<mx:HSlider id="verticalRepulsionSlider" value="1.1" minimum="0.7" maximum="4" change="s.refresh()" liveDragging="true" width="100%"/>
+				<mx:HSlider id="verticalRepulsionSlider" value="1.37" minimum="0.7" maximum="4" change="s.refresh()" liveDragging="true" width="100%"/>
 			</mx:GridItem>
 		</mx:GridRow>
 	</mx:Grid>
