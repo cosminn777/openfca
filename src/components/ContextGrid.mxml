@@ -419,12 +419,14 @@
 				unsetVisibility();
 				viewLatticeButton.visible = true;
 				viewLatticeButton.includeInLayout = true;
+				saveContextAsImageButton.visible = true;
+				saveContextAsImageButton.includeInLayout = true;
 				beginExploreAttrButton.visible = true;
 				beginExploreAttrButton.includeInLayout = true;
 				implButton.visible = true;
 				implButton.includeInLayout = true;
-				exportImageButton.visible = false;
-				exportImageButton.includeInLayout = false;
+				saveLatticeAsImageButton.visible = false;
+				saveLatticeAsImageButton.includeInLayout = false;
 				endExploreAttrButton.visible = true;
 				endExploreAttrButton.includeInLayout = true;
 				endExploreAttrButton.enabled = false;
@@ -452,8 +454,8 @@
 				unsetVisibility();
 				backToGridButton.visible = true;
 				backToGridButton.includeInLayout = true;
-				exportImageButton.visible = true;
-				exportImageButton.includeInLayout = true
+				saveLatticeAsImageButton.visible = true;
+				saveLatticeAsImageButton.includeInLayout = true
 				viewStack.selectedChild = lattice;
 			}
 			
@@ -672,7 +674,7 @@
 			}
 
 			
-			private function exportImageLattice(): void
+			private function exportLatticeImage(): void
 			{
 				/*var myEventObj1:Event = new Event("myCustomEvent1");
 				dispatchEvent(myEventObj1);
@@ -735,15 +737,48 @@
 				lattice.s.height=h;*/
 			}
 			
+			private function exportContextImage(): void
+			{	
+				var w:int = contable.width;
+				var h:int = contable.height;
+				contable.height=contable.measureHeightOfItems(0, contable.dataProvider.length+1) + contable.headerHeight;
+				var cWidth:int=0;
+				for (var c:int=0;c<contable.columnCount-1;c++)
+					cWidth+=contable.columns[c].width;
+				contable.width=cWidth;//contable.columns[1].width;
+				var jpegEnc:JPEGEncoder = new JPEGEncoder(100);
+				var fileReference:FileReference = new FileReference();
+				var imagSnap:ImageSnapshot = ImageSnapshot.captureImage(contable, null, jpegEnc, false);
+				fileReference.save(imagSnap.data, "context.jpg");
+				contable.width=w;
+				contable.height=h;
+				
+				/*
+				var w:int = contable.width;
+				var h:int = contable.height;
+				contable.height=contable.measureHeightOfItems(0, contable.dataProvider.length) + contable.headerHeight;
+				var bd:BitmapData = new BitmapData(contable.width, contable.height);
+				var fr:FileReference = new FileReference();
+				var jpegEnc:JPEGEncoder = new JPEGEncoder(100);
+				bd.draw(contable);
+				var ba:ByteArray = jpegEnc.encode(bd);
+				fr.save(ba, "lattice.jpg");
+				//lattice.s.width=w;
+				//lattice.s.height=h;
+				*/
+				
+			}
+			
 		]]>
 	</mx:Script>
 	
 	<mx:ApplicationControlBar id="appControlBar" width="100%">
 			<mx:Button id="openButton" visible="true" includeInLayout="true" click="openClickHandler()" label="Open" />
 			<mx:Button id="saveButton" visible="true" includeInLayout="true" click="saveClickHandler()" label="Save" />
-			<mx:Button label="New Context" includeInLayout="false" visible="false" id="resetButton"  click="showCreateContext()"/>
+			<mx:Button id="resetButton" visible="false" includeInLayout="false" label="New Context" click="showCreateContext()"/>
+			<mx:Button id="saveContextAsImageButton" visible="false" includeInLayout="false" label="Save as Image" click="exportContextImage()"/>
 			<mx:Button id="viewLatticeButton" visible="false" includeInLayout="false" label="View Lattice" click="showLattice()"/>
-			<mx:Button id="exportImageButton" visible="false" includeInLayout="false" label="Export to Image" click="exportImageLattice()"/>
+			<mx:Button id="saveLatticeAsImageButton" visible="false" includeInLayout="false" label="Save as Image" click="exportLatticeImage()"/>
 			<mx:Button id="backToGridButton" visible="false" includeInLayout="false" label="Back" click="setContextGridVisibility()"/>
 			<mx:Button id="beginExploreAttrButton" visible="false" includeInLayout="false" label="Begin Attribute Exploration" click="beginExploreAttr()"/>
 			<mx:Button id="endExploreAttrButton" visible="false" enabled="false" includeInLayout="false" label="Cancel Attribute Exploration" click="endExploreAttr()"/>
@@ -760,13 +795,12 @@
 			hideEffect="{fadeOut}" 
 			createContextClick="createContext(event)"
 			cancelCreateContextClick="cancelCreateContext()" />
-									
-
 		<mx:VBox id="contextCanvas" width="100%"  height="100%"
-			horizontalScrollPolicy="off"
-			paddingTop="5"
-			showEffect="{fadeIn}"
-			hideEffect="{fadeOut}">
+				 horizontalScrollPolicy="off"
+				 verticalScrollPolicy="off"
+				 paddingTop="5"
+				 showEffect="{fadeIn}"
+				 hideEffect="{fadeOut}">
 			<mx:HBox>
 				<mx:Button label="Add Object" click="showAddObject()"/>
 				<mx:Button label="Pop Object" click="popObject()"/>
@@ -774,16 +808,17 @@
 				<mx:Button label="Pop Attribute" click="popAttribute()"/>
 			</mx:HBox>
 			<mx:DataGrid lockedColumnCount="1" creationComplete="initGrid()" id="contable"
-					     horizontalScrollPolicy="on"
-					     verticalScrollPolicy="on"
-					     variableRowHeight="true"
-					     width="100%" height="100%"
+						 horizontalScrollPolicy="auto"
+						 verticalScrollPolicy="auto"
+						 variableRowHeight="true"
+						 width="100%" height="100%"
 						 dataProvider="{rows}" editable="true">
 			</mx:DataGrid>
 		</mx:VBox>
 		
 		<components:LatticeView id="lattice" width="100%" height="100%"
-						showEffect="{fadeIn}"
-						hideEffect="{fadeOut}" />
+								showEffect="{fadeIn}"
+								hideEffect="{fadeOut}" />
 	</mx:ViewStack>
+
 </mx:VBox>
