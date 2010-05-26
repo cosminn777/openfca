@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" xmlns:components="components.*"
-	initialize="init()" horizontalAlign="center">
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" 
+		 xmlns:components="components.*" 
+		 initialize="init()" horizontalAlign="center">
 	
 	<mx:Script>
 		<![CDATA[
@@ -11,7 +12,6 @@
 			import com.adobe.flex.extras.controls.springgraph.SpringGraph;
 			
 			import events.NewContextEvent;
-			
 			import flash.geom.Rectangle;
 			import flash.utils.Timer;
 			import flash.utils.getTimer;
@@ -71,7 +71,7 @@
 			}
 			
 			private function showImplications(): void
-			{
+			{		
 				var panel:ImplicationPanel = new ImplicationPanel();
 				var implProcessor: ImplicationProcessor = new ImplicationProcessor();
 				var kImplClosure: Array = new Array();
@@ -421,17 +421,14 @@
 				viewLatticeButton.includeInLayout = true;
 				saveContextAsImageButton.visible = true;
 				saveContextAsImageButton.includeInLayout = true;
-				beginExploreAttrButton.visible = true;
-				beginExploreAttrButton.includeInLayout = true;
-				implButton.visible = true;
-				implButton.includeInLayout = true;
+				viewImplicationsButton.visible = true;
+				viewImplicationsButton.includeInLayout = true;
 				saveLatticeAsImageButton.visible = false;
 				saveLatticeAsImageButton.includeInLayout = false;
-				endExploreAttrButton.visible = true;
-				endExploreAttrButton.includeInLayout = true;
-				endExploreAttrButton.enabled = false;
 				resetButton.visible = true;
 				resetButton.includeInLayout = true;
+				saveButton.visible = true;
+				saveButton.includeInLayout = true;
 				viewStack.selectedChild = contextCanvas;
 			}
 			
@@ -620,7 +617,9 @@
 			
 			private function openClickHandler():void
 			{
-				fileReference.browse([new FileFilter("Conflexplore files", "*.con")]);
+				var confexploreFilter:FileFilter = new FileFilter("Conflexplore files (*.con)", "*.con;*.lat;*.cont;*.conf;*.latt;*.lattice;*.context");
+				var allFilter:FileFilter = new FileFilter("All", "*.*");
+				fileReference.browse([confexploreFilter,allFilter]);
 				fileReference.addEventListener(Event.SELECT, onFileSelect);
 			}
 			
@@ -649,7 +648,10 @@
 				}
 				out.writeUTFBytes(lattice.getConceptRepresentation());
 				out.writeUTFBytes(lattice.getGraphRepresentation());
-				fileReference.save(out, "data.con");
+				if (viewStack.selectedChild == contextCanvas)
+					fileReference.save(out, "context.con");
+				else
+					fileReference.save(out, "lattice.con");
 			}
 	
 			private function onMyCustomEvent1(event:Event):void {
@@ -672,7 +674,6 @@
 				fr.save(ba, "lattice.jpg");
 				CursorManager.removeBusyCursor();
 			}
-
 			
 			private function exportLatticeImage(): void
 			{
@@ -766,28 +767,25 @@
 				//lattice.s.width=w;
 				//lattice.s.height=h;
 				*/
-				
 			}
 			
 		]]>
 	</mx:Script>
 	
-	<mx:ApplicationControlBar id="appControlBar" width="100%">
-			<mx:Button id="openButton" visible="true" includeInLayout="true" click="openClickHandler()" label="Open" />
-			<mx:Button id="saveButton" visible="true" includeInLayout="true" click="saveClickHandler()" label="Save" />
-			<mx:Button id="resetButton" visible="false" includeInLayout="false" label="New Context" click="showCreateContext()"/>
-			<mx:Button id="saveContextAsImageButton" visible="false" includeInLayout="false" label="Save as Image" click="exportContextImage()"/>
-			<mx:Button id="viewLatticeButton" visible="false" includeInLayout="false" label="View Lattice" click="showLattice()"/>
-			<mx:Button id="saveLatticeAsImageButton" visible="false" includeInLayout="false" label="Save as Image" click="exportLatticeImage()"/>
-			<mx:Button id="backToGridButton" visible="false" includeInLayout="false" label="Back" click="setContextGridVisibility()"/>
-			<mx:Button id="beginExploreAttrButton" visible="false" includeInLayout="false" label="Begin Attribute Exploration" click="beginExploreAttr()"/>
-			<mx:Button id="endExploreAttrButton" visible="false" enabled="false" includeInLayout="false" label="Cancel Attribute Exploration" click="endExploreAttr()"/>
-			<mx:Button id="implButton" visible="false" includeInLayout="false" label="View Implications" click="showImplications()"/>
+	<mx:ApplicationControlBar id="appControlBar" 
+							  width="100%">
+			<mx:Button id="openButton" visible="true" includeInLayout="true" click="openClickHandler()" label="Open"/>
+			<mx:Button id="saveButton" visible="false" includeInLayout="false" click="saveClickHandler()" label="Save"/>
+			<mx:Button id="resetButton" visible="false" includeInLayout="false" label="New Context" click="showCreateContext()" showEffect="{fadeIn}" hideEffect="{fadeOut}"/>
+			<mx:Button id="saveContextAsImageButton" visible="false" includeInLayout="false" label="Save as Image" click="exportContextImage()" showEffect="{fadeIn}" hideEffect="{fadeOut}"/>
+			<mx:Button id="viewLatticeButton" visible="false" includeInLayout="false" label="View Lattice" click="showLattice()" showEffect="{fadeIn}" hideEffect="{fadeOut}"/>
+			<mx:Button id="saveLatticeAsImageButton" visible="false" includeInLayout="false" label="Save as Image" click="exportLatticeImage()" showEffect="{fadeIn}" hideEffect="{fadeOut}"/>
+			<mx:Button id="backToGridButton" visible="false" includeInLayout="false" label="Back" click="setContextGridVisibility()" showEffect="{fadeIn}" hideEffect="{fadeOut}"/>
+			<mx:Button id="viewImplicationsButton" visible="false" includeInLayout="false" label="View Implications" click="showImplications()" showEffect="{fadeIn}" hideEffect="{fadeOut}"/>
 	</mx:ApplicationControlBar>
 
 	<mx:Fade id="fadeIn" alphaFrom="0.0" alphaTo="1.0"/>
 	<mx:Fade id="fadeOut" alphaFrom="1.0" alphaTo="0.0"/>
-	
 	<mx:ViewStack id="viewStack" width="100%" height="100%">
 		<components:NewContextPanel
 			id="newContextPanel"
@@ -806,6 +804,8 @@
 				<mx:Button label="Pop Object" click="popObject()"/>
 				<mx:Button label="Add Attribute" click="showAddAttribute()"/>
 				<mx:Button label="Pop Attribute" click="popAttribute()"/>
+				<mx:Button label="Begin Attribute Exploration" id="beginExploreAttrButton" click="beginExploreAttr()"/>
+				<mx:Button label="Cancel Attribute Exploration" id="endExploreAttrButton" enabled="false" click="endExploreAttr()"/>
 			</mx:HBox>
 			<mx:DataGrid lockedColumnCount="1" creationComplete="initGrid()" id="contable"
 						 horizontalScrollPolicy="auto"
@@ -820,5 +820,4 @@
 								showEffect="{fadeIn}"
 								hideEffect="{fadeOut}" />
 	</mx:ViewStack>
-
 </mx:VBox>

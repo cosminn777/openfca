@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" layout="vertical" width="820" height="440" title="Implications" horizontalAlign="center" paddingTop="20" paddingBottom="20">
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" 
+		  layout="vertical" 
+		  width="820" 
+		  height="440" 
+		  title="Implications" 
+		  horizontalAlign="center">
 <mx:Script>
 <![CDATA[
 	import mx.collections.ArrayCollection;
@@ -15,7 +20,7 @@
 		{
 			implItems.addItem(o);
 		}
-		implGrid.height=implGrid.measureHeightOfItems(0, implGrid.dataProvider.length+1) + implGrid.headerHeight;
+		//implGrid.height=implGrid.measureHeightOfItems(0, implGrid.dataProvider.length+1) + implGrid.headerHeight;
 	}
 	
 	private function exportImplicationsImage(): void
@@ -31,8 +36,8 @@
 		var fileReference:FileReference = new FileReference();
 		var imagSnap:ImageSnapshot = ImageSnapshot.captureImage(implGrid, null, jpegEnc, false);
 		fileReference.save(imagSnap.data, "implications.jpg");
-		//implGrid.width=w;
-		//implGrid.height=h;
+		implGrid.width=w;
+		implGrid.height=h;
 		
 		/*
 		var w:int = contable.width;
@@ -47,9 +52,7 @@
 		//lattice.s.width=w;
 		//lattice.s.height=h;
 		*/
-		
 	}
-	
 ]]>
 </mx:Script>
 	<mx:DataGrid lockedColumnCount="1" id="implGrid"
@@ -67,5 +70,4 @@
 		<mx:Button id="saveImplicationsAsImageButton" visible="true" label="Save as Image" click="exportImplicationsImage()"/>
 		<mx:Button id="okButton" label="Ok"/>
 	</mx:ControlBar>
-	
 </mx:Panel>
