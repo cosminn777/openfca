@@ -1,0 +1,34 @@
+/* CSS file */
+
+@namespace s "library://ns.adobe.com/flex/spark";
+@namespace mx "library://ns.adobe.com/flex/mx";
+
+.mypanelTitle {
+	fontFamily: Arial;
+	fontSize: 10;
+	fontWeight: bold;
+}
+.closeBtn {
+	upSkin:        Embed('/data/closeButton.png');
+	overSkin:      Embed('/data/closeButton.png');
+	downSkin:      Embed('/data/closeButton.png');
+	disabledSkin:  Embed('/data/closeButton.png');
+}
+.increaseBtn {
+	upSkin:        Embed('/data/increaseButton.png');
+	overSkin:      Embed('/data/increaseButton.png');
+	downSkin:      Embed('/data/increaseButton.png');
+	disabledSkin:  Embed('/data/increaseButton.png');
+}
+.decreaseBtn {
+	upSkin:        Embed('/data/decreaseButton.png');
+	overSkin:      Embed('/data/decreaseButton.png');
+	downSkin:      Embed('/data/decreaseButton.png');
+	disabledSkin:  Embed('/data/decreaseButton.png');
+}
+.resizeHndlr {
+	upSkin:        Embed('/data/resizeHandler.png');
+	overSkin:      Embed('/data/resizeHandler.png');
+	downSkin:      Embed('/data/resizeHandler.png');
+	disabledSkin:  Embed('/data/resizeHandler.png');
+}

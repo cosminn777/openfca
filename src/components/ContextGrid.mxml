@@ -154,11 +154,12 @@
 				PopUpManager.addPopUp(panel, this, true);
 				PopUpManager.centerPopUp(panel);
 				
-				panel.okButton.addEventListener(MouseEvent.CLICK,
+				panel.cButton.addEventListener(MouseEvent.CLICK,
 					function (event:Event): void {
 						PopUpManager.removePopUp(panel);
 					});
 				panel.setImplItems(implications);
+				
 			}
 			
 			private var explorer: AttributeExplorer = new AttributeExplorer();
@@ -427,8 +428,8 @@
 				saveLatticeAsImageButton.includeInLayout = false;
 				resetButton.visible = true;
 				resetButton.includeInLayout = true;
-				saveButton.visible = true;
-				saveButton.includeInLayout = true;
+				//saveButton.visible = true;
+				//saveButton.includeInLayout = true;
 				viewStack.selectedChild = contextCanvas;
 			}
 			
@@ -648,10 +649,12 @@
 				}
 				out.writeUTFBytes(lattice.getConceptRepresentation());
 				out.writeUTFBytes(lattice.getGraphRepresentation());
-				if (viewStack.selectedChild == contextCanvas)
-					fileReference.save(out, "context.con");
-				else
+				//if (viewStack.selectedChild == contextCanvas)
+				//	fileReference.save(out, "context.con");
+				if (viewStack.selectedChild == lattice)
 					fileReference.save(out, "lattice.con");
+				else
+					fileReference.save(out, "context.con");
 			}
 	
 			private function onMyCustomEvent1(event:Event):void {
@@ -704,7 +707,7 @@
 				lattice.s.height=lattice.s.getLatticeDimensions.bottom+5;
 				var jpegEnc:JPEGEncoder = new JPEGEncoder(100);
 				var fileReference:FileReference = new FileReference();
-				var imagSnap:ImageSnapshot = ImageSnapshot.captureImage(lattice.s, null, jpegEnc, false);
+				var imagSnap:ImageSnapshot = ImageSnapshot.captureImage(lattice.s, 0, jpegEnc, false);
 				fileReference.save(imagSnap.data, "lattice.jpg");
 				lattice.s.width=w;
 				lattice.s.height=h;
@@ -749,7 +752,7 @@
 				contable.width=cWidth;//contable.columns[1].width;
 				var jpegEnc:JPEGEncoder = new JPEGEncoder(100);
 				var fileReference:FileReference = new FileReference();
-				var imagSnap:ImageSnapshot = ImageSnapshot.captureImage(contable, null, jpegEnc, false);
+				var imagSnap:ImageSnapshot = ImageSnapshot.captureImage(contable, 0, jpegEnc, false);
 				fileReference.save(imagSnap.data, "context.jpg");
 				contable.width=w;
 				contable.height=h;
@@ -775,7 +778,7 @@
 	<mx:ApplicationControlBar id="appControlBar" 
 							  width="100%">
 			<mx:Button id="openButton" visible="true" includeInLayout="true" click="openClickHandler()" label="Open"/>
-			<mx:Button id="saveButton" visible="false" includeInLayout="false" click="saveClickHandler()" label="Save"/>
+			<mx:Button id="saveButton" visible="true" includeInLayout="true" click="saveClickHandler()" label="Save"/>
 			<mx:Button id="resetButton" visible="false" includeInLayout="false" label="New Context" click="showCreateContext()" showEffect="{fadeIn}" hideEffect="{fadeOut}"/>
 			<mx:Button id="saveContextAsImageButton" visible="false" includeInLayout="false" label="Save as Image" click="exportContextImage()" showEffect="{fadeIn}" hideEffect="{fadeOut}"/>
 			<mx:Button id="viewLatticeButton" visible="false" includeInLayout="false" label="View Lattice" click="showLattice()" showEffect="{fadeIn}" hideEffect="{fadeOut}"/>

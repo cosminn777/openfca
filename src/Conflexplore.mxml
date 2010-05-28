@@ -2,8 +2,9 @@
 <mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" scriptTimeLimit="600"
 				xmlns:components="components.*" layout="vertical"
 				backgroundGradientColors="[#888888,#333333]" verticalAlign="top" viewSourceURL="srcview/index.html">
-	<mx:Style source="Conflexplore.css"/>
-	<mx:Style source="Conflexplore_1.css"/>
+	<mx:Style source="Conflexplore1.css"/>
+	<mx:Style source="Conflexplore2.css"/>
+	<mx:Style source="styles.css"/>
 	<mx:Image  source="data/logo.PNG" />
 	<components:ContextGrid id="contextGrid" minWidth="640" width="95%" height="100%" />
 	<mx:Spacer height="2%" />

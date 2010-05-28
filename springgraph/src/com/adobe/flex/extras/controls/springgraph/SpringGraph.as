@@ -239,8 +239,9 @@ package com.adobe.flex.extras.controls.springgraph {
 	    /** @private */
  		public function newComponent(item: Item): UIComponent {
  			var component: UIComponent = createComponent(item);
-            component.x = this.width/7;
-            component.y = 5;
+			//node creation location
+            component.x = this.width/3;
+            component.y = 7;
             component.addEventListener("mouseDown", mouseDownEvent);
             component.addEventListener(MouseEvent.MOUSE_OVER, mouseOver);
             component.addEventListener(MouseEvent.MOUSE_OUT, mouseOut);
