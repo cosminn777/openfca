@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ext:SuperPanel xmlns:mx="http://www.adobe.com/2006/mxml"
+<ext:CustomPanel xmlns:mx="http://www.adobe.com/2006/mxml"
 			   xmlns:ext="renderers.*"
 		  	   layout="vertical" 
 		  	   width="820" 
@@ -13,7 +13,7 @@
 	import mx.collections.ArrayCollection;
 	import mx.graphics.ImageSnapshot;
 	import mx.graphics.codec.JPEGEncoder;
-	import renderers.SuperPanel;
+	import renderers.CustomPanel;
 
 	[Bindable]
 	public var implItems:ArrayCollection = new ArrayCollection();
@@ -75,4 +75,4 @@
 		<mx:Button id="saveImplicationsAsImageButton" visible="true" label="Save as Image" click="exportImplicationsImage()"/>
 		<mx:Button id="cButton" label="Close"/>
 	</mx:ControlBar>
-</ext:SuperPanel>
+</ext:CustomPanel>

@@ -22,7 +22,7 @@ package renderers {
 	import flash.geom.Rectangle;
 	import flash.events.MouseEvent;
 	
-	public class SuperPanel extends Panel {
+	public class CustomPanel extends Panel {
 		[Bindable] public var showControls:Boolean = true;
 		[Bindable] public var enableResize:Boolean = true;
 				
@@ -42,7 +42,7 @@ package renderers {
 		private var oPoint:Point 			= new Point();
 		private var resizeCur:Number		= 0;
 				
-		public function SuperPanel() {}
+		public function CustomPanel() {}
 
 		override protected function createChildren():void {
 			super.createChildren();
@@ -239,7 +239,11 @@ package renderers {
 		
 		public function resizeMoveHandler(event:MouseEvent):void {
 			this.stopDragging();
-
+			if (this.normalMaxButton.styleName == "decreaseBtn") {
+				this.normalMaxButton.styleName = "increaseBtn";
+				this.oW = screen.width;
+				this.oH = screen.height;
+			}
 
 			var xPlus:Number = FlexGlobals.topLevelApplication.parent.mouseX - this.oPoint.x;			
 			var yPlus:Number = FlexGlobals.topLevelApplication.parent.mouseY - this.oPoint.y;
