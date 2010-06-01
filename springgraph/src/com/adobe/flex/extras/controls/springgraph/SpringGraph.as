@@ -240,7 +240,7 @@ package com.adobe.flex.extras.controls.springgraph {
  		public function newComponent(item: Item): UIComponent {
  			var component: UIComponent = createComponent(item);
 			//node creation location
-            component.x = this.width/3;
+            component.x = this.width/2;
             component.y = 7;
             component.addEventListener("mouseDown", mouseDownEvent);
             component.addEventListener(MouseEvent.MOUSE_OVER, mouseOver);
@@ -870,14 +870,18 @@ package com.adobe.flex.extras.controls.springgraph {
 				// some items are off the screen. Let's auto-scroll the display.
 				scrollX = 0;
 				scrollY = 0;
-				if ((itemBounds.left > 13))
-					scrollX=scrollX - 2;
+				//for latttice to go to left
+				//-------------------------
+				//if ((itemBounds.left > 13))
+				//	scrollX=scrollX - 2;
+				//-------------------------
 				//if ((itemBounds.left > 3))
 				//	scrollX=scrollX - 5;
 				//if ((itemBounds.left > 0) && (itemBounds.right > this.width-5))
 				//	scrollX=scrollX - 5;
 				//if ((itemBounds.top > 7) && (itemBounds.bottom > this.height))
 				//	scrollY=scrollY - 5;
+				//for lattice to go to right
 				if ((itemBounds.top > 10))
 					scrollY=scrollY - 2;
 				//if ((itemBounds.top + itemBounds.bottom) / 2 > this.height / 2 - 5)

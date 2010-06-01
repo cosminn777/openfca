@@ -12,6 +12,7 @@
 			import com.adobe.flex.extras.controls.springgraph.SpringGraph;
 			
 			import events.NewContextEvent;
+			
 			import flash.geom.Rectangle;
 			import flash.utils.Timer;
 			import flash.utils.getTimer;
@@ -168,6 +169,7 @@
 			
 			private function showEndExploreAttr(): void
 			{
+				CursorManager.removeAllCursors();
 				var panel:ExplorationFinishedPanel = new ExplorationFinishedPanel();
 				PopUpManager.addPopUp(panel, this, true);
 				PopUpManager.centerPopUp(panel);
@@ -176,15 +178,14 @@
 					function (event:Event): void {
 						PopUpManager.removePopUp(panel);
 					});
-
 			}
 			
-			private function yesExplore(): void {
+			private function yesExplore(all: Boolean): void {
 					++kExplore; // increase k and add the implication to the set
 					// since we don't need the set, we don't add it anywhere
 					
 					// continue exploring
-					beginExploreAttr();
+					beginExploreAttr(all);
 				};
 				
 			private function showContinueExploreAttr(implic: String): void
@@ -196,7 +197,12 @@
 				
 				var yes:Function = function (event:Event): void {
 					PopUpManager.removePopUp(panel);
-					yesExplore();
+					yesExplore(false);
+				};
+				
+				var yesToAll:Function = function (event:Event): void {
+					PopUpManager.removePopUp(panel);
+					yesExplore(true);
 				};
 				
 				var no:Function = function (event:Event): void {
@@ -204,6 +210,7 @@
 					showAddObject();
 				};
 				panel.yesButton.addEventListener(MouseEvent.CLICK, yes);
+				panel.yesToAllButton.addEventListener(MouseEvent.CLICK, yesToAll);
 				panel.noButton.addEventListener(MouseEvent.CLICK, no);
 				panel.cancelButton.addEventListener(MouseEvent.CLICK,
 					function (event:Event): void {
@@ -212,11 +219,11 @@
 					});
 			}
 			
-			private function beginExploreAttr(): void
+			private function beginExploreAttr(all: Boolean): void
 			{
 				endExploreAttrButton.enabled = true;
 				beginExploreAttrButton.label = "Continue Attribute Exploration";
-				if (!continueExploreAttr()) // finished
+				if (!continueExploreAttr(all)) // finished
 				{
 					showEndExploreAttr();
 					endExploreAttr();
@@ -232,7 +239,7 @@
 				explorer = new AttributeExplorer();
 			}
 			
-			private function continueExploreAttr(): Boolean
+			private function continueExploreAttr(all: Boolean): Boolean
 			{
 				var i: int = 0;
 				
@@ -281,23 +288,31 @@
 				}
 				if (j == bsPremise.length) // premise is equal to the conclusion
 				{
-					yesExplore(); // skip
+					yesExplore(all); // skip
 				}
 				else
 				{
-					showContinueExploreAttr("When object(s) have " + 
-						explorer.getAttrSetAsString(
-							explorer.fromBitSetToAttributeSet(
-								bsPremise, 
-							attributes), 
-						attributes) + " attributes, object(s) also have " + 
-						explorer.getAttrSetAsString(
-							explorer.fromBitSetToAttributeSet(
-								explorer.getBitSetDifference(
+					if (all==false) 
+					{
+						showContinueExploreAttr("When object(s) have " + 
+							explorer.getAttrSetAsString(
+								explorer.fromBitSetToAttributeSet(
 									bsPremise, 
-									bsConclusion), 
-								attributes), 
-							attributes) + " attributes?");
+									attributes), 
+								attributes) + " attributes, object(s) also have " + 
+							explorer.getAttrSetAsString(
+								explorer.fromBitSetToAttributeSet(
+									explorer.getBitSetDifference(
+										bsPremise, 
+										bsConclusion), 
+									attributes), 
+								attributes) + " attributes?");
+					}
+					else 
+					{
+						CursorManager.setBusyCursor();
+						continueExploreAttr(true);//yes to all pressed
+					}
 				}		
 						
 				return true;
@@ -618,7 +633,8 @@
 			
 			private function openClickHandler():void
 			{
-				var confexploreFilter:FileFilter = new FileFilter("Conflexplore files (*.con)", "*.con;*.lat;*.cont;*.conf;*.latt;*.lattice;*.context");
+				//var confexploreFilter:FileFilter = new FileFilter("Conflexplore files (*.con)", "*.con;*.lat;*.cont;*.conf;*.latt;*.lattice;*.context");
+				var confexploreFilter:FileFilter = new FileFilter("Conflexplore files (*.con)", "*.con");
 				var allFilter:FileFilter = new FileFilter("All", "*.*");
 				fileReference.browse([confexploreFilter,allFilter]);
 				fileReference.addEventListener(Event.SELECT, onFileSelect);
@@ -807,7 +823,7 @@
 				<mx:Button label="Pop Object" click="popObject()"/>
 				<mx:Button label="Add Attribute" click="showAddAttribute()"/>
 				<mx:Button label="Pop Attribute" click="popAttribute()"/>
-				<mx:Button label="Begin Attribute Exploration" id="beginExploreAttrButton" click="beginExploreAttr()"/>
+				<mx:Button label="Begin Attribute Exploration" id="beginExploreAttrButton" click="beginExploreAttr(false)"/>
 				<mx:Button label="Cancel Attribute Exploration" id="endExploreAttrButton" enabled="false" click="endExploreAttr()"/>
 			</mx:HBox>
 			<mx:DataGrid lockedColumnCount="1" creationComplete="initGrid()" id="contable"
