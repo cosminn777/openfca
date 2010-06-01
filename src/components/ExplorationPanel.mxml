@@ -5,6 +5,7 @@
 	<mx:Text text="If No, give an object that has all attributes in the premise of the implication, but not all attributes in its conclusion." id="lblHowTo" textAlign="center" width="400" />
 	<mx:ControlBar horizontalAlign="right">
 		<mx:Button id="yesButton" label="Yes"/>
+		<mx:Button id="yesToAllButton" label="Yes to All"/>
 		<mx:Button id="noButton" label="No"/>
 		<mx:Button id="cancelButton" label="Cancel Exploration"/>
 	</mx:ControlBar>
