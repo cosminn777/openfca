@@ -899,6 +899,21 @@ package com.adobe.flex.extras.controls.springgraph {
 			}
         }
 		
+		//the lattice only need to be moved to left if it's small so only Y axis scrolls are needed
+		public function doPositionLattice(): int {
+			var itemBounds: Rectangle = calcItemsBoundingRect();
+			var scrollX: int = 0;
+			scrollX=scrollX - itemBounds.left+3;
+			scrollLattice(scrollX, 0);
+			refresh();
+			return itemBounds.left;
+		}
+		
+		public function doPositionLatticeXAxis(xPosition: int): void {
+			scrollLattice(xPosition, 0);
+			refresh();
+		}
+		
   		public function calcItemsBoundingRect(): Rectangle {
    			var c: Array = this.getChildren();
    			if(c.length == 0) return null;

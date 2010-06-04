@@ -467,11 +467,7 @@ package com.adobe.flex.extras.controls.springgraph {
 				dispatchEvent(new Event("historyChange"));
 			}
 		}
-		
-		public function get getLatticeDimensions(): Rectangle {
-			return this.calcItemsBoundingRect();
-		}
-		
+
 		public static var _nodeHeight: int = 50;
 		private var _currentItem: Item;
 		private var _itemLimit: int = 50;

@@ -11,8 +11,10 @@
 <mx:Script>
 <![CDATA[
 	import mx.collections.ArrayCollection;
+	import mx.managers.PopUpManager;
 	import mx.graphics.ImageSnapshot;
 	import mx.graphics.codec.JPEGEncoder;
+	import mx.graphics.codec.PNGEncoder;
 	import renderers.CustomPanel;
 
 	[Bindable]
@@ -24,11 +26,11 @@
 		{
 			implItems.addItem(o);
 		}
-		//implGrid.height=implGrid.measureHeightOfItems(0, implGrid.dataProvider.length+1) + implGrid.headerHeight;
 	}
 	
-	private function exportImplicationsImage(): void
+	private function exportImplications(): void
 	{	
+		/*
 		var w:int = implGrid.width;
 		var h:int = implGrid.height;
 		implGrid.height=implGrid.measureHeightOfItems(0, implGrid.dataProvider.length+1) + implGrid.headerHeight;
@@ -42,6 +44,56 @@
 		fileReference.save(imagSnap.data, "implications.jpg");
 		implGrid.width=w;
 		implGrid.height=h;
+		*/
+		
+		var panel:SaveAsImagePanel = new SaveAsImagePanel();
+		panel.title="Save implications as image";
+		PopUpManager.addPopUp(panel, this, true);
+		PopUpManager.centerPopUp(panel);
+		//var w:int = implGrid.width;
+		//var h:int = implGrid.height;
+		implGrid.height=implGrid.measureHeightOfItems(0, implGrid.dataProvider.length+1) + implGrid.headerHeight;
+		var cWidth:int=0;
+		for (var c:int=0;c<implGrid.columnCount;c++)
+			cWidth+=implGrid.columns[c].width;
+		implGrid.width=cWidth;//contable.columns[1].width;
+		var bd:BitmapData = new BitmapData(implGrid.width, implGrid.height);
+		var fr:FileReference = new FileReference();
+		var jpgEnc:JPEGEncoder = new JPEGEncoder(100);
+		var pngEnc:PNGEncoder = new PNGEncoder();
+		
+		panel.jpgButton.addEventListener(MouseEvent.CLICK,
+			function (event:Event): void {
+				bd.draw(implGrid);
+				var ba:ByteArray = jpgEnc.encode(bd);
+				fr.save(ba, "implications.jpg");
+				//implGrid.width=w;
+				//implGrid.height=h;
+				implGrid.percentWidth=100;
+				implGrid.percentHeight=100;
+				PopUpManager.removePopUp(panel);
+			});
+		
+		panel.pngButton.addEventListener(MouseEvent.CLICK,
+			function (event:Event): void {
+				bd.draw(implGrid);
+				var ba:ByteArray = pngEnc.encode(bd);
+				fr.save(ba, "implications.png");
+				//implGrid.width=w;
+				//implGrid.height=h;
+				implGrid.percentWidth=100;
+				implGrid.percentHeight=100;
+				PopUpManager.removePopUp(panel);
+			});
+		
+		panel.cButton.addEventListener(MouseEvent.CLICK,
+			function (event:Event): void {
+				//implGrid.width=w;
+				//implGrid.height=h;
+				implGrid.percentWidth=100;
+				implGrid.percentHeight=100;
+				PopUpManager.removePopUp(panel);
+			});
 		
 		/*
 		var w:int = contable.width;
@@ -72,7 +124,7 @@
         </mx:columns>
 	</mx:DataGrid>
 	<mx:ControlBar horizontalAlign="right">
-		<mx:Button id="saveImplicationsAsImageButton" visible="true" label="Save as Image" click="exportImplicationsImage()"/>
+		<mx:Button id="saveImplicationsAsImageButton" visible="true" label="Save" click="exportImplications()"/>
 		<mx:Button id="cButton" label="Close"/>
 	</mx:ControlBar>
 </ext:CustomPanel>

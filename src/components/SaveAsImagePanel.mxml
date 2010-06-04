@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" 
+		  layout="vertical" 
+		  width="470" 
+		  height="237" 
+		  title="" 
+		  horizontalAlign="center" 
+		  paddingTop="20" 
+		  paddingBottom="20"
+		  initialize="init()">
+	
+<mx:Script>
+	<![CDATA[
+		import mx.graphics.ImageSnapshot;
+		import mx.graphics.codec.JPEGEncoder;
+		//import mx.core.FlexGlobals;
+		
+		private function init(): void
+		{
+			//FlexGlobals.topLevelApplication.parent.
+		}
+	
+		private function saveAsImage(option:String):void
+		{	
+			/*var w:int = implGrid.width;
+			var h:int = implGrid.height;
+			implGrid.height=implGrid.measureHeightOfItems(0, implGrid.dataProvider.length+1) + implGrid.headerHeight;
+			var cWidth:int=0;
+			for (var c:int=0;c<implGrid.columnCount;c++)
+			cWidth+=implGrid.columns[c].width;
+			implGrid.width=cWidth;//contable.columns[1].width;
+			var jpegEnc:JPEGEncoder = new JPEGEncoder(100);
+			var fileReference:FileReference = new FileReference();
+			var imagSnap:ImageSnapshot = ImageSnapshot.captureImage(implGrid, 0, jpegEnc, false);
+			fileReference.save(imagSnap.data, "implications.jpg");
+			implGrid.width=w;
+			implGrid.height=h;*/
+			
+			/*
+			var w:int = contable.width;
+			var h:int = contable.height;
+			contable.height=contable.measureHeightOfItems(0, contable.dataProvider.length) + contable.headerHeight;
+			var bd:BitmapData = new BitmapData(contable.width, contable.height);
+			var fr:FileReference = new FileReference();
+			var jpegEnc:JPEGEncoder = new JPEGEncoder(100);
+			bd.draw(contable);
+			var ba:ByteArray = jpegEnc.encode(bd);
+			fr.save(ba, "lattice.jpg");
+			//lattice.s.width=w;
+			//lattice.s.height=h;
+		*/
+		}
+		]]>
+</mx:Script>
+
+	<mx:Text text="PNG (*recommended): is a bitmap compression method for image files. Portable Network Graphics supports 16.7 million colors and it is lossless. It's the best compression method (better than GIF or JPEG) for use on the web." textAlign="left" width="431"/>
+	<mx:Text text="" textAlign="center" width="450" />
+	<mx:Text text="JPG: this file extension is related to JPEG (Joint Photographic Experts Group), a 'lossy' compression image file format that supports 16.7 million colors and it's mostly used for bitmap images (photos, pictures etc.)." textAlign="left" width="431"/>
+	<mx:ControlBar horizontalAlign="right">
+		<mx:Button id="dataButton" visible="false" includeInLayout="false" label="Save as CON (data file)"/>
+		<mx:Button id="pngButton" label="Save as PNG"/>
+		<mx:Button id="jpgButton" label="Save as JPG"/>
+		<mx:Button id="cButton" label="Cancel"/>
+	</mx:ControlBar>
+</mx:Panel>
