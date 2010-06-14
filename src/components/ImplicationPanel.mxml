@@ -30,23 +30,7 @@
 	
 	private function exportImplications(): void
 	{	
-		/*
-		var w:int = implGrid.width;
-		var h:int = implGrid.height;
-		implGrid.height=implGrid.measureHeightOfItems(0, implGrid.dataProvider.length+1) + implGrid.headerHeight;
-		var cWidth:int=0;
-		for (var c:int=0;c<implGrid.columnCount;c++)
-			cWidth+=implGrid.columns[c].width;
-		implGrid.width=cWidth;//contable.columns[1].width;
-		var jpegEnc:JPEGEncoder = new JPEGEncoder(100);
-		var fileReference:FileReference = new FileReference();
-		var imagSnap:ImageSnapshot = ImageSnapshot.captureImage(implGrid, 0, jpegEnc, false);
-		fileReference.save(imagSnap.data, "implications.jpg");
-		implGrid.width=w;
-		implGrid.height=h;
-		*/
-		
-		var panel:SaveAsImagePanel = new SaveAsImagePanel();
+		var panel:SavePanel = new SavePanel();
 		panel.title="Save implications as image";
 		PopUpManager.addPopUp(panel, this, true);
 		PopUpManager.centerPopUp(panel);
@@ -94,20 +78,6 @@
 				implGrid.percentHeight=100;
 				PopUpManager.removePopUp(panel);
 			});
-		
-		/*
-		var w:int = contable.width;
-		var h:int = contable.height;
-		contable.height=contable.measureHeightOfItems(0, contable.dataProvider.length) + contable.headerHeight;
-		var bd:BitmapData = new BitmapData(contable.width, contable.height);
-		var fr:FileReference = new FileReference();
-		var jpegEnc:JPEGEncoder = new JPEGEncoder(100);
-		bd.draw(contable);
-		var ba:ByteArray = jpegEnc.encode(bd);
-		fr.save(ba, "lattice.jpg");
-		//lattice.s.width=w;
-		//lattice.s.height=h;
-		*/
 	}
 ]]>
 </mx:Script>

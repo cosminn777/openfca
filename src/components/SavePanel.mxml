@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" 
+		  layout="vertical" 
+		  width="437" 
+		  height="304" 
+		  title="" 
+		  horizontalAlign="center" 
+		  paddingTop="20" 
+		  paddingBottom="20">
+	<mx:HBox>
+		<mx:Text text="CON:" textAlign="left" width="37"/>
+		<mx:Text text="is the Conflexplore file format. The saved file can be opened in Conflexplore and the data can be further edited." textAlign="left" width="340"/>
+	</mx:HBox>
+	<mx:HBox>
+		<mx:Text text="PNG:" textAlign="left" width="37"/>
+		<mx:Text text="is a bitmap compression method for image files. Portable Network Graphics supports 16.7 million colors and it is lossless. It's the best compression method (better than GIF or JPEG) for use on the web." textAlign="left" width="340"/>
+	</mx:HBox>
+	<mx:HBox>
+		<mx:Text text="JPG:" textAlign="left" width="37"/>
+		<mx:Text text="this file extension is related to JPEG (Joint Photographic Experts Group), a 'lossy' compression image file format that supports 16.7 million colors and it's mostly used for bitmap images (photos, pictures etc.)." textAlign="left" width="340"/>
+	</mx:HBox>
+	<mx:HBox>
+	<mx:Text text="* - recommended option" textAlign="left" width="387"/>
+	</mx:HBox>
+	<mx:ControlBar horizontalAlign="right">
+		<mx:Button id="dataButton" label="Save as CON*"/>
+		<mx:Button id="pngButton" label="Save as PNG*"/>
+		<mx:Button id="jpgButton" label="Save as JPG"/>
+		<mx:Button id="cButton" label="Cancel"/>
+	</mx:ControlBar>
+</mx:Panel>
