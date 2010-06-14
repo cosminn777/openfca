@@ -29,10 +29,10 @@
 					setLists(_concepts[0]);
 				}
 				//adds event for mouse wheel scrolling
-				systemManager.addEventListener(MouseEvent.MOUSE_WHEEL, doMouseWheel);   
+				//systemManager.addEventListener(MouseEvent.MOUSE_WHEEL, doMouseWheel); //what's happening at scrolling  
 
 			}
-			
+			/*
 			//what's happening at scrolling
 			private function doMouseWheel(evt:MouseEvent):void {
 				if (verticalRepulsionSlider.value + evt.delta/13 < verticalRepulsionSlider.maximum &&
@@ -59,7 +59,7 @@
                 			else repulsionSlider.value = repulsionSlider.minimum;
                 		}
     			}
-            }
+            }*/
 
 			private function setLists(concept:Concept): void
 			{

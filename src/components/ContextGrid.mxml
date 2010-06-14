@@ -11,7 +11,7 @@
 			import com.adobe.flex.extras.controls.springgraph.Roamer;
 			import com.adobe.flex.extras.controls.springgraph.SpringGraph;
 			
-			import components.SaveAsImagePanel;
+			import components.SavePanel;
 			
 			import events.NewContextEvent;
 			
@@ -438,16 +438,10 @@
 				unsetVisibility();
 				viewLatticeButton.visible = true;
 				viewLatticeButton.includeInLayout = true;
-				saveContextAsImageButton.visible = true;
-				saveContextAsImageButton.includeInLayout = true;
 				viewImplicationsButton.visible = true;
 				viewImplicationsButton.includeInLayout = true;
-				saveLatticeAsImageButton.visible = false;
-				saveLatticeAsImageButton.includeInLayout = false;
 				resetButton.visible = true;
 				resetButton.includeInLayout = true;
-				//saveButton.visible = true;
-				//saveButton.includeInLayout = true;
 				viewStack.selectedChild = contextCanvas;
 			}
 			
@@ -470,8 +464,6 @@
 				unsetVisibility();
 				backToGridButton.visible = true;
 				backToGridButton.includeInLayout = true;
-				saveLatticeAsImageButton.visible = true;
-				saveLatticeAsImageButton.includeInLayout = true
 				viewStack.selectedChild = lattice;
 			}
 			
@@ -645,10 +637,30 @@
 			
 			private function saveClickHandler():void
 			{
+				var panel:SavePanel = new SavePanel();
+				PopUpManager.addPopUp(panel, this, true);
+				PopUpManager.centerPopUp(panel);
+				panel.dataButton.addEventListener(MouseEvent.CLICK,
+					function (event:Event): void {
+						conSave();
+						PopUpManager.removePopUp(panel);
+					});
+
+				if (viewStack.selectedChild == lattice)
+					exportLatticeImage(panel);
+				if (viewStack.selectedChild == contextCanvas)
+					exportContextImage(panel);
+				if (viewStack.selectedChild == newContextPanel)
+					exportInitialContextImage(panel);
+			}
+			
+			private function conSave():void
+			{
+				//newContextPanel.initialContext;
 				var fileReference:FileReference = new FileReference();
 				var out:ByteArray = new ByteArray();
 				out.writeUTFBytes(objects.length + " " + attributes.length + " " + 
-							 lattice.getConcepts().length + " " + lattice.getGraph().edges.length + "\n");
+					lattice.getConcepts().length + " " + lattice.getGraph().edges.length + "\n");
 				out.writeUTFBytes(objects.join("\n")+"\n");
 				out.writeUTFBytes(attributes.join("\n")+"\n");
 				for each (var row:Array in rows)
@@ -697,12 +709,12 @@
 				CursorManager.removeBusyCursor();
 			}
 			
-			private function exportLatticeImage(): void
+			private function exportLatticeImage(panel: SavePanel): void
 			{	
-				var panel:SaveAsImagePanel = new SaveAsImagePanel();
+				//var panel:SaveAsImagePanel = new SaveAsImagePanel();
 				panel.title="Save lattice as image";
-				PopUpManager.addPopUp(panel, this, true);
-				PopUpManager.centerPopUp(panel);
+				//PopUpManager.addPopUp(panel, this, true);
+				//PopUpManager.centerPopUp(panel);
 				var oldXAxisLatticePosition: int = lattice.s.doPositionLattice();
 				//var w:int = lattice.s.width;
 				//var h:int = lattice.s.height;
@@ -723,7 +735,7 @@
 						//lattice.s.height=h;
 						lattice.s.percentWidth=100;
 						lattice.s.percentHeight=100;
-						//lattice.s.doPositionLatticeXAxis(oldXAxisLatticePosition);
+						lattice.s.doPositionLatticeXAxis(oldXAxisLatticePosition);
 						PopUpManager.removePopUp(panel);
 					});
 				
@@ -736,7 +748,7 @@
 						//lattice.s.height=h;
 						lattice.s.percentWidth=100;
 						lattice.s.percentHeight=100;
-						//lattice.s.doPositionLatticeXAxis(oldXAxisLatticePosition);
+						lattice.s.doPositionLatticeXAxis(oldXAxisLatticePosition);
 						PopUpManager.removePopUp(panel);
 					});
 				
@@ -746,78 +758,17 @@
 						//lattice.s.height=h;
 						lattice.s.percentWidth=100;
 						lattice.s.percentHeight=100;
-						//lattice.s.doPositionLatticeXAxis(oldXAxisLatticePosition);
+						lattice.s.doPositionLatticeXAxis(oldXAxisLatticePosition);
 						PopUpManager.removePopUp(panel);
 					});
-				/*var myEventObj1:Event = new Event("myCustomEvent1");
-				dispatchEvent(myEventObj1);
-				var myEventObj2:Event = new Event("myCustomEvent2");
-				dispatchEvent(myEventObj2);
-				var myEventObj3:Event = new Event("myCustomEvent3");
-				dispatchEvent(myEventObj3);*/
-				
-				/*//CE SE VEDE
-				var w:int = lattice.s.width;
-				var h:int = lattice.s.height;
-				lattice.s.width=lattice.s.getLatticeDimensions.right+5;
-				lattice.s.height=lattice.s.getLatticeDimensions.bottom+5;
-				var bd:BitmapData = new BitmapData(lattice.s.width, lattice.s.height);
-				var fr:FileReference = new FileReference();
-				var jpegEnc:JPEGEncoder = new JPEGEncoder(100);
-				bd.draw(lattice.s);
-				var ba:ByteArray = jpegEnc.encode(bd);
-				fr.save(ba, "lattice.jpg");
-				lattice.s.width=w;
-				lattice.s.height=h;*/
-				
-				/*-----------------------------------------------------------------
-				var w:int = lattice.s.width;
-				var h:int = lattice.s.height;
-				lattice.s.width=lattice.s.getLatticeDimensions.right+5;
-				lattice.s.height=lattice.s.getLatticeDimensions.bottom+5;
-				var jpegEnc:JPEGEncoder = new JPEGEncoder(100);
-				var fileReference:FileReference = new FileReference();
-				var imagSnap:ImageSnapshot = ImageSnapshot.captureImage(lattice.s, 0, jpegEnc, false);
-				fileReference.save(imagSnap.data, "lattice.jpg");
-				lattice.s.width=w;
-				lattice.s.height=h;
-				*///-----------------------------------------------------------------
-				
-				/*var w:int = lattice.s.width;
-				var h:int = lattice.s.height;
-				lattice.s.width=lattice.s.getLatticeDimensions.right+5;
-				lattice.s.height=lattice.s.getLatticeDimensions.bottom+5;
-				var colorTransformer:ColorTransform = new ColorTransform();
-				//colorTransformer.color=0x663399;
-				//colorTransformer.redMultiplier = 0;
-				//colorTransformer.greenMultiplier = 0;
-				//colorTransformer.blueMultiplier = 0;
-				//colorTransformer.redOffset=255;
-				//colorTransformer.greenOffset=255;
-				//colorTransformer.blueOffset=255;
-				
-				var imageSnap2:ImageSnapshot = ImageSnapshot.captureBitmapData(lattice.s,null,colorTransformer,null,null,true);
-				//var color:int = imageSnap2.getPixel(200, 200);
-				//var red:uint = 0xFF0000;
-				//imageSnap2.setPixel(1, 1, red);
-				//imageSnap2.setPixel(1, 1, red);
-				//imageSnap2.setPixel(1,1,A64E26);
-
-				//var imageSnap:ImageSnapshot = ImageSnapshot.captureBitmapData(lattice.s,null,null,null,null,true);
-				//imageSnap2.draw(lattice.s);
-				var ba:ByteArray = (new JPEGEncoder(100)).encode(imageSnap2);
-				fileReference.save(ba, "lattice.jpg");
-				//fileReference.save(imageSnap.data, "lattice.jpg");
-				lattice.s.width=w;
-				lattice.s.height=h;*/
 			}
 			
-			private function exportContextImage(): void
+			private function exportContextImage(panel: SavePanel): void
 			{	
-				var panel:SaveAsImagePanel = new SaveAsImagePanel();
+				//var panel:SaveAsImagePanel = new SaveAsImagePanel();
 				panel.title="Save context as image";
-				PopUpManager.addPopUp(panel, this, true);
-				PopUpManager.centerPopUp(panel);
+				//PopUpManager.addPopUp(panel, this, true);
+				//PopUpManager.centerPopUp(panel);
 				
 				//var w:int = contable.width;
 				//var h:int = contable.height;
@@ -864,36 +815,48 @@
 						contable.percentHeight=100;
 						PopUpManager.removePopUp(panel);
 					});
-				/*
-				var w:int = contable.width;
-				var h:int = contable.height;
-				contable.height=contable.measureHeightOfItems(0, contable.dataProvider.length+1) + contable.headerHeight;
-				var cWidth:int=0;
-				for (var c:int=0;c<contable.columnCount-1;c++)
-					cWidth+=contable.columns[c].width;
-				contable.width=cWidth;//contable.columns[1].width;
-				var jpegEnc:JPEGEncoder = new JPEGEncoder(100);
-				var fileReference:FileReference = new FileReference();
-				var imagSnap:ImageSnapshot = ImageSnapshot.captureImage(contable, 0, jpegEnc, false);
-				fileReference.save(imagSnap.data, "context.jpg");
-				contable.width=w;
-				contable.height=h;
-				*/
-				
-				
-				/*
-				var w:int = contable.width;
-				var h:int = contable.height;
-				contable.height=contable.measureHeightOfItems(0, contable.dataProvider.length) + contable.headerHeight;
-				var bd:BitmapData = new BitmapData(contable.width, contable.height);
+			}
+			
+			private function exportInitialContextImage(panel: SavePanel): void
+			{	
+				//var panel:SaveAsImagePanel = new SaveAsImagePanel();
+				panel.title="Save context as image";
+				//PopUpManager.addPopUp(panel, this, true);
+				//PopUpManager.centerPopUp(panel);
+				newContextPanel.objectsTextInput.validateNow();
+				newContextPanel.attributesTextInput.validateNow();
+				var textWidth:int = newContextPanel.objectsTextInput.textWidth;
+				if (newContextPanel.objectsTextInput.textWidth<newContextPanel.attributesTextInput.textWidth)
+					textWidth = newContextPanel.attributesTextInput.textWidth;
+				newContextPanel.initialContext.width = textWidth + 170;
+				var bd:BitmapData = new BitmapData(newContextPanel.initialContext.width, newContextPanel.initialContext.height);
 				var fr:FileReference = new FileReference();
-				var jpegEnc:JPEGEncoder = new JPEGEncoder(100);
-				bd.draw(contable);
-				var ba:ByteArray = jpegEnc.encode(bd);
-				fr.save(ba, "lattice.jpg");
-				//lattice.s.width=w;
-				//lattice.s.height=h;
-				*/
+				var jpgEnc:JPEGEncoder = new JPEGEncoder(100);
+				var pngEnc:PNGEncoder = new PNGEncoder();
+				
+				panel.jpgButton.addEventListener(MouseEvent.CLICK,
+					function (event:Event): void {
+						bd.draw(newContextPanel.initialContext);
+						var ba:ByteArray = jpgEnc.encode(bd);
+						fr.save(ba, "context.jpg");
+						newContextPanel.initialContext.percentWidth=100;
+						PopUpManager.removePopUp(panel);
+					});
+				
+				panel.pngButton.addEventListener(MouseEvent.CLICK,
+					function (event:Event): void {
+						bd.draw(newContextPanel.initialContext);
+						var ba:ByteArray = pngEnc.encode(bd);
+						fr.save(ba, "context.png");
+						newContextPanel.initialContext.percentWidth=100;
+						PopUpManager.removePopUp(panel);
+					});
+				
+				panel.cButton.addEventListener(MouseEvent.CLICK,
+					function (event:Event): void {
+						newContextPanel.initialContext.percentWidth=100;
+						PopUpManager.removePopUp(panel);
+					});
 			}
 			
 		]]>
@@ -904,9 +867,7 @@
 			<mx:Button id="openButton" visible="true" includeInLayout="true" click="openClickHandler()" label="Open"/>
 			<mx:Button id="saveButton" visible="true" includeInLayout="true" click="saveClickHandler()" label="Save"/>
 			<mx:Button id="resetButton" visible="false" includeInLayout="false" label="New Context" click="showCreateContext()" showEffect="{fadeIn}" hideEffect="{fadeOut}"/>
-			<mx:Button id="saveContextAsImageButton" visible="false" includeInLayout="false" label="Save as Image" click="exportContextImage()" showEffect="{fadeIn}" hideEffect="{fadeOut}"/>
 			<mx:Button id="viewLatticeButton" visible="false" includeInLayout="false" label="View Lattice" click="showLattice()" showEffect="{fadeIn}" hideEffect="{fadeOut}"/>
-			<mx:Button id="saveLatticeAsImageButton" visible="false" includeInLayout="false" label="Save as Image" click="exportLatticeImage()" showEffect="{fadeIn}" hideEffect="{fadeOut}"/>
 			<mx:Button id="backToGridButton" visible="false" includeInLayout="false" label="Back" click="setContextGridVisibility()" showEffect="{fadeIn}" hideEffect="{fadeOut}"/>
 			<mx:Button id="viewImplicationsButton" visible="false" includeInLayout="false" label="View Implications" click="showImplications()" showEffect="{fadeIn}" hideEffect="{fadeOut}"/>
 	</mx:ApplicationControlBar>
