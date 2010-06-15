@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" 
 		 xmlns:components="components.*" 
-		 initialize="init()" horizontalAlign="center">
+		 initialize="init()" 
+		 horizontalAlign="center">
 	
 	<mx:Script>
 		<![CDATA[
@@ -62,8 +63,6 @@
 				objects = new Array();
 				attributes = new Array();
 				addEventListener("myCustomEvent1",onMyCustomEvent1);
-				addEventListener("myCustomEvent1",onMyCustomEvent2);
-				addEventListener("myCustomEvent1",onMyCustomEvent3);
 			}
 			
 			private function initGrid(): void
@@ -543,82 +542,96 @@
 			private function loadData(data:String): void
 			{
 				var lines:Array = data.split("\n");
-				var header:Array = (lines[0] as String).split(" ");
-				var objectCount:int = parseInt(header[0]);
-				var attributeCount:int = parseInt(header[1]);
-				var conceptCount:int = parseInt(header[2]);
-				var edgeCount:int = parseInt(header[3]);
-				
-				attributes = new Array();
-				objects = new Array();
-				var lineIndex:int = 1;
-				for (var oIndex:int = 0; oIndex < objectCount; ++oIndex) 
-				{
-					objects.push(StringUtil.trim(lines[lineIndex++]));
-				}
-				for (var aIndex:int = 0; aIndex < attributeCount; ++aIndex) 
-				{
-					attributes.push(StringUtil.trim(lines[lineIndex++]));
-				}
-				rows = new ArrayCollection();
-				for (var rIndex:int = 0; rIndex < objectCount; ++rIndex)
-				{
-					var newRow:Array = new Array();
-					for each (var c:String in StringUtil.trim(lines[lineIndex]).split(""))
-					{
-						newRow.push(new Boolean(c == "1"));
-					}
-					if (objects.length < 100)
-					{
-						rows.addItem(newRow);
-					}
-					lineIndex++;
-				}
-
-				var iMem: int = System.totalMemory / (1024 * 1024); // in MB
-				var g:Graph = new Graph();
-				var concepts:Array = new Array();
-				for (var nIndex:int = 0; nIndex < conceptCount; ++nIndex)
-				{
-					var conceptId:String = StringUtil.trim(lines[lineIndex++]);
-					var newConcept:Concept = new Concept(null, null, lines[lineIndex], lines[lineIndex + 1]);
-					concepts[conceptId] = newConcept;
-					var cItem:ConceptItem = new ConceptItem(conceptId, -1, -1, lines[lineIndex + 1], lines[lineIndex]);
-					lineIndex += 2;
-					var attachedIdObject: String = StringUtil.trim(lines[lineIndex++]);
-					var attachedIdAttribute: String = StringUtil.trim(lines[lineIndex++]);
-					if (attachedIdObject != "")
-					{
-						cItem.attachedObject = objects[attachedIdObject];
-					}
-					if (attachedIdAttribute != "")
-					{
-						cItem.attachedAttribute = attributes[attachedIdAttribute];
-					}
-					g.add(cItem);
-					
-				}
-				iMem = System.totalMemory / (1024 * 1024); // in MB
-				for (var eIndex:int = 0; eIndex < edgeCount; ++eIndex)
-				{
-					var edge:Array = StringUtil.trim(lines[lineIndex++]).split(" ");
-					g.link(g.nodes[edge[0]], g.nodes[edge[1]], edge[0]);
-				}
-				iMem = System.totalMemory / (1024 * 1024); // in MB
-				trace("Total used memory for " + conceptCount + " concepts and " + edgeCount + " edges: " + (System.totalMemory / (1024 * 1024)).toString() + " MB."); // in MB
-				if (concepts.length > 0) {
-					lattice.setGraph(objects, attributes, g);
-					lattice.setConcepts(concepts);
-					if (objects.length < 100)
-					{
-						setGrid(objects, attributes, rows);
-					} 
-					setLatticeVisibility(); 
+				if (lines.length==2) {
+					//unsetVisibility();
+					//newContextPanel.visible=true;
+					resetButton.visible=false;
+					viewLatticeButton.visible=false;
+					backToGridButton.visible=false;
+					viewImplicationsButton.visible=false;
+					newContextPanel.createButton.enabled=true;
+					viewStack.selectedChild=newContextPanel;
+					newContextPanel.objectsTextInput.text=lines[0] as String;
+					newContextPanel.attributesTextInput.text=lines[1] as String;
+					cursorManager.removeBusyCursor();
 				} else {
-					setGrid(objects, attributes, rows);
-					setContextGridVisibility(); 
+					var header:Array = (lines[0] as String).split(" ");
+					var objectCount:int = parseInt(header[0]);
+					var attributeCount:int = parseInt(header[1]);
+					var conceptCount:int = parseInt(header[2]);
+					var edgeCount:int = parseInt(header[3]);
+					
+					attributes = new Array();
+					objects = new Array();
+					var lineIndex:int = 1;
+					for (var oIndex:int = 0; oIndex < objectCount; ++oIndex) 
+					{
+						objects.push(StringUtil.trim(lines[lineIndex++]));
+					}
+					for (var aIndex:int = 0; aIndex < attributeCount; ++aIndex) 
+					{
+						attributes.push(StringUtil.trim(lines[lineIndex++]));
+					}
+					rows = new ArrayCollection();
+					for (var rIndex:int = 0; rIndex < objectCount; ++rIndex)
+					{
+						var newRow:Array = new Array();
+						for each (var c:String in StringUtil.trim(lines[lineIndex]).split(""))
+						{
+							newRow.push(new Boolean(c == "1"));
+						}
+						if (objects.length < 100)
+						{
+							rows.addItem(newRow);
+						}
+						lineIndex++;
+					}
+	
+					var iMem: int = System.totalMemory / (1024 * 1024); // in MB
+					var g:Graph = new Graph();
+					var concepts:Array = new Array();
+					for (var nIndex:int = 0; nIndex < conceptCount; ++nIndex)
+					{
+						var conceptId:String = StringUtil.trim(lines[lineIndex++]);
+						var newConcept:Concept = new Concept(null, null, lines[lineIndex], lines[lineIndex + 1]);
+						concepts[conceptId] = newConcept;
+						var cItem:ConceptItem = new ConceptItem(conceptId, -1, -1, lines[lineIndex + 1], lines[lineIndex]);
+						lineIndex += 2;
+						var attachedIdObject: String = StringUtil.trim(lines[lineIndex++]);
+						var attachedIdAttribute: String = StringUtil.trim(lines[lineIndex++]);
+						if (attachedIdObject != "")
+						{
+							cItem.attachedObject = objects[attachedIdObject];
+						}
+						if (attachedIdAttribute != "")
+						{
+							cItem.attachedAttribute = attributes[attachedIdAttribute];
+						}
+						g.add(cItem);
+						
+					}
+					iMem = System.totalMemory / (1024 * 1024); // in MB
+					for (var eIndex:int = 0; eIndex < edgeCount; ++eIndex)
+					{
+						var edge:Array = StringUtil.trim(lines[lineIndex++]).split(" ");
+						g.link(g.nodes[edge[0]], g.nodes[edge[1]], edge[0]);
+					}
+					iMem = System.totalMemory / (1024 * 1024); // in MB
+					trace("Total used memory for " + conceptCount + " concepts and " + edgeCount + " edges: " + (System.totalMemory / (1024 * 1024)).toString() + " MB."); // in MB
+					if (concepts.length > 0) {
+						lattice.setGraph(objects, attributes, g);
+						lattice.setConcepts(concepts);
+						if (objects.length < 100)
+						{
+							setGrid(objects, attributes, rows);
+						} 
+						setLatticeVisibility(); 
+					} else {
+						setGrid(objects, attributes, rows);
+						setContextGridVisibility(); 
+					}
+					cursorManager.removeBusyCursor();
 				}
-				cursorManager.removeBusyCursor();
 			}
 			
 			private function onFileComplete(event:Event): void
@@ -637,21 +650,12 @@
 			
 			private function saveClickHandler():void
 			{
-				var panel:SavePanel = new SavePanel();
-				PopUpManager.addPopUp(panel, this, true);
-				PopUpManager.centerPopUp(panel);
-				panel.dataButton.addEventListener(MouseEvent.CLICK,
-					function (event:Event): void {
-						conSave();
-						PopUpManager.removePopUp(panel);
-					});
-
 				if (viewStack.selectedChild == lattice)
-					exportLatticeImage(panel);
+					exportLatticeImage();
 				if (viewStack.selectedChild == contextCanvas)
-					exportContextImage(panel);
+					exportContextImage();
 				if (viewStack.selectedChild == newContextPanel)
-					exportInitialContextImage(panel);
+					exportInitialContextImage();
 			}
 			
 			private function conSave():void
@@ -684,8 +688,17 @@
 				//	fileReference.save(out, "context.con");
 				if (viewStack.selectedChild == lattice)
 					fileReference.save(out, "lattice.con");
-				else
+				if (viewStack.selectedChild == contextCanvas)
 					fileReference.save(out, "context.con");
+				if (viewStack.selectedChild == newContextPanel) {
+					out.clear();
+					//for (var i:int=0;i<newContextPanel.objectsTextInput.text.length;i++)
+					//	out.writeByte(newContextPanel.objectsTextInput.text.charCodeAt(i));
+					out.writeUTFBytes(newContextPanel.objectsTextInput.text);
+					out.writeUTFBytes("\n");
+					out.writeUTFBytes(newContextPanel.attributesTextInput.text);
+					fileReference.save(out, "context.con");
+				}
 			}
 	
 			private function onMyCustomEvent1(event:Event):void {
@@ -709,23 +722,33 @@
 				CursorManager.removeBusyCursor();
 			}
 			
-			private function exportLatticeImage(panel: SavePanel): void
+			private function exportLatticeImage(): void
 			{	
-				//var panel:SaveAsImagePanel = new SaveAsImagePanel();
+				var panel:SavePanel = new SavePanel();
 				panel.title="Save lattice as image";
-				//PopUpManager.addPopUp(panel, this, true);
-				//PopUpManager.centerPopUp(panel);
+				PopUpManager.addPopUp(panel, this, true);
+				PopUpManager.centerPopUp(panel);
+				
 				var oldXAxisLatticePosition: int = lattice.s.doPositionLattice();
 				//var w:int = lattice.s.width;
 				//var h:int = lattice.s.height;
 				var latticeRectangle: Rectangle = lattice.s.calcItemsBoundingRect();
 				lattice.s.width=latticeRectangle.right+11;
 				lattice.s.height=latticeRectangle.bottom+5;
+				
 				var bd:BitmapData = new BitmapData(lattice.s.width, lattice.s.height);
 				var fr:FileReference = new FileReference();
 				var jpgEnc:JPEGEncoder = new JPEGEncoder(100);
 				var pngEnc:PNGEncoder = new PNGEncoder();
 				
+				panel.dataButton.addEventListener(MouseEvent.CLICK,
+					function (event:Event): void {
+						conSave();
+						lattice.s.percentWidth=100;
+						lattice.s.percentHeight=100;
+						lattice.s.doPositionLatticeXAxis(oldXAxisLatticePosition);
+						PopUpManager.removePopUp(panel);
+					});
 				panel.jpgButton.addEventListener(MouseEvent.CLICK,
 					function (event:Event): void {
 						bd.draw(lattice.s);
@@ -763,12 +786,12 @@
 					});
 			}
 			
-			private function exportContextImage(panel: SavePanel): void
+			private function exportContextImage(): void
 			{	
-				//var panel:SaveAsImagePanel = new SaveAsImagePanel();
+				var panel:SavePanel = new SavePanel();
 				panel.title="Save context as image";
-				//PopUpManager.addPopUp(panel, this, true);
-				//PopUpManager.centerPopUp(panel);
+				PopUpManager.addPopUp(panel, this, true);
+				PopUpManager.centerPopUp(panel);
 				
 				//var w:int = contable.width;
 				//var h:int = contable.height;
@@ -777,12 +800,19 @@
 				for (var c:int=0;c<contable.columnCount-1;c++)
 					cWidth+=contable.columns[c].width;
 				contable.width=cWidth+27;//contable.columns[1].width;
-				var bd:BitmapData = new BitmapData(contable.width-27, contable.height-5);
 				
+				var bd:BitmapData = new BitmapData(contable.width-27, contable.height-5);
 				var fr:FileReference = new FileReference();
 				var jpgEnc:JPEGEncoder = new JPEGEncoder(100);
 				var pngEnc:PNGEncoder = new PNGEncoder();
 				
+				panel.dataButton.addEventListener(MouseEvent.CLICK,
+					function (event:Event): void {
+						conSave();
+						contable.percentWidth=100;
+						contable.percentHeight=100;
+						PopUpManager.removePopUp(panel);
+					});
 				panel.jpgButton.addEventListener(MouseEvent.CLICK,
 					function (event:Event): void {
 						bd.draw(contable);
@@ -817,23 +847,31 @@
 					});
 			}
 			
-			private function exportInitialContextImage(panel: SavePanel): void
+			private function exportInitialContextImage(): void
 			{	
-				//var panel:SaveAsImagePanel = new SaveAsImagePanel();
+				var panel:SavePanel = new SavePanel();
 				panel.title="Save context as image";
-				//PopUpManager.addPopUp(panel, this, true);
-				//PopUpManager.centerPopUp(panel);
+				PopUpManager.addPopUp(panel, this, true);
+				PopUpManager.centerPopUp(panel);
+				
 				newContextPanel.objectsTextInput.validateNow();
 				newContextPanel.attributesTextInput.validateNow();
 				var textWidth:int = newContextPanel.objectsTextInput.textWidth;
 				if (newContextPanel.objectsTextInput.textWidth<newContextPanel.attributesTextInput.textWidth)
 					textWidth = newContextPanel.attributesTextInput.textWidth;
 				newContextPanel.initialContext.width = textWidth + 170;
+				
 				var bd:BitmapData = new BitmapData(newContextPanel.initialContext.width, newContextPanel.initialContext.height);
 				var fr:FileReference = new FileReference();
 				var jpgEnc:JPEGEncoder = new JPEGEncoder(100);
 				var pngEnc:PNGEncoder = new PNGEncoder();
 				
+				panel.dataButton.addEventListener(MouseEvent.CLICK,
+					function (event:Event): void {
+						conSave();
+						newContextPanel.initialContext.percentWidth=100;
+						PopUpManager.removePopUp(panel);
+					});
 				panel.jpgButton.addEventListener(MouseEvent.CLICK,
 					function (event:Event): void {
 						bd.draw(newContextPanel.initialContext);
