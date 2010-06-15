@@ -12,18 +12,21 @@
 
 	<mx:Script>
 		<![CDATA[
-			import mx.rpc.events.ResultEvent;
-			import mx.utils.ObjectProxy;
+			import events.NewContextEvent;
+			
 			import mx.collections.ArrayCollection;
 			import mx.events.ItemClickEvent;
+			import mx.rpc.events.ResultEvent;
+			import mx.utils.ObjectProxy;
 			import mx.utils.StringUtil;
-			import events.NewContextEvent;
 			
 			private var conData:String = null;
 			
 			private function init(): void
 			{
+				navigateToURL(new URLRequest("javascript: document.getElementById('Conflexplore').focus();"), "_self");
 				objectsTextInput.setFocus();
+				//focusManager.setFocus(objectsTextInput);
 			}
 			
 			private function sendCreateContext(objects:String, attributes:String, data:String): void
@@ -94,6 +97,12 @@
 		<mx:FormItem label="Attributes:" width="100%" id="attribLabel">
 			<mx:TextInput width="100%" id="attributesTextInput" enter="createContext()" change="validateData()" />
 		</mx:FormItem>
+		<mx:Text text="" textAlign="center"/>
+		<mx:VBox width="100%">    
+			<mx:HBox horizontalAlign="center" width="100%">    
+				<mx:Button id="createButton" enabled="false" width="270" label="Create context" click="createContext()"/>
+			</mx:HBox>    
+		</mx:VBox> 
 	</mx:Form>
 	<mx:Spacer height="10" />
 	<mx:Label text="You may also choose a configuration from the following" />
@@ -119,8 +128,7 @@
 	</mx:ButtonBar>
 	<mx:Spacer height="100%"/>
 	<mx:ControlBar horizontalAlign="right">
-		<mx:Button id="createButton" enabled="false" label="Create context" click="createContext()"/>
-		<mx:Button label="Cancel" click="cancel()"/>
+		<!--<mx:Button label="Cancel" click="cancel()"/>-->
 	</mx:ControlBar>
 	<mx:Array id="objectArray">
 		<mx:String>1,2,3,4,5,6,7,8,9,10</mx:String>
