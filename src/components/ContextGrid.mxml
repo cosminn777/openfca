@@ -869,7 +869,7 @@
 				panel.dataButton.addEventListener(MouseEvent.CLICK,
 					function (event:Event): void {
 						conSave();
-						newContextPanel.initialContext.percentWidth=100;
+						newContextPanel.initialContext.width=487;
 						PopUpManager.removePopUp(panel);
 					});
 				panel.jpgButton.addEventListener(MouseEvent.CLICK,
@@ -877,7 +877,7 @@
 						bd.draw(newContextPanel.initialContext);
 						var ba:ByteArray = jpgEnc.encode(bd);
 						fr.save(ba, "context.jpg");
-						newContextPanel.initialContext.percentWidth=100;
+						newContextPanel.initialContext.width=487;
 						PopUpManager.removePopUp(panel);
 					});
 				
@@ -886,13 +886,13 @@
 						bd.draw(newContextPanel.initialContext);
 						var ba:ByteArray = pngEnc.encode(bd);
 						fr.save(ba, "context.png");
-						newContextPanel.initialContext.percentWidth=100;
+						newContextPanel.initialContext.width=487;
 						PopUpManager.removePopUp(panel);
 					});
 				
 				panel.cButton.addEventListener(MouseEvent.CLICK,
 					function (event:Event): void {
-						newContextPanel.initialContext.percentWidth=100;
+						newContextPanel.initialContext.width=487;
 						PopUpManager.removePopUp(panel);
 					});
 			}
