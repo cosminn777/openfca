@@ -8,6 +8,24 @@ global
 	content-background-color: #FFFFFF;
 }
 
+.myCCPStyle {
+	borderThicknessLeft: 0;
+	borderThicknessTop: 0;
+	borderThicknessBottom: 0;
+	borderThicknessRight: 0;
+	headerHeight: 20;
+	dropShadowEnabled: false;
+	headerColors: #d9d9d9, #ffffff;
+	borderAlpha: 1;
+	backgroundAlpha: 0;
+	paddingTop: 4;
+	paddingLeft: 4;
+	paddingRight: 4;
+	verticalGap: 4;
+	openIcon: Embed(source="/data/ccpIcons.swf", symbol="CollapsiblePanelOpenIcon");
+	closedIcon: Embed(source="/data/ccpIcons.swf", symbol="CollapsiblePanelClosedIcon");
+}
+
 .mypanelTitle {
 	fontFamily: Arial;
 	fontSize: 10;

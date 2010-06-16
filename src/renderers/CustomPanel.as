@@ -1,10 +1,3 @@
-/********************************************
- title   : SuperPanel
- version : 1.5
- author  : Wietse Veenstra
- website : http://www.wietseveenstra.nl
- date    : 2007-03-30
-********************************************/
 package renderers {
 	import mx.containers.Panel;
 	import mx.controls.Button;
