@@ -1,10 +1,12 @@
 package renderers {
 	
 	import flash.events.*;
-	import mx.effects.AnimateProperty;
-	import mx.events.*;
+	
 	import mx.containers.Panel;
 	import mx.core.ScrollPolicy;
+	import mx.core.FlexGlobals;
+	import mx.effects.AnimateProperty;
+	import mx.events.*;
 		
 	/**
 	 * The icon designating a "closed" state
@@ -42,17 +44,50 @@ package renderers {
 		private function creationCompleteHandler(event:FlexEvent):void
 		{
 			this.horizontalScrollPolicy = ScrollPolicy.OFF;
-			this.verticalScrollPolicy = ScrollPolicy.OFF;
-			
+			this.verticalScrollPolicy = ScrollPolicy.OFF;	
 			_openAnim = new AnimateProperty(this);
 			_openAnim.duration = 300;
 			_openAnim.property = "height";
-			
 			titleBar.addEventListener(MouseEvent.CLICK, headerClickHandler);
-			
 			_creationComplete = true;
+			//this.addEventListener(MouseEvent.MOUSE_OVER, doOpen);
+			//super.addEventListener(MouseEvent.MOUSE_OUT, doClose);
+			//FlexGlobals.topLevelApplication.getChildByName("ccp").addEventListener(MouseEvent.MOUSE_OUT, resizeOutHandler);
+			//this.titleBar.buttonMode = true;
+			//this.titleBar.useHandCursor=true;
 		}
 		
+		public function doOpen():void {
+			if (_creationComplete && !_openAnim.isPlaying) {
+				
+				_openAnim.fromValue = _openAnim.target.height;
+				if (!_open) {
+					_openAnim.toValue = openHeight;
+					_open = true;
+					dispatchEvent(new Event(Event.OPEN));
+				}
+				setTitleIcon();
+				_openAnim.play();
+				//this.parent.addEventListener(MouseEvent.MOUSE_OUT, resizeOutHandler);
+				
+			}
+		}
+		
+		public function doClose():void {
+			if (_creationComplete && !_openAnim.isPlaying) {
+				
+				_openAnim.fromValue = _openAnim.target.height;
+				if (_open) {
+					_openAnim.toValue = _openAnim.target.closedHeight;
+					_open = false;
+					dispatchEvent(new Event(Event.CLOSE));
+				}
+				setTitleIcon();
+				_openAnim.play();
+				
+			}
+		}
+			
 		private function headerClickHandler(event:MouseEvent):void { toggleOpen(); }
 		
 		private function callUpdateOpenOnCreationComplete(event:FlexEvent):void { updateOpen(); }

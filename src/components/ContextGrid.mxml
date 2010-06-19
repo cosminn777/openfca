@@ -63,7 +63,13 @@
 				objects = new Array();
 				attributes = new Array();
 				addEventListener("myCustomEvent1",onMyCustomEvent1);
+				//addEventListener(KeyboardEvent.KEY_DOWN, reportKeyDown);
 			}
+			
+			/*public function reportKeyDown(event:KeyboardEvent):void {
+				var keyPressed:String = String.fromCharCode(event.charCode);
+				if (event.keyCode == Keyboard.ENTER) newContextPanel.createContext();
+			}*/
 			
 			private function initGrid(): void
 			{
@@ -549,7 +555,15 @@
 					viewLatticeButton.visible=false;
 					backToGridButton.visible=false;
 					viewImplicationsButton.visible=false;
-					newContextPanel.createButton.enabled=true;
+					if ((lines[0] as String)=="" || (lines[1] as String)=="") {
+						newContextPanel.createButton.enabled=false;
+						if ((lines[1] as String)=="")
+							newContextPanel.attributesTextInput.setFocus();
+						if ((lines[0] as String)=="")
+							newContextPanel.objectsTextInput.setFocus();
+					}
+					else
+						newContextPanel.createButton.enabled=true;
 					viewStack.selectedChild=newContextPanel;
 					newContextPanel.objectsTextInput.text=lines[0] as String;
 					newContextPanel.attributesTextInput.text=lines[1] as String;
@@ -725,7 +739,7 @@
 			private function exportLatticeImage(): void
 			{	
 				var panel:SavePanel = new SavePanel();
-				panel.title="Save lattice as image";
+				panel.title="Save lattice";
 				PopUpManager.addPopUp(panel, this, true);
 				PopUpManager.centerPopUp(panel);
 				
@@ -789,7 +803,7 @@
 			private function exportContextImage(): void
 			{	
 				var panel:SavePanel = new SavePanel();
-				panel.title="Save context as image";
+				panel.title="Save context";
 				PopUpManager.addPopUp(panel, this, true);
 				PopUpManager.centerPopUp(panel);
 				
@@ -850,7 +864,7 @@
 			private function exportInitialContextImage(): void
 			{	
 				var panel:SavePanel = new SavePanel();
-				panel.title="Save context as image";
+				panel.title="Save context";
 				PopUpManager.addPopUp(panel, this, true);
 				PopUpManager.centerPopUp(panel);
 				
