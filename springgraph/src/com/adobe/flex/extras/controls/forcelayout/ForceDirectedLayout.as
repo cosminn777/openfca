@@ -112,6 +112,10 @@ public class ForceDirectedLayout implements IForEachEdge, IForEachNode, IForEach
     public function setDragNode(n: Node): void {
         dragNode = n;
     }
+	
+	public function setDragDirection(d:Boolean): void {
+		upMovement=d;
+	}
 
     //relaxEdges is more like tense edges up.  All edges pull nodes closes together;
     private /*synchronized*/ function relaxEdges(): void {
@@ -278,12 +282,12 @@ public class ForceDirectedLayout implements IForEachEdge, IForEachNode, IForEach
 	    		contractionDistance = oldVerticalDistance - vDistance;
 	    		oldVerticalDistance = vDistance;
 	    		vContraction = true;
-	    		upMovement=false;
+	    		//upMovement=false;
 	    	} else 
 	    	{
 	    		oldVerticalDistance = vDistance;
 	    		vContraction = false;
-	    		upMovement=false;
+	    		//upMovement=false;
 	    	}
 			
 			relax();
@@ -298,6 +302,43 @@ public class ForceDirectedLayout implements IForEachEdge, IForEachNode, IForEach
 		} else {
 		   	//trace("don't relax");
 		   	return false;
+		}
+	}
+	
+	public function tickSecond(): Boolean {
+		if (!(damper<0.1 && damping && maxMotion<motionLimit)) {
+			//trace("relax " + getTimer());
+			
+			//setting settings for contraction
+			vDistance = dataProvider.defaultVerticalRepulsion * dataProvider.verticalRepulsionFactor;
+			//var tmp:Boolean=upMovement;
+			//if (oldVerticalDistance != vDistance) {
+			//	SpringGraph(Roamer(this.dataProvider)).scroll(0,oldVerticalDistance - vDistance);
+			//}
+			if (vDistance < oldVerticalDistance) {
+				contractionDistance = oldVerticalDistance - vDistance;
+				oldVerticalDistance = vDistance;
+				vContraction = true;
+				upMovement=false;
+			} else 
+			{
+				oldVerticalDistance = vDistance;
+				vContraction = false;
+				upMovement=false;
+			}
+			
+			//relax();
+			
+			//oldVerticalDistance = vDistance;
+			//vContraction = tmp;
+			//vContraction = false;
+			//upMovement=true;
+			
+			//trace("relax done " + getTimer());
+			return true;
+		} else {
+			//trace("don't relax");
+			return false;
 		}
 	}
     
@@ -449,7 +490,7 @@ public class ForceDirectedLayout implements IForEachEdge, IForEachNode, IForEach
 	    //if (e.getTo().y % vDistance > 5 && (Math.abs(e.getFrom().y - e.getTo().y)) > vDistance)
 	    //	e.getTo().y = e.getTo().y - (e.getTo().y % vDistance);
 	    //see if you drag a node up or down ... the mode positioning is different (hierarchy)
-	    if (dragNode!=null) {
+	    /*if (dragNode!=null) {
 	    	if (dragNode.y>yScale) {
 	    		upMovement=false;
 	    		yScale=dragNode.y;
@@ -458,13 +499,17 @@ public class ForceDirectedLayout implements IForEachEdge, IForEachNode, IForEach
 	    		upMovement=true;
 	    		yScale=dragNode.y;
 	    	}
-	   	}
+	   	}*/
+		
+		//if (dragStartY!=0 || dragEndY!=0) {
+
+		//}
 	   	 //	if (vContraction == true)
 	   	 //		upMovement=false;
 	    //---------------------------------------------------------------AAAAAAAAAAAAAAAAAAAAAA :)
 	    //put nodes in a hierarchy
 	    	    //create the new nodes in concordance to parent node //LOWER NODES
-	    if ((GraphNode(e.getFrom()).item.id == fromId) && (e.getTo().seted==false)) {
+	   if ((GraphNode(e.getFrom()).item.id == fromId) && (e.getTo().seted==false)) {
 	    	e.getTo().y = e.getFrom().y + vDistance;
 	    	//e.getTo().x = e.getFrom().x - 20;
 	    	e.getTo().seted = true;
@@ -476,8 +521,8 @@ public class ForceDirectedLayout implements IForEachEdge, IForEachNode, IForEach
 	    }
 	    //create the new nodes in concordance to parent node //UPPER NODES
 	    if ((GraphNode(e.getFrom()).item.id == fromId) && (e.getFrom().seted==false)) {
-	    	var ii:Number=e.getTo().y;
-	    	e.getFrom().y = ii - vDistance;
+	    	//var ii:Number=e.getTo().y;
+	    	e.getFrom().y = e.getTo().y - vDistance;
 	    	//e.getTo().x = e.getFrom().x - 20;
 	    	e.getFrom().seted = true;
 	    } else 
@@ -486,22 +531,32 @@ public class ForceDirectedLayout implements IForEachEdge, IForEachNode, IForEach
 	    	//e.getFrom().x = e.getTo().x - 20;
 	    	e.getTo().seted = true;
 	    }
+		//--------------------------------------------------------------------------------//I divide to 12 for a smooth positioning
 		if (GraphNode(e.getFrom()).item.id == fromId) { //&& dragNode!=null) {
 	    	if ((e.getFrom().y+vDistance)>e.getTo().y) {
-	    		  if (upMovement==false) 
-	    		  	e.getTo().y=e.getTo().y-(e.getTo().y-e.getFrom().y)+vDistance;//pentru radacina sa coboare frunzele
-	    		  if (upMovement==true) 
-	    		  	e.getFrom().y = e.getFrom().y -(e.getFrom().y-e.getTo().y)-vDistance;//pentru frunze sa ridice radacina
+	    		 if (upMovement==false) 
+	    		  	e.getTo().y=e.getTo().y+(-(e.getTo().y-e.getFrom().y)+vDistance)/12;//pentru radacina sa coboare frunzele
+	    		 if (upMovement==true) 
+	    		  	e.getFrom().y = e.getFrom().y +(-(e.getFrom().y-e.getTo().y)-vDistance)/12;//pentru frunze sa ridice radacina
 	    	}
 	    } 
 	    else
 	    	if (e.getFrom().y<e.getTo().y+vDistance) {
 	    		  if (upMovement==false) 
-	    		  	e.getFrom().y=e.getFrom().y-(e.getFrom().y-e.getTo().y)+vDistance;//pentru radacina sa coboare frunzele
+	    		  	e.getFrom().y=e.getFrom().y+(-(e.getFrom().y-e.getTo().y)+vDistance)/12;//pentru radacina sa coboare frunzele
 	    		  if (upMovement==true) 
-	    		  	e.getTo().y = e.getTo().y - (e.getTo().y-e.getFrom().y)-vDistance;//pentru frunze sa ridice radacina
+	    		  	e.getTo().y = e.getTo().y +(- (e.getTo().y-e.getFrom().y)-vDistance)/12;//pentru frunze sa ridice radacina
 	    	}
-
+		//----------------------------------------------------------------------------------------
+		
+		/*if (GraphNode(e.getFrom()).item.id == fromId) { //&& dragNode!=null) {
+			//if (e.getTo().y%vDistance==0)
+					e.getTo().y=e.getFrom().y+ vDistance;
+		} 
+		else  {
+			//if (e.getFrom().y%vDistance==0)
+				e.getFrom().y=e.getTo().y+ vDistance;
+		}*/
 	    //contracts the nodes
 	    var tmp:Number=Math.abs(e.getTo().y-e.getFrom().y);
 	    //var tmp2:Number=tmp % vDistance;
@@ -605,7 +660,7 @@ public class ForceDirectedLayout implements IForEachEdge, IForEachNode, IForEach
 			//}
 	     	//actual coordinates positioning !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	        n.x = n.x + Math.max(-30, Math.min(30, dx)); //don't move faster then 30 units at a time.
-	        //n.y = n.y + Math.max(-30, Math.min(30, dy)); //I forget when this is important.  Stopping severed nodes from
+	        n.y = n.y + Math.max(-30, Math.min(30, dy)); //I forget when this is important.  Stopping severed nodes from
 	                                            //flying away?
 	        //if (n==dragNode) {
 	        //	n.x=dx;

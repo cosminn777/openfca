@@ -320,7 +320,9 @@ package com.adobe.flex.extras.controls.springgraph {
    				return;
    			}
    			dragComponent = null;
+			//forceDirectedLayout.dragNode.y;
    			forceDirectedLayout.setDragNode(null);
+			forceDirectedLayout.setDragDirection(dragCursorStartY<event.stageY);
    		}
 
    		private function backgroundMouseDownEvent(event: MouseEvent):void  {
@@ -825,7 +827,9 @@ package com.adobe.flex.extras.controls.springgraph {
         
 		private function autoFitTickThird():void {
  			// do a layout pass
-			forceDirectedLayout.tick();
+			//forceDirectedLayout.tick();
+			if (mouseDown==false) forceDirectedLayout.tick();
+			//else forceDirectedLayout.tickSecond();
 			
 			// find out the current rect occupied by all items
 			var itemBounds: Rectangle = calcItemsBoundingRect();
@@ -843,17 +847,19 @@ package com.adobe.flex.extras.controls.springgraph {
 				// some items are off the screen. Let's auto-scroll the display.
 				scrollX = 0;
 				scrollY = 0;
-				if ((itemBounds.left < 5))
-					scrollX=scrollX + 5;
+				if ((itemBounds.left < 10)){
+					scrollX=scrollX +(10-itemBounds.left)/7;//scrollX=scrollX + 5;
+				}
 				//if ((itemBounds.left > 3))
 				//	scrollX=scrollX - 5;
 				//if ((itemBounds.left > 0) && (itemBounds.right > this.width-5))
 				//	scrollX=scrollX - 5;
 				//if ((itemBounds.top > 7) && (itemBounds.bottom > this.height))
 				//	scrollY=scrollY - 5;
-				if ((itemBounds.top < 5))
-					scrollY=scrollY + 5;
-				//if ((itemBounds.top + itemBounds.bottom) / 2 > this.height / 2 - 5)
+				if ((itemBounds.top < 10)) {
+					scrollY=scrollY +(10-itemBounds.top)/7;//scrollY=scrollY + 5;
+				}
+					//if ((itemBounds.top + itemBounds.bottom) / 2 > this.height / 2 - 5)
 								//scrollY=scrollY + 10;
 				//if ((itemBounds.top > 0))
 				//	scrollY=scrollY - 5;
@@ -865,7 +871,7 @@ package com.adobe.flex.extras.controls.springgraph {
 					//doubleClick = false;
 					refresh();
 					}
-			} 
+			}  else
 			if(((itemBounds.left > 10) || (itemBounds.top > 10)) && (creationComplete==true)) {
 				// some items are off the screen. Let's auto-scroll the display.
 				scrollX = 0;
@@ -882,8 +888,17 @@ package com.adobe.flex.extras.controls.springgraph {
 				//if ((itemBounds.top > 7) && (itemBounds.bottom > this.height))
 				//	scrollY=scrollY - 5;
 				//for lattice to go to right
-				if ((itemBounds.top > 10))
-					scrollY=scrollY - 2;
+				//////////////////////////////////////////////////
+				//if ((itemBounds.top > 10)){
+				//	scrollY=scrollY - (itemBounds.top-10)/7;//scrollY=scrollY - 2;
+				//}
+				////////////////////////////////////////////////
+				if ((itemBounds.bottom > this.height)){
+					scrollY=scrollY - (itemBounds.bottom-this.height)/7-3;//scrollY=scrollY - 2;
+				}
+				if ((itemBounds.right > this.width)){
+					scrollX=scrollX - (itemBounds.right-this.width)/7-3;//scrollY=scrollY - 2;
+				}
 				//if ((itemBounds.top + itemBounds.bottom) / 2 > this.height / 2 - 5)
 								//scrollY=scrollY + 10;
 				//if ((itemBounds.top > 0))

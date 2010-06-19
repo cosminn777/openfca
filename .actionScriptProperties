@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<actionScriptProperties mainApplicationPath="Conflexplore.mxml" projectUUID="7de70ab0-e7bc-4092-81e5-bb1e918da2ac" version="6">
-  <compiler additionalCompilerArguments="-locale en_US -default-script-limits 1000 600 -use-network=false" autoRSLOrdering="false" copyDependentFiles="true" fteInMXComponents="false" generateAccessible="false" htmlExpressInstall="true" htmlGenerate="true" htmlHistoryManagement="true" htmlPlayerVersionCheck="true" includeNetmonSwc="false" outputFolderPath="bin-debug" sourceFolderPath="src" strict="true" targetPlayerVersion="10.0.45" useApolloConfig="false" useDebugRSLSwfs="true" verifyDigests="true" warn="true">
+<actionScriptProperties mainApplicationPath="Conflexplore.mxml" projectUUID="6735bc08-cb66-413b-9672-e7a8e27f42dc" version="6">
+  <compiler additionalCompilerArguments="-locale en_US -default-script-limits 1000 600 -use-network=false" autoRSLOrdering="true" copyDependentFiles="true" flex3CompatMode="false" fteInMXComponents="false" generateAccessible="false" htmlExpressInstall="true" htmlGenerate="true" htmlHistoryManagement="true" htmlPlayerVersionCheck="false" includeNetmonSwc="false" outputFolderPath="bin-debug" sourceFolderPath="src" strict="true" targetPlayerVersion="0.0.0" useApolloConfig="false" useDebugRSLSwfs="true" verifyDigests="true" warn="true">
     <compilerSourcePath/>
     <libraryPath defaultLinkType="1">
       <libraryPathEntry kind="4" path=""/>
@@ -15,31 +15,4 @@
   </applications>
   <modules/>
   <buildCSSFiles/>
-  <publishSource>
-    <sourcePathIncludes/>
-    <sourceExcludes>
-      <exclude path="conexplore"/>
-      <exclude path="html-template"/>
-      <exclude path="libs"/>
-      <exclude path="springgraph"/>
-      <exclude path="src/components/AddAttributePanel.mxml"/>
-      <exclude path="src/components/AddObjectPanel.mxml"/>
-      <exclude path="src/components/CenteredCheckBox.mxml"/>
-      <exclude path="src/components/ExplorationFinishedPanel.mxml"/>
-      <exclude path="src/components/ExplorationPanel.mxml"/>
-      <exclude path="src/components/ImplicationPanel.mxml"/>
-      <exclude path="src/components/LatticeView.mxml"/>
-      <exclude path="src/components/NewContextPanel.mxml"/>
-      <exclude path="src/data"/>
-      <exclude path="src/events"/>
-      <exclude path="src/logic"/>
-      <exclude path="src/renderers"/>
-      <exclude path="src/Conflexplore.css"/>
-      <exclude path="src/Conflexplore.mxml"/>
-      <exclude path="src/Conflexplore_1.css"/>
-      <exclude path="build.bat"/>
-      <exclude path="LICENSE.txt"/>
-      <exclude path="README.txt"/>
-    </sourceExcludes>
-  </publishSource>
 </actionScriptProperties>

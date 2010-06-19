@@ -165,7 +165,7 @@
 			<mx:Label text="Maximum edge distance"/>
 			<mx:HSlider id="maxDistanceFromCurrent" value="4" minimum="1" maximum="27" liveDragging="true" snapInterval="1" change="s.refresh()" width="100%"/>
 			<mx:Label text="Visible concepts limit"/>
-			<mx:HSlider id="maxVisible" snapInterval="1" value="20" minimum="7" maximum="170" liveDragging="true" change="s.refresh()" width="100%"/>
+			<mx:HSlider id="maxVisible" snapInterval="1" value="20" minimum="3" maximum="170" liveDragging="true" change="s.refresh()" width="100%"/>
 			<mx:Label text="Item width"/>
 			<mx:HSlider id="widthSlider" value="97" minimum="20" maximum="200" change="s.refresh()" liveDragging="true" width="100%"/>
 			<mx:Label text="Item height"/>

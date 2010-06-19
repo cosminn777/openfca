@@ -15,6 +15,8 @@
 		<![CDATA[
 			import events.NewContextEvent;
 			
+			import flash.text.*;
+			
 			import mx.collections.ArrayCollection;
 			import mx.events.ItemClickEvent;
 			import mx.rpc.events.ResultEvent;
@@ -27,7 +29,12 @@
 			{
 				navigateToURL(new URLRequest("javascript: document.getElementById('Conflexplore').focus();"), "_self");
 				objectsTextInput.setFocus();
-				//focusManager.setFocus(objectsTextInput);
+				//var i:int = mouseX;
+				
+				/*ccp.addEventListener(MouseEvent.MOUSE_OVER,
+					function mouseOver (event:Event): void {
+						ccp.doOpen();				
+					});*/
 			}
 			
 			private function sendCreateContext(objects:String, attributes:String, data:String): void
@@ -58,9 +65,12 @@
 			private function clickHandler(event:ItemClickEvent): void
 			{
 				conData = null;
+				focusManager.setFocus(createButton);
 				objectsTextInput.text = objectArray[event.index]
 				attributesTextInput.text = attributeArray[event.index];
 				validateData();
+				//focusManager.setFocus(createButton);
+				//createButton.setFocus();
 			}
 			
 			private function validateData(): Boolean
@@ -90,14 +100,15 @@
 		]]>
 	</mx:Script>
 	<mx:HTTPService id="httpService" resultFormat="text" result="onResult(event)" />
-	<mx:VBox width="100%" height="100%">  
+	<mx:VBox width="100%" height="100%"> 
+		<mx:Label text=""/>
 		<mx:HBox horizontalAlign="center" width="100%">
 			<mx:Label text="  Please specify the objects and attributes of the context (separated by comma):" fontWeight="bold"/>
 		</mx:HBox>
 		<mx:HBox horizontalAlign="center" width="100%">
 			<mx:Form xmlns:mx="http://www.adobe.com/2006/mxml" width="487" height="82" id="initialContext">
 				<mx:FormItem label="Objects:" width="100%">
-					<mx:TextInput width="100%" id="objectsTextInput" change="validateData()"/>
+					<mx:TextInput width="100%" id="objectsTextInput" enter="createContext()" change="validateData()"/>
 				</mx:FormItem>
 				<mx:FormItem label="Attributes:" width="100%" id="attribLabel">
 					<mx:TextInput width="100%" id="attributesTextInput" enter="createContext()" change="validateData()" />
@@ -105,15 +116,15 @@
 			</mx:Form>
 		</mx:HBox>
 		<mx:HBox horizontalAlign="center" width="100%">    
-			<mx:Button id="createButton" enabled="false" width="455" label="Create context" click="createContext()"/>
+			<mx:Button id="createButton" enabled="false" width="325" label="Create context" click="createContext()"/>
 		</mx:HBox>  
 		<mx:Spacer height="10" />
 		<mx:HBox horizontalAlign="center" width="100%">
-			<ext:CustomCollapsiblePanel title="Examples" width="455" open="false" styleName="myCCPStyle">
+			<ext:CustomCollapsiblePanel id="ccp" title="Examples" width="325" open="false" styleName="myCCPStyle">
 				<mx:Label text="" />
 				<mx:VBox width="100%">    
 					<mx:HBox horizontalAlign="center" width="100%">
-						<mx:Label text="You may also choose a configuration from the following"/>
+						<mx:Label text="You may also choose a configuration from the following:"/>
 					</mx:HBox>    
 				</mx:VBox> 
 				<mx:VBox width="100%">    
