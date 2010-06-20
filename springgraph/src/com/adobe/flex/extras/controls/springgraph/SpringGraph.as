@@ -828,7 +828,7 @@ package com.adobe.flex.extras.controls.springgraph {
 		private function autoFitTickThird():void {
  			// do a layout pass
 			//forceDirectedLayout.tick();
-			if (mouseDown==false) forceDirectedLayout.tick();
+			if ((mouseDown==false) && (freePositioning==false))  forceDirectedLayout.tick();
 			//else forceDirectedLayout.tickSecond();
 			
 			// find out the current rect occupied by all items
@@ -929,6 +929,14 @@ package com.adobe.flex.extras.controls.springgraph {
 			refresh();
 		}
 		
+		public function set freeNodePositioning(b: Boolean): void {
+			freePositioning=b;
+		}
+		
+		public function get freeNodePositioning(): Boolean {
+			return freePositioning;
+		}
+		
   		public function calcItemsBoundingRect(): Rectangle {
    			var c: Array = this.getChildren();
    			if(c.length == 0) return null;
@@ -998,6 +1006,7 @@ package com.adobe.flex.extras.controls.springgraph {
         private var maxItems:Number = 20;
         //private var upScrolling:Boolean = true;
         private var showGraph:int = 0;
+		private var freePositioning:Boolean = false;
         private var mouseDown:Boolean = false;
         private var doubleClick:Boolean = false;
         private var creationComplete:Boolean = false;
