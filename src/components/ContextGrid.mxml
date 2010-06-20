@@ -754,7 +754,8 @@
 				panel.title="Save lattice";
 				PopUpManager.addPopUp(panel, this, true);
 				PopUpManager.centerPopUp(panel);
-				
+				//var scrollXPosition: Number = lattice.s.horizontalScrollPosition;
+				//var scrollYPosition: Number = lattice.s.verticalScrollPosition;
 				var oldXAxisLatticePosition: int = lattice.s.doPositionLattice();
 				//var w:int = lattice.s.width;
 				//var h:int = lattice.s.height;

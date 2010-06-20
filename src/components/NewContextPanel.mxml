@@ -16,7 +16,6 @@
 			import events.NewContextEvent;
 			
 			import flash.text.*;
-			
 			import mx.collections.ArrayCollection;
 			import mx.events.ItemClickEvent;
 			import mx.rpc.events.ResultEvent;
