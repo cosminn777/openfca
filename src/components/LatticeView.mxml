@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:fc="http://www.adobe.com/2006/fc" horizontalScrollPolicy="auto">
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" 
+		 xmlns:fc="http://www.adobe.com/2006/fc" 
+		 xmlns:ext="renderers.*"
+		 horizontalScrollPolicy="auto">
 	<mx:Script>
 		<![CDATA[
 			import renderers.ConceptEdgeRenderer;
@@ -18,6 +21,7 @@
 			private var _concepts: Array = new Array();
 			private var _objects: Array = new Array();
 			private var _attributes: Array = new Array();
+			private var fileReference:FileReference = new FileReference();;
 			
 			public var focusedItem:Item;
 
@@ -158,6 +162,64 @@
 					setLists(concept);
 				}
 			}
+			
+			private function loadOriginalSettingsHandler(): void {
+				maxDistanceFromCurrent.value=4;
+				maxVisible.value = 20;
+				widthSlider.value = 97;
+				heightSlider.value = 52;
+				fontSizeSlider.value = 11.5;
+				skipCount.value = 0;
+				repulsionSlider.value = 1.77;
+				verticalRepulsionSlider.value 1.74;
+			}
+			
+			private function saveSettingsHandler(): void {
+				var fileReference:FileReference = new FileReference();
+				var out:ByteArray = new ByteArray();
+				out.writeUTFBytes(maxDistanceFromCurrent.value + "\n");
+				out.writeUTFBytes(maxVisible.value + "\n");
+				out.writeUTFBytes(widthSlider.value + "\n");
+				out.writeUTFBytes(heightSlider.value + "\n");
+				out.writeUTFBytes(fontSizeSlider.value + "\n");
+				out.writeUTFBytes(skipCount.value + "\n");
+				out.writeUTFBytes(repulsionSlider.value + "\n");
+				out.writeUTFBytes(verticalRepulsionSlider.value + "\n");
+				fileReference.save(out, "ConflexploreSettings.csf");
+			}
+			
+			private function loadSettingsHandler(): void {
+				var confexploreFilter:FileFilter = new FileFilter("Conflexplore settings files (*.csf)", "*.csf");
+				var allFilter:FileFilter = new FileFilter("All", "*.*");
+				fileReference.browse([confexploreFilter,allFilter]);
+				fileReference.addEventListener(Event.SELECT, onFileSelect);
+			}
+			
+			private function onFileSelect(event:Event): void
+			{
+				fileReference.addEventListener(Event.COMPLETE, onFileComplete);
+				cursorManager.setBusyCursor();
+				fileReference.load();
+			}
+			
+			private function onFileComplete(event:Event): void
+			{
+				loadData(fileReference.data.toString());
+			}
+			
+			private function loadData(data:String): void
+			{
+				var lines:Array = data.split("\n");
+				maxDistanceFromCurrent.value = lines[0];
+				maxVisible.value = lines[1];
+				widthSlider.value = lines[2];
+				heightSlider.value = lines[3];
+				fontSizeSlider.value = lines[4];
+				skipCount.value = lines[5];
+				repulsionSlider.value = lines[6];
+				verticalRepulsionSlider.value = lines[7];
+				cursorManager.removeBusyCursor();
+			}
 		]]>
 	</mx:Script>
 
@@ -174,11 +236,17 @@
 			<mx:Label text="Font Size"/>
 			<mx:HSlider id="fontSizeSlider" value="11.5" minimum="8" maximum="70" change="s.refresh()" liveDragging="true" width="100%"/>
 			<mx:Label text="Skip"/>
-			<mx:NumericStepper id="skipCount" minimum="0" maximum="1000" />
+			<mx:NumericStepper id="skipCount" minimum="0" maximum="1000"  value="0"/>
 			<mx:Label text="Horizontal repulsion"/>
 			<mx:HSlider id="repulsionSlider" value="1.77" minimum="0.07" maximum="14.5" change="s.refresh()" liveDragging="true" width="100%"/>
 			<mx:Label text="Vertical repulsion"/>
-			<mx:HSlider id="verticalRepulsionSlider" value="1.74" minimum="0.17" maximum="4" change="s.refresh()" liveDragging="true" width="100%"/>	
+			<mx:HSlider id="verticalRepulsionSlider" value="1.74" minimum="0.17" maximum="4" change="s.refresh()" liveDragging="true" width="100%"/>
+			<mx:Label text=""/>
+			<ext:CustomCollapsiblePanel title="Options" width="100%" open="false" styleName="myCCPStyle">
+				<mx:Button width="100%" label="Load Original Settings" click="loadOriginalSettingsHandler()"/>
+				<mx:Button width="100%" label="Save Settings" click="saveSettingsHandler()"/>
+				<mx:Button width="100%" label="Load Settings" click="loadSettingsHandler()"/>
+			</ext:CustomCollapsiblePanel>
 		</mx:VBox>
 		<mx:VBox height="100%" width="140" minWidth="0" backgroundColor="#909090"
 				 paddingLeft="5" paddingRight="5" paddingTop="5" paddingBottom="5"
