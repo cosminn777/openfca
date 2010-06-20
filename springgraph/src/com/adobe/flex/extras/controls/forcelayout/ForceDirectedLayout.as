@@ -538,15 +538,15 @@ public class ForceDirectedLayout implements IForEachEdge, IForEachNode, IForEach
 	    		  	e.getTo().y=e.getTo().y+(-(e.getTo().y-e.getFrom().y)+vDistance)/12;//pentru radacina sa coboare frunzele
 	    		 if (upMovement==true) 
 	    		  	e.getFrom().y = e.getFrom().y +(-(e.getFrom().y-e.getTo().y)-vDistance)/12;//pentru frunze sa ridice radacina
-	    	}
+	    	} //else positioningComplete=(e.getFrom().y+vDistance)>e.getTo().y-5;
 	    } 
 	    else
-	    	if (e.getFrom().y<e.getTo().y+vDistance) {
+	    	if (e.getFrom().y<(e.getTo().y+vDistance)) {
 	    		  if (upMovement==false) 
 	    		  	e.getFrom().y=e.getFrom().y+(-(e.getFrom().y-e.getTo().y)+vDistance)/12;//pentru radacina sa coboare frunzele
 	    		  if (upMovement==true) 
 	    		  	e.getTo().y = e.getTo().y +(- (e.getTo().y-e.getFrom().y)-vDistance)/12;//pentru frunze sa ridice radacina
-	    	}
+	    	} //else positioningComplete=e.getFrom().y-5<(e.getTo().y+vDistance);
 		//----------------------------------------------------------------------------------------
 		
 		/*if (GraphNode(e.getFrom()).item.id == fromId) { //&& dragNode!=null) {

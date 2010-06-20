@@ -11,6 +11,7 @@
 			import mx.collections.ArrayCollection;
 			import com.adobe.flex.extras.controls.springgraph.Item;
 			import com.adobe.flex.extras.controls.springgraph.Graph;
+			import mx.core.FlexGlobals;
 
 			private var _g: Graph = new Graph();
 			private var _conceptProcessor: IConceptProcessor;
@@ -81,7 +82,7 @@
 					if (_concepts.length > 0) {
 						setActiveItem(_g.nodes[0].id);
 					}
-				}
+				}	
 			}
 			
 			public function setGraph(objects:Array, attributes:Array, graph:Graph): void
@@ -215,9 +216,11 @@
 									import mx.core.UIComponent;
 									import com.adobe.flex.extras.controls.springgraph.Item;
 									public function doubleClick(event:Event): void
-									{
-										outerDocument.s.currentItem = event.currentTarget.data;
-										outerDocument.setActiveItem(event.currentTarget.data.id);
+									{	
+										if (outerDocument.s.freeNodePositioning == false) {
+											outerDocument.s.currentItem = event.currentTarget.data;
+											outerDocument.setActiveItem(event.currentTarget.data.id);
+										}
 									}
 	
 									public function mouseOver(event:Event): void

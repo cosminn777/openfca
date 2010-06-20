@@ -429,13 +429,19 @@
 			{
 				for each (var child:UIComponent in appControlBar.getChildren())
 				{
-					child.visible = false;
 					child.includeInLayout = false;
+					child.visible = false;
 				}
-				openButton.visible = true;
 				openButton.includeInLayout = true;
-				saveButton.visible = true;
+				openButton.visible = true;
 				saveButton.includeInLayout = true;
+				saveButton.visible = true;
+			}
+			
+			private function backToContextHandler(): void
+			{
+				disableFreePositioning();
+				setContextGridVisibility();
 			}
 			
 			private function setContextGridVisibility(): void
@@ -467,8 +473,12 @@
 			private function setLatticeVisibility(): void
 			{
 				unsetVisibility();
-				backToGridButton.visible = true;
 				backToGridButton.includeInLayout = true;
+				backToGridButton.visible = true;
+				positioningButton.includeInLayout=true;
+				positioningButton.visible=true;
+				//infoLabel.includeInLayout=true;
+				//infoLabel.visible=true;
 				viewStack.selectedChild = lattice;
 			}
 			
@@ -554,6 +564,8 @@
 					resetButton.visible=false;
 					viewLatticeButton.visible=false;
 					backToGridButton.visible=false;
+					positioningButton.visible=false;
+					infoLabel.visible=false;
 					viewImplicationsButton.visible=false;
 					if ((lines[0] as String)=="" || (lines[1] as String)=="") {
 						newContextPanel.createButton.enabled=false;
@@ -911,17 +923,66 @@
 					});
 			}
 			
+			private function positioningHandler():void
+			{
+				if (positioningButton.label=="Enable free positioning") enableFreePositioning();
+				else disableFreePositioning();
+			}
+			
+			private function disableLatticeControls():void
+			{
+				lattice.maxDistanceFromCurrent.enabled=false;
+				lattice.maxVisible.enabled=false;
+				lattice.widthSlider.enabled=false;
+				lattice.heightSlider.enabled=false;
+				lattice.fontSizeSlider.enabled=false;
+				lattice.skipCount.enabled=false;
+				lattice.repulsionSlider.enabled=false;
+				lattice.verticalRepulsionSlider.enabled=false;
+			}
+			
+			private function enableLatticeControls():void
+			{
+				lattice.maxDistanceFromCurrent.enabled=true;
+				lattice.maxVisible.enabled=true;
+				lattice.widthSlider.enabled=true;
+				lattice.heightSlider.enabled=true;
+				lattice.fontSizeSlider.enabled=true;
+				lattice.skipCount.enabled=true;
+				lattice.repulsionSlider.enabled=true;
+				lattice.verticalRepulsionSlider.enabled=true;
+			}
+			
+			private function enableFreePositioning():void {
+				//FlexGlobals.topLevelApplication.infoLabel.visible=false;
+				positioningButton.label="Disable free positioning";
+				infoLabel.text="Free node positioning enabled";
+				infoLabel.visible=true;
+				lattice.s.freeNodePositioning = true;
+				disableLatticeControls();
+			}
+			
+			private function disableFreePositioning():void {
+				//FlexGlobals.topLevelApplication.infoLabel.visible=false;
+				positioningButton.label="Enable free positioning";
+				infoLabel.text="Free node positioning disabled";
+				infoLabel.visible=true;
+				lattice.s.freeNodePositioning = false;
+				enableLatticeControls();
+			}
+			
 		]]>
 	</mx:Script>
 	
-	<mx:ApplicationControlBar id="appControlBar" 
-							  width="100%">
+	<mx:ApplicationControlBar id="appControlBar" width="100%">
 			<mx:Button id="openButton" visible="true" includeInLayout="true" click="openClickHandler()" label="Open"/>
 			<mx:Button id="saveButton" visible="true" includeInLayout="true" click="saveClickHandler()" label="Save"/>
 			<mx:Button id="resetButton" visible="false" includeInLayout="false" label="New Context" click="showCreateContext()" showEffect="{fadeIn}" hideEffect="{fadeOut}"/>
 			<mx:Button id="viewLatticeButton" visible="false" includeInLayout="false" label="View Lattice" click="showLattice()" showEffect="{fadeIn}" hideEffect="{fadeOut}"/>
-			<mx:Button id="backToGridButton" visible="false" includeInLayout="false" label="Back" click="setContextGridVisibility()" showEffect="{fadeIn}" hideEffect="{fadeOut}"/>
+			<mx:Button id="backToGridButton" visible="false" includeInLayout="false" label="Back" click="backToContextHandler()" showEffect="{fadeIn}" hideEffect="{fadeOut}"/>
 			<mx:Button id="viewImplicationsButton" visible="false" includeInLayout="false" label="View Implications" click="showImplications()" showEffect="{fadeIn}" hideEffect="{fadeOut}"/>
+			<mx:Button id="positioningButton" visible="false" includeInLayout="false" click="positioningHandler()" label="Enable free positioning" showEffect="{fadeIn}" hideEffect="{fadeOut}"/>
+			<mx:Label id="infoLabel" text="AAA" color="#ffffff" textAlign="left" visible="false" fontWeight="bold" showEffect="{fadeIn}" hideEffect="{fadeOut}" />
 	</mx:ApplicationControlBar>
 
 	<mx:Fade id="fadeIn" alphaFrom="0.0" alphaTo="1.0"/>
