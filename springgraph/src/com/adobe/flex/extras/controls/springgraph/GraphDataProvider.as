@@ -129,6 +129,15 @@ public class GraphDataProvider implements IDataProvider {
 		}
 		return null;
 	}
+	
+	public function findNodeUsingId(id: String): GraphNode {
+		for (var i: int = 0; i < nodes.length; i++) {
+			var node: GraphNode = GraphNode(nodes[i]);
+			if(node.item.id == id)
+				return node;
+		}
+		return null;
+	}
 
 	public function get layoutChanged(): Boolean {
 		return _layoutChanged;

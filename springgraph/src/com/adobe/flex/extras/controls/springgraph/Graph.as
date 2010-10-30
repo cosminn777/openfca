@@ -14,6 +14,7 @@ package com.adobe.flex.extras.controls.springgraph
 	import flash.events.EventDispatcher;
 	import mx.controls.Button;
 	import mx.controls.HSlider;
+	import com.adobe.flex.extras.controls.springgraph.GraphNode;
 	
 	/**
 	 *  Dispatched when there is any change to the nodes and/or links of this graph.
@@ -305,7 +306,7 @@ package com.adobe.flex.extras.controls.springgraph
 			else
 				return null;
 		}
-		
+
 	    /**
 	     *  Get an array of all the items that a given item is linked to.
 	     *

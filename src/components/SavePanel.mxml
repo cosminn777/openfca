@@ -2,14 +2,14 @@
 <mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" 
 		  layout="vertical" 
 		  width="437" 
-		  height="304" 
+		  height="332" 
 		  title="" 
 		  horizontalAlign="center" 
 		  paddingTop="20" 
 		  paddingBottom="20">
 	<mx:HBox>
 		<mx:Text id="textTitle" text="CON:" textAlign="left" width="37"/>
-		<mx:Text id="textDetails" text="is the Conflexplore file format. The saved file can be opened in Conflexplore and the data can be further edited." textAlign="left" width="340"/>
+		<mx:Text id="textDetails" text="is the Conflexplore file format. The saved file can be opened in Conflexplore and the data can be further edited. If you save a lattice then the lattice viewing settings will be saved also." textAlign="left" width="340"/>
 	</mx:HBox>
 	<mx:HBox>
 		<mx:Text text="PNG:" textAlign="left" width="37"/>

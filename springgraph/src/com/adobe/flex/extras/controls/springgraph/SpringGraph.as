@@ -911,7 +911,13 @@ package com.adobe.flex.extras.controls.springgraph {
 					//doubleClick = false;
 					refresh();
 					}
-			}
+				
+				//put lattice on middle of the screen
+			} //else
+			//if (this.width > itemBounds.width) {
+			//	scrollLattice((itemBounds.right+itemBounds.left)/2-this.width/2, 0);
+			//	refresh();
+			//}
         }
 		
 		//the lattice only need to be moved to left if it's small so only Y axis scrolls are needed

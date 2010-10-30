@@ -5,7 +5,7 @@
 				layout="vertical"
 				backgroundGradientColors="[#888888,#333333]"
 				verticalAlign="top" 
-				viewSourceURL="srcview/index.html">
+>
 	<mx:Style source="styles.css"/>
 	<mx:Image  source="data/logo.PNG" />
 	<components:ContextGrid id="contextGrid" minWidth="640" width="95%" height="100%" />
