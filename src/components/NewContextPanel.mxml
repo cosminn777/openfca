@@ -26,7 +26,13 @@
 			
 			private function init(): void
 			{
-				navigateToURL(new URLRequest("javascript: document.getElementById('Conflexplore').focus();"), "_self");
+				try {
+					navigateToURL(new URLRequest("javascript: document.getElementById('Conflexplore').focus();"), "_self");
+				} catch (err:Error)
+				{
+					// code to react to the error
+				}
+
 				objectsTextInput.setFocus();
 				//var i:int = mouseX;
 				

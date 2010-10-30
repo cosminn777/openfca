@@ -559,14 +559,14 @@
 			{
 				var lines:Array = data.split("\n");
 				if (lines.length==2) {
-					//unsetVisibility();
-					//newContextPanel.visible=true;
-					resetButton.visible=false;
-					viewLatticeButton.visible=false;
-					backToGridButton.visible=false;
-					positioningButton.visible=false;
-					infoLabel.visible=false;
-					viewImplicationsButton.visible=false;
+					unsetVisibility();
+					newContextPanel.visible=true;
+					//resetButton.visible=false;
+					//viewLatticeButton.visible=false;
+					//backToGridButton.visible=false;
+					//positioningButton.visible=false;
+					//infoLabel.visible=false;
+					//viewImplicationsButton.visible=false;
 					if ((lines[0] as String)=="" || (lines[1] as String)=="") {
 						newContextPanel.createButton.enabled=false;
 						if ((lines[1] as String)=="")
@@ -616,9 +616,20 @@
 					var iMem: int = System.totalMemory / (1024 * 1024); // in MB
 					var g:Graph = new Graph();
 					var concepts:Array = new Array();
+					var nodesPositions:Array = null;
 					for (var nIndex:int = 0; nIndex < conceptCount; ++nIndex)
 					{
-						var conceptId:String = StringUtil.trim(lines[lineIndex++]);
+						var conceptLine:String = StringUtil.trim(lines[lineIndex++]);
+						var conceptNode:Array = conceptLine.split(",");
+						var conceptId:String = conceptNode[0];
+						if (nodesPositions==null) 
+							nodesPositions = new Array();
+						//nodesPositions = new Array();
+						//this means that the node was visible and it adds it's position for processing
+						if (conceptNode[1]!="0" && conceptNode[2]!="0")
+							nodesPositions[nodesPositions.length]=new String(conceptLine);
+						//var nx:Number = conceptNode[1];
+						//var ny:Number = conceptNode[2];
 						var newConcept:Concept = new Concept(null, null, lines[lineIndex], lines[lineIndex + 1]);
 						concepts[conceptId] = newConcept;
 						var cItem:ConceptItem = new ConceptItem(conceptId, -1, -1, lines[lineIndex + 1], lines[lineIndex]);
@@ -634,14 +645,28 @@
 							cItem.attachedAttribute = attributes[attachedIdAttribute];
 						}
 						g.add(cItem);
-						
+						//g._dataProvider.findNodeUsingId(conceptNode[0]).view.x=conceptNode[1];
+						//g.findNodeUsingId(conceptNode[0]).view.y=conceptNode[2];
+						//lattice.s._dataProvider.findNodeUsingId(conceptNode[0]).view.x=conceptNode[1];
+						//lattice.s._dataProvider.findNodeUsingId(conceptNode[0]).view.y=conceptNode[2];
 					}
+					lattice.setNodesPositions(nodesPositions);
+					//lattice.loadNodesPositions();
 					iMem = System.totalMemory / (1024 * 1024); // in MB
 					for (var eIndex:int = 0; eIndex < edgeCount; ++eIndex)
 					{
 						var edge:Array = StringUtil.trim(lines[lineIndex++]).split(" ");
 						g.link(g.nodes[edge[0]], g.nodes[edge[1]], edge[0]);
 					}
+					var settingsData:String = new String();
+					//loads settings for lattice view window, we must keep functionality 
+					//with saves that does not include the view settings
+					if (lineIndex!=lines.length) {
+						while (lineIndex!=lines.length)
+							settingsData+=lines[lineIndex++]+"\n";
+						lattice.setLatticeViewSettings(settingsData);
+					}
+					
 					iMem = System.totalMemory / (1024 * 1024); // in MB
 					trace("Total used memory for " + conceptCount + " concepts and " + edgeCount + " edges: " + (System.totalMemory / (1024 * 1024)).toString() + " MB."); // in MB
 					if (concepts.length > 0) {
@@ -656,6 +681,7 @@
 						setGrid(objects, attributes, rows);
 						setContextGridVisibility(); 
 					}
+					lattice.loadNodesPositions();
 					cursorManager.removeBusyCursor();
 				}
 			}
@@ -712,8 +738,22 @@
 				out.writeUTFBytes(lattice.getGraphRepresentation());
 				//if (viewStack.selectedChild == contextCanvas)
 				//	fileReference.save(out, "context.con");
-				if (viewStack.selectedChild == lattice)
+				if (viewStack.selectedChild == lattice) {
+					//save viewing setting so at load, the lattice will be identical
+					out.writeUTFBytes(lattice.maxDistanceFromCurrent.value + "\n");
+					out.writeUTFBytes(lattice.maxVisible.value + "\n");
+					out.writeUTFBytes(lattice.widthSlider.value + "\n");
+					out.writeUTFBytes(lattice.heightSlider.value + "\n");
+					out.writeUTFBytes(lattice.fontSizeSlider.value + "\n");
+					out.writeUTFBytes(lattice.skipCount.value + "\n");
+					out.writeUTFBytes(lattice.repulsionSlider.value + "\n");
+					out.writeUTFBytes(lattice.verticalRepulsionSlider.value + "\n");
+					if (lattice.s.freeNodePositioning==true)
+						out.writeUTFBytes("0" + "\n");
+					if (lattice.s.freeNodePositioning==false)
+						out.writeUTFBytes("1" + "\n");
 					fileReference.save(out, "lattice.con");
+				}
 				if (viewStack.selectedChild == contextCanvas)
 					fileReference.save(out, "context.con");
 				if (viewStack.selectedChild == newContextPanel) {
@@ -954,7 +994,7 @@
 				lattice.verticalRepulsionSlider.enabled=true;
 			}
 			
-			private function enableFreePositioning():void {
+			public function enableFreePositioning():void {
 				//FlexGlobals.topLevelApplication.infoLabel.visible=false;
 				positioningButton.label="Disable free positioning";
 				infoLabel.text="Free node positioning enabled";
@@ -963,7 +1003,7 @@
 				disableLatticeControls();
 			}
 			
-			private function disableFreePositioning():void {
+			public function disableFreePositioning():void {
 				//FlexGlobals.topLevelApplication.infoLabel.visible=false;
 				positioningButton.label="Enable free positioning";
 				infoLabel.text="Free node positioning disabled";

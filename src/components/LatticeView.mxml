@@ -5,23 +5,26 @@
 		 horizontalScrollPolicy="auto">
 	<mx:Script>
 		<![CDATA[
-			import renderers.ConceptEdgeRenderer;
-			import com.adobe.flex.extras.controls.springgraph.IEdgeRenderer;
-			import logic.Concept;
-			import com.adobe.flex.extras.controls.springgraph.GraphEdge;
-			import logic.NaiveConceptProcessor;
-			import logic.IConceptProcessor;
-			import mx.collections.ArrayCollection;
-			import com.adobe.flex.extras.controls.springgraph.Item;
 			import com.adobe.flex.extras.controls.springgraph.Graph;
-			import mx.core.FlexGlobals;
+			import com.adobe.flex.extras.controls.springgraph.GraphEdge;
+			import com.adobe.flex.extras.controls.springgraph.IEdgeRenderer;
+			import com.adobe.flex.extras.controls.springgraph.Item;
+			
+			import logic.Concept;
+			import logic.IConceptProcessor;
+			import logic.NaiveConceptProcessor;
+			
+			import mx.collections.ArrayCollection;
+			import renderers.ConceptEdgeRenderer;
 
 			private var _g: Graph = new Graph();
 			private var _conceptProcessor: IConceptProcessor;
 			private var _concepts: Array = new Array();
 			private var _objects: Array = new Array();
 			private var _attributes: Array = new Array();
-			private var fileReference:FileReference = new FileReference();;
+			private var fileReference:FileReference = new FileReference();
+			private var nodesPositions: Array;
+			private var latticeViewSettings: String;
 			
 			public var focusedItem:Item;
 
@@ -33,9 +36,33 @@
 				{
 					setLists(_concepts[0]);
 				}
+				loadNodesPositions();
 				//adds event for mouse wheel scrolling
 				//systemManager.addEventListener(MouseEvent.MOUSE_WHEEL, doMouseWheel); //what's happening at scrolling  
-
+			}
+			
+			public function setNodesPositions(np:Array): void
+			{
+				nodesPositions = np;
+			}
+			
+			public function setLatticeViewSettings(lvs:String): void
+			{
+				latticeViewSettings = lvs;
+			}
+		
+			public function loadNodesPositions(): void
+			{
+				if (nodesPositions!=null && s!=null) {
+					if (latticeViewSettings!=null)
+						loadSetingsDataWithFP(latticeViewSettings);
+					for (var c:int = 0; c<nodesPositions.length; c++) {
+						var np:Array =nodesPositions[c].split(",");
+						s._dataProvider.findNodeUsingId(np[0]).view.x=np[1];
+						s._dataProvider.findNodeUsingId(np[0]).view.y=np[2];
+					}
+					nodesPositions=null;
+				}
 			}
 			/*
 			//what's happening at scrolling
@@ -143,9 +170,19 @@
 			public function getConceptRepresentation(): String
 			{
 				var out:ByteArray = new ByteArray();
+				var nx:Number = 0;
+				var ny:Number = 0;
 				for (var conceptId:String in _concepts)
 				{
-					out.writeUTFBytes(conceptId + "\n");
+					nx = 0;
+					ny = 0;
+					if (s._dataProvider.findNodeUsingId(conceptId)!=null) {
+						nx = s._dataProvider.findNodeUsingId(conceptId).view.x;
+						ny = s._dataProvider.findNodeUsingId(conceptId).view.y;
+					}
+					out.writeUTFBytes(conceptId + "," + nx + "," + ny + "\n");
+					//out.writeUTFBytes(nn + "\n");
+					//out.writeUTFBytes(_g.findNode(conceptId).data.getX + "\n");
 					out.writeUTFBytes(_concepts[conceptId].objects.join(",") + "\n");
 					out.writeUTFBytes(_concepts[conceptId].attributes.join(",") + "\n");
 					out.writeUTFBytes(((_concepts[conceptId].attachedObject != null) ? _concepts[conceptId].attachedObject : "") + "\n");
@@ -188,6 +225,60 @@
 				fileReference.save(out, "ConflexploreSettings.csf");
 			}
 			
+			//with free node positioning included
+			private function saveSettingsHandlerWithFP(): void {
+				var fileReference:FileReference = new FileReference();
+				var out:ByteArray = new ByteArray();
+				out.writeUTFBytes(maxDistanceFromCurrent.value + "\n");
+				out.writeUTFBytes(maxVisible.value + "\n");
+				out.writeUTFBytes(widthSlider.value + "\n");
+				out.writeUTFBytes(heightSlider.value + "\n");
+				out.writeUTFBytes(fontSizeSlider.value + "\n");
+				out.writeUTFBytes(skipCount.value + "\n");
+				out.writeUTFBytes(repulsionSlider.value + "\n");
+				out.writeUTFBytes(verticalRepulsionSlider.value + "\n");
+				if (s.freeNodePositioning==true)
+					out.writeUTFBytes("0" + "\n");
+				if (s.freeNodePositioning==false)
+					out.writeUTFBytes("1" + "\n");
+				fileReference.save(out, "ConflexploreSettings.csf");
+			}
+			
+			
+			private function loadSetingsData(data:String): void
+			{
+				var lines:Array = data.split("\n");
+				maxDistanceFromCurrent.value = lines[0];
+				maxVisible.value = lines[1];
+				widthSlider.value = lines[2];
+				heightSlider.value = lines[3];
+				fontSizeSlider.value = lines[4];
+				skipCount.value = lines[5];
+				repulsionSlider.value = lines[6];
+				verticalRepulsionSlider.value = lines[7];
+				cursorManager.removeBusyCursor();
+			}
+			
+			//with free node positioning included
+			private function loadSetingsDataWithFP(data:String): void
+			{
+				var lines:Array = data.split("\n");
+				maxDistanceFromCurrent.value = lines[0];
+				maxVisible.value = lines[1];
+				widthSlider.value = lines[2];
+				heightSlider.value = lines[3];
+				fontSizeSlider.value = lines[4];
+				skipCount.value = lines[5];
+				repulsionSlider.value = lines[6];
+				verticalRepulsionSlider.value = lines[7];
+				if (lines[8]=='0')
+					this.parentDocument.enableFreePositioning();
+				if (lines[8]=='1')
+					this.parentDocument.disableFreePositioning();
+				
+				cursorManager.removeBusyCursor();
+			}
+			
 			private function loadSettingsHandler(): void {
 				var confexploreFilter:FileFilter = new FileFilter("Conflexplore settings files (*.csf)", "*.csf");
 				var allFilter:FileFilter = new FileFilter("All", "*.*");
@@ -204,21 +295,7 @@
 			
 			private function onFileComplete(event:Event): void
 			{
-				loadData(fileReference.data.toString());
-			}
-			
-			private function loadData(data:String): void
-			{
-				var lines:Array = data.split("\n");
-				maxDistanceFromCurrent.value = lines[0];
-				maxVisible.value = lines[1];
-				widthSlider.value = lines[2];
-				heightSlider.value = lines[3];
-				fontSizeSlider.value = lines[4];
-				skipCount.value = lines[5];
-				repulsionSlider.value = lines[6];
-				verticalRepulsionSlider.value = lines[7];
-				cursorManager.removeBusyCursor();
+				loadSetingsData(fileReference.data.toString());
 			}
 		]]>
 	</mx:Script>
