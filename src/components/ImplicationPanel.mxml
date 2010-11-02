@@ -35,9 +35,6 @@
 		panel.title="Save implications as image";
 		PopUpManager.addPopUp(panel, this, true);
 		PopUpManager.centerPopUp(panel);
-
-		//var w:int = implGrid.width;
-		//var h:int = implGrid.height;
 		implGrid.height=implGrid.measureHeightOfItems(0, implGrid.dataProvider.length+1) + implGrid.headerHeight;
 		var cWidth:int=0;
 		for (var c:int=0;c<implGrid.columnCount;c++)
@@ -55,8 +52,6 @@
 					out.writeUTFBytes(implItems.list.getItemAt(i).premise+"->"+implItems.list.getItemAt(i).conclusion+"\n");
 				}
 				fr.save(out, "implications.txt");
-				//implGrid.width=w;
-				//implGrid.height=h;
 				implGrid.percentWidth=100;
 				implGrid.percentHeight=100;
 				PopUpManager.removePopUp(panel);
@@ -67,8 +62,6 @@
 				bd.draw(implGrid);
 				var ba:ByteArray = jpgEnc.encode(bd);
 				fr.save(ba, "implications.jpg");
-				//implGrid.width=w;
-				//implGrid.height=h;
 				implGrid.percentWidth=100;
 				implGrid.percentHeight=100;
 				PopUpManager.removePopUp(panel);
@@ -79,8 +72,6 @@
 				bd.draw(implGrid);
 				var ba:ByteArray = pngEnc.encode(bd);
 				fr.save(ba, "implications.png");
-				//implGrid.width=w;
-				//implGrid.height=h;
 				implGrid.percentWidth=100;
 				implGrid.percentHeight=100;
 				PopUpManager.removePopUp(panel);
@@ -88,8 +79,6 @@
 		
 		panel.cButton.addEventListener(MouseEvent.CLICK,
 			function (event:Event): void {
-				//implGrid.width=w;
-				//implGrid.height=h;
 				implGrid.percentWidth=100;
 				implGrid.percentHeight=100;
 				PopUpManager.removePopUp(panel);
@@ -97,7 +86,6 @@
 	}
 ]]>
 </mx:Script>
-	
 	<mx:DataGrid lockedColumnCount="1" id="implGrid"
 					     horizontalScrollPolicy="auto"
 					     verticalScrollPolicy="auto"

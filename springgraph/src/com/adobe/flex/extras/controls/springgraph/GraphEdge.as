@@ -1,21 +1,7 @@
-////////////////////////////////////////////////////////////////////////////////
-//
-//  Copyright (C) 2006 Adobe Macromedia Software LLC and its licensors.
-//  All Rights Reserved. The following is Source Code and is subject to all
-//  restrictions on such code as contained in the End User License Agreement
-//  accompanying this product.
-//
-////////////////////////////////////////////////////////////////////////////////
-
 package com.adobe.flex.extras.controls.springgraph
 {
 	import com.adobe.flex.extras.controls.forcelayout.AbstractEdge;
 	
-	/** Represents one edge of a SpringGraph 
-	 * 
-	 * @author   Mark Shepherd
-	 * @private
-	 */
 	public class GraphEdge extends AbstractEdge
 	{
 		public static var traversedMap: Object = new Object();

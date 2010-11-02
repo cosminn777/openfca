@@ -1,7 +1,6 @@
 package events
 {
 	import flash.events.Event;
-	
 	import mx.collections.ArrayCollection;
 
 	public class NewContextEvent extends Event

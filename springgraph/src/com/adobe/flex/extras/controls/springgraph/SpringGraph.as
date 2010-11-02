@@ -1,12 +1,3 @@
-////////////////////////////////////////////////////////////////////////////////
-//
-//  Copyright (C) 2006 Adobe Macromedia Software LLC and its licensors.
-//  All Rights Reserved. The following is Source Code and is subject to all
-//  restrictions on such code as contained in the End User License Agreement
-//  accompanying this product.
-//
-////////////////////////////////////////////////////////////////////////////////
-
 package com.adobe.flex.extras.controls.springgraph {
 	import com.adobe.flex.extras.controls.forcelayout.ForceDirectedLayout;
 	
@@ -74,8 +65,6 @@ package com.adobe.flex.extras.controls.springgraph {
  *    replusionFactor="0.75"
  *  /&gt;
  *  </pre>
- *
- * @author   Mark Shepherd
  */	
  public class SpringGraph extends Canvas {
 		
@@ -346,11 +335,6 @@ package com.adobe.flex.extras.controls.springgraph {
    		private function backgroundDragBegin(event: MouseEvent):void  {
    			//trace("backgroundDragBegin");
    			backgroundDragInProgress = true;
-   			/*
-   			dragComponent = UIComponent(event.currentTarget);
-   			dragStartX = dragComponent.x;
-   			dragStartY = dragComponent.y;
-   			*/
    			dragCursorStartX = event.stageX;
    			dragCursorStartY = event.stageY;
    			//forceDirectedLayout.setDragNode(_dataProvider.findNode(dragComponent));
@@ -376,20 +360,12 @@ package com.adobe.flex.extras.controls.springgraph {
    		}
   		
  		/** @private */
-  		public function scroll(deltaX: int, deltaY: int): void {//aaaaaaaaaaaaaaaaaaaaaaaaaaa
-   			/*var c: Array = this.getChildren();
-   			for (var i: int = 1; i < c.length; i++) {
-   				var itemView: Object = c[i];
-   				if(itemView != drawingSurface) {
-   					itemView.x = itemView.x + deltaX;
-   					itemView.y = itemView.y + deltaY;
-   				}
-   			}*/
+  		public function scroll(deltaX: int, deltaY: int): void {
    			this.verticalScrollPosition=this.verticalScrollPosition-deltaY;
    			this.horizontalScrollPosition=this.horizontalScrollPosition-deltaX;
   		}
   		
-  		 public function scrollLattice(deltaX: int, deltaY: int): void {//aaaaaaaaaaaaaaaaaaaaaaaaaaa
+  		 public function scrollLattice(deltaX: int, deltaY: int): void {
    			var c: Array = this.getChildren();
    			for (var i: int = 1; i < c.length; i++) {
    				var itemView: Object = c[i];
@@ -403,10 +379,6 @@ package com.adobe.flex.extras.controls.springgraph {
    		private function backgroundDragEnd(event: MouseEvent):void  {
    			//trace("backgroundDragEnd");
    			backgroundDragInProgress = false;
-   			/*
-   			dragComponent = null;
-   			forceDirectedLayout.setDragNode(null);
-   			*/
    		}
  
  		/** @private */
@@ -419,12 +391,7 @@ package com.adobe.flex.extras.controls.springgraph {
 		
 		/** @private */
         protected function tick(event:TimerEvent = null):void {
-        	//if(_autoFit) {//THESE LINES WERE UNCOMMENTED
-        	//	autoFitTick();
-        	//} else {
-			//	forceDirectedLayout.tick();//--------------------
 			autoFitTickThird();
-        	//}
 			this.invalidateDisplayList();
 			startTimer();
        }
@@ -724,19 +691,6 @@ package com.adobe.flex.extras.controls.springgraph {
 				var hCoverage: Number = (itemBounds.right - itemBounds.left) / this.width;
 				var coverage: Number = Math.max(hCoverage, vCoverage);
 				prevCoverage = coverage;
-				/*var distance:Number = Roamer(this).maxDistanceFromCurrent;
-				var itemLimit:Number = Roamer(this).itemLimit;
-				if ((distance > distanceFromCurrent) || (itemLimit>maxItems)) {
-					upScrolling = true;
-					distanceFromCurrent = distance;
-					maxItems = itemLimit;
-				} else {
-					distanceFromCurrent = distance;
-					maxItems = itemLimit;		
-				}
-				if (upScrolling == true && (itemBounds.bottom > this.height)) {
-						scroll(0, -5)
-				} else upScrolling = false;*/
 				var distance:Number = Roamer(this).maxDistanceFromCurrent;
 				var itemLimit:Number = Roamer(this).itemLimit;
 				//settings to show the newer created nodes (scroll up) or to scroll down (if we have less nodes)
@@ -843,6 +797,7 @@ package com.adobe.flex.extras.controls.springgraph {
  			}
 			var scrollX: int = 0;
 			var scrollY: int = 0;
+
  			if((itemBounds.left < 5) || (itemBounds.top < 5) && (creationComplete==true)) {
 				// some items are off the screen. Let's auto-scroll the display.
 				scrollX = 0;
@@ -850,74 +805,30 @@ package com.adobe.flex.extras.controls.springgraph {
 				if ((itemBounds.left < 10)){
 					scrollX=scrollX +(10-itemBounds.left)/7;//scrollX=scrollX + 5;
 				}
-				//if ((itemBounds.left > 3))
-				//	scrollX=scrollX - 5;
-				//if ((itemBounds.left > 0) && (itemBounds.right > this.width-5))
-				//	scrollX=scrollX - 5;
-				//if ((itemBounds.top > 7) && (itemBounds.bottom > this.height))
-				//	scrollY=scrollY - 5;
 				if ((itemBounds.top < 10)) {
 					scrollY=scrollY +(10-itemBounds.top)/7;//scrollY=scrollY + 5;
 				}
-					//if ((itemBounds.top + itemBounds.bottom) / 2 > this.height / 2 - 5)
-								//scrollY=scrollY + 10;
-				//if ((itemBounds.top > 0))
-				//	scrollY=scrollY - 5;
-				//if ((itemBounds.top < 0) && (itemBounds.bottom < this.height))
-				//	scrollY=scrollY + 5;
-				// do the scrolling
 				if((scrollX != 0) || (scrollY != 0)) {
 					scrollLattice(scrollX, scrollY);
 					//doubleClick = false;
 					refresh();
-					}
+				}
 			}  else
 			if(((itemBounds.left > 10) || (itemBounds.top > 10)) && (creationComplete==true)) {
 				// some items are off the screen. Let's auto-scroll the display.
 				scrollX = 0;
 				scrollY = 0;
-				//for latttice to go to left
-				//-------------------------
-				//if ((itemBounds.left > 13))
-				//	scrollX=scrollX - 2;
-				//-------------------------
-				//if ((itemBounds.left > 3))
-				//	scrollX=scrollX - 5;
-				//if ((itemBounds.left > 0) && (itemBounds.right > this.width-5))
-				//	scrollX=scrollX - 5;
-				//if ((itemBounds.top > 7) && (itemBounds.bottom > this.height))
-				//	scrollY=scrollY - 5;
-				//for lattice to go to right
-				//////////////////////////////////////////////////
-				//if ((itemBounds.top > 10)){
-				//	scrollY=scrollY - (itemBounds.top-10)/7;//scrollY=scrollY - 2;
-				//}
-				////////////////////////////////////////////////
 				if ((itemBounds.bottom > this.height)){
 					scrollY=scrollY - (itemBounds.bottom-this.height)/7-3;//scrollY=scrollY - 2;
 				}
 				if ((itemBounds.right > this.width)){
 					scrollX=scrollX - (itemBounds.right-this.width)/7-3;//scrollY=scrollY - 2;
 				}
-				//if ((itemBounds.top + itemBounds.bottom) / 2 > this.height / 2 - 5)
-								//scrollY=scrollY + 10;
-				//if ((itemBounds.top > 0))
-				//	scrollY=scrollY - 5;
-				//if ((itemBounds.top < 0) && (itemBounds.bottom < this.height))
-				//	scrollY=scrollY + 5;
-				// do the scrolling
 				if((scrollX != 0) || (scrollY != 0)) {
 					scrollLattice(scrollX, scrollY);
-					//doubleClick = false;
 					refresh();
-					}
-				
-				//put lattice on middle of the screen
-			} //else
-			//if (this.width > itemBounds.width) {
-			//	scrollLattice((itemBounds.right+itemBounds.left)/2-this.width/2, 0);
-			//	refresh();
-			//}
+				}
+			} 
         }
 		
 		//the lattice only need to be moved to left if it's small so only Y axis scrolls are needed

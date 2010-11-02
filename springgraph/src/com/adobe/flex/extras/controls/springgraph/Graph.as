@@ -1,12 +1,3 @@
-////////////////////////////////////////////////////////////////////////////////
-//
-//  Copyright (C) 2006 Adobe Macromedia Software LLC and its licensors.
-//  All Rights Reserved. The following is Source Code and is subject to all
-//  restrictions on such code as contained in the End User License Agreement
-//  accompanying this product.
-//
-////////////////////////////////////////////////////////////////////////////////
-
 package com.adobe.flex.extras.controls.springgraph
 {
 	import mx.controls.Alert;
@@ -23,11 +14,6 @@ package com.adobe.flex.extras.controls.springgraph
 	 */
 	[Event(name="changed", type="flash.events.Event")]
 	
-	/**
-	 *  A Graph is a collection of items that can be linked to each other.
-	 * 
-	  * @author   Mark Shepherd
-	 */
  	public class Graph extends EventDispatcher
 	{
 		public static const CHANGE:String = "change";

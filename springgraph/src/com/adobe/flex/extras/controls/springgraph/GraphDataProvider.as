@@ -1,12 +1,3 @@
-////////////////////////////////////////////////////////////////////////////////
-//
-//  Copyright (C) 2006 Adobe Macromedia Software LLC and its licensors.
-//  All Rights Reserved. The following is Source Code and is subject to all
-//  restrictions on such code as contained in the End User License Agreement
-//  accompanying this product.
-//
-////////////////////////////////////////////////////////////////////////////////
-
 package com.adobe.flex.extras.controls.springgraph {
 
 import mx.core.UIComponent;
@@ -18,11 +9,6 @@ import com.adobe.flex.extras.controls.forcelayout.IEdge;
 import com.adobe.flex.extras.controls.forcelayout.Node;
 import flash.geom.Rectangle;
 
- /** Manages the graph data for a SpringGraph
-  * 
-  * @author   Mark Shepherd
-  * @private
-  */
 public class GraphDataProvider implements IDataProvider {
 	private var nodeStore: Object/*{id: GraphNode}*/ = new Object();
 	private var nodes: Array; /*{id: GraphNode}*/

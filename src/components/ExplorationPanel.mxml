@@ -9,5 +9,4 @@
 		<mx:Button id="noButton" label="No"/>
 		<mx:Button id="cancelButton" label="Cancel Exploration"/>
 	</mx:ControlBar>
-	
 </mx:Panel>
