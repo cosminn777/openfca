@@ -6,7 +6,6 @@ package logic
 	{
 		public function AttributeExplorer()
 		{
-			
 		}
 		
 		// gets an object set

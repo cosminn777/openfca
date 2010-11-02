@@ -3,7 +3,6 @@
 		 xmlns:components="components.*" 
 		 initialize="init()" 
 		 horizontalAlign="center">
-	
 	<mx:Script>
 		<![CDATA[
 			import com.adobe.flex.extras.controls.forcelayout.Node;
@@ -13,7 +12,6 @@
 			import com.adobe.flex.extras.controls.springgraph.SpringGraph;
 			
 			import components.SavePanel;
-			
 			import events.NewContextEvent;
 			
 			import flash.geom.Rectangle;
@@ -427,6 +425,8 @@
 			
 			private function unsetVisibility(): void
 			{
+				//this was initially, but due to a SDK problem causing a bug, was replaced
+				//viewStack must be changed BEFORE calling this function
 				/*for each (var child:UIComponent in appControlBar.getChildren())
 				{
 					child.includeInLayout = false;
@@ -680,13 +680,8 @@
 							cItem.attachedAttribute = attributes[attachedIdAttribute];
 						}
 						g.add(cItem);
-						//g._dataProvider.findNodeUsingId(conceptNode[0]).view.x=conceptNode[1];
-						//g.findNodeUsingId(conceptNode[0]).view.y=conceptNode[2];
-						//lattice.s._dataProvider.findNodeUsingId(conceptNode[0]).view.x=conceptNode[1];
-						//lattice.s._dataProvider.findNodeUsingId(conceptNode[0]).view.y=conceptNode[2];
 					}
 					lattice.setNodesPositions(nodesPositions);
-					//lattice.loadNodesPositions();
 					iMem = System.totalMemory / (1024 * 1024); // in MB
 					for (var eIndex:int = 0; eIndex < edgeCount; ++eIndex)
 					{
@@ -829,11 +824,8 @@
 				panel.title="Save lattice";
 				PopUpManager.addPopUp(panel, this, true);
 				PopUpManager.centerPopUp(panel);
-				//var scrollXPosition: Number = lattice.s.horizontalScrollPosition;
-				//var scrollYPosition: Number = lattice.s.verticalScrollPosition;
+				//moving lattice to left-reminescence from the time when lattice was created on the middle of the window
 				var oldXAxisLatticePosition: int = lattice.s.doPositionLattice();
-				//var w:int = lattice.s.width;
-				//var h:int = lattice.s.height;
 				var latticeRectangle: Rectangle = lattice.s.calcItemsBoundingRect();
 				lattice.s.width=latticeRectangle.right+11;
 				lattice.s.height=latticeRectangle.bottom+5;
@@ -856,8 +848,6 @@
 						bd.draw(lattice.s);
 						var ba:ByteArray = jpgEnc.encode(bd);
 						fr.save(ba, "lattice.jpg");
-						//lattice.s.width=w;
-						//lattice.s.height=h;
 						lattice.s.percentWidth=100;
 						lattice.s.percentHeight=100;
 						lattice.s.doPositionLatticeXAxis(oldXAxisLatticePosition);
@@ -869,8 +859,6 @@
 						bd.draw(lattice.s);
 						var ba:ByteArray = pngEnc.encode(bd);
 						fr.save(ba, "lattice.png");
-						//lattice.s.width=w;
-						//lattice.s.height=h;
 						lattice.s.percentWidth=100;
 						lattice.s.percentHeight=100;
 						lattice.s.doPositionLatticeXAxis(oldXAxisLatticePosition);
@@ -879,8 +867,6 @@
 				
 				panel.cButton.addEventListener(MouseEvent.CLICK,
 					function (event:Event): void {
-						//lattice.s.width=w;
-						//lattice.s.height=h;
 						lattice.s.percentWidth=100;
 						lattice.s.percentHeight=100;
 						lattice.s.doPositionLatticeXAxis(oldXAxisLatticePosition);
@@ -920,8 +906,6 @@
 						bd.draw(contable);
 						var ba:ByteArray = jpgEnc.encode(bd);
 						fr.save(ba, "context.jpg");
-						//contable.width=w;
-						//contable.height=h;
 						contable.percentWidth=100;
 						contable.percentHeight=100;
 						PopUpManager.removePopUp(panel);
@@ -932,8 +916,6 @@
 						bd.draw(contable);
 						var ba:ByteArray = pngEnc.encode(bd);
 						fr.save(ba, "context.png");
-						//contable.width=w;
-						//contable.height=h;
 						contable.percentWidth=100;
 						contable.percentHeight=100;
 						PopUpManager.removePopUp(panel);
@@ -941,8 +923,6 @@
 				
 				panel.cButton.addEventListener(MouseEvent.CLICK,
 					function (event:Event): void {
-						//contable.width=w;
-						//contable.height=h;
 						contable.percentWidth=100;
 						contable.percentHeight=100;
 						PopUpManager.removePopUp(panel);
@@ -1030,7 +1010,6 @@
 			}
 			
 			public function enableFreePositioning():void {
-				//FlexGlobals.topLevelApplication.infoLabel.visible=false;
 				freePositioningButton.label="Disable free positioning";
 				infoLabel.text="Free node positioning enabled";
 				infoLabel.visible=true;
@@ -1039,7 +1018,6 @@
 			}
 			
 			public function disableFreePositioning():void {
-				//FlexGlobals.topLevelApplication.infoLabel.visible=false;
 				freePositioningButton.label="Enable free positioning";
 				infoLabel.text="Free node positioning disabled";
 				infoLabel.visible=true;

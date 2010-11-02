@@ -4,5 +4,4 @@
 	<mx:ControlBar horizontalAlign="right">
 		<mx:Button id="okButton" label="Ok"/>
 	</mx:ControlBar>
-	
 </mx:Panel>

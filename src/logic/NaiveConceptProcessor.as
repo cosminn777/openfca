@@ -1,7 +1,6 @@
 package logic
 {
 	import com.adobe.flex.extras.controls.springgraph.Graph;
-	
 	import mx.collections.ArrayCollection;
 
 	public class NaiveConceptProcessor implements IConceptProcessor
