@@ -797,7 +797,11 @@ package com.adobe.flex.extras.controls.springgraph {
  			}
 			var scrollX: int = 0;
 			var scrollY: int = 0;
-
+			//for lattice to stick to the left side
+			if((itemBounds.left > 5)  && (creationComplete==true)) {
+				scrollLattice(-itemBounds.left/7, 0);
+				refresh();
+			}
  			if((itemBounds.left < 5) || (itemBounds.top < 5) && (creationComplete==true)) {
 				// some items are off the screen. Let's auto-scroll the display.
 				scrollX = 0;
