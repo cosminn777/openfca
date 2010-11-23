@@ -44,6 +44,12 @@
 			import mx.managers.PopUpManager;
 			import mx.messaging.management.Attribute;
 			import mx.utils.StringUtil;
+			import flash.text.*;
+			import mx.collections.ArrayCollection;
+			import mx.events.ItemClickEvent;
+			import mx.rpc.events.ResultEvent;
+			import mx.utils.ObjectProxy;
+			import mx.utils.StringUtil;
 			
 			private var objects:Array;
 			private var attributes:Array;
@@ -844,6 +850,46 @@
 					fileReference.save(out, "context.con");
 				}
 			}
+			
+			private function txtSave():void
+			{
+				//newContextPanel.initialContext;
+				var fileReference:FileReference = new FileReference();
+				var out:ByteArray = new ByteArray();
+				if (viewStack.selectedChild == newContextPanel) {
+					out.writeUTFBytes("Nr. of objects: " + ((newContextPanel.objectsTextInput.text.toString()).split(",").map(
+						function(s:String, i:int, o:Array): String {return mx.utils.StringUtil.trim(s);})).length + "\n");
+					out.writeUTFBytes("Nr. of attributes: " + ((newContextPanel.attributesTextInput.text.toString()).split(",").map(
+						function(s:String, i:int, o:Array): String {return mx.utils.StringUtil.trim(s);})).length + "\n");
+					out.writeUTFBytes("Objects: " + newContextPanel.objectsTextInput.text + "\n");
+					out.writeUTFBytes("Attributes: " + newContextPanel.attributesTextInput.text + "\n");
+				} else {
+					out.writeUTFBytes("Nr. of attributes: "+ attributes.length + "\n" + "Nr. of objects: "+ objects.length + "\n\n"); 
+					if (viewStack.selectedChild == lattice)	
+						out.writeUTFBytes("Nr. of lattice concepts: "+ lattice.getConcepts().length + "\n" + "Nr. of lattice edges: "+ lattice.getGraph().edges.length + "\n\n");
+					out.writeUTFBytes("Attributes: " + attributes.join(", ")+"\n");
+					out.writeUTFBytes("Objects: " + objects.join(", ")+"\n\n");
+					out.writeUTFBytes("\tContext:\n\n");
+					for each (var row:Array in rows)
+					{
+						for (var attributeIndex:String in attributes)
+						{
+							if (row[attributeIndex])
+							{
+								out.writeUTFBytes("1\t");
+							}
+							else
+							{
+								out.writeUTFBytes("0\t");
+							}
+						}
+						out.writeUTFBytes("\n"); 
+					}
+					out.writeUTFBytes("\n\tRemember: - attributes are on column, objects are on row;\n");
+					out.writeUTFBytes("\t          - 1 means that grid cell is checked, 0 means that grid cell is unchecked.\n");
+				}
+				fileReference.save(out, "context.txt");
+			}
 	
 			private function onMyCustomEvent1(event:Event):void {
 				//mx.controls.Alert.show('I heard that!');
@@ -891,6 +937,7 @@
 						lattice.s.doPositionLatticeXAxis(oldXAxisLatticePosition);
 						PopUpManager.removePopUp(panel);
 					});
+				
 				panel.jpgButton.addEventListener(MouseEvent.CLICK,
 					function (event:Event): void {
 						bd.draw(lattice.s);
@@ -907,6 +954,15 @@
 						bd.draw(lattice.s);
 						var ba:ByteArray = pngEnc.encode(bd);
 						fr.save(ba, "lattice.png");
+						lattice.s.percentWidth=100;
+						lattice.s.percentHeight=100;
+						lattice.s.doPositionLatticeXAxis(oldXAxisLatticePosition);
+						PopUpManager.removePopUp(panel);
+					});
+				
+				panel.txtButton.addEventListener(MouseEvent.CLICK,
+					function (event:Event): void {
+						txtSave();
 						lattice.s.percentWidth=100;
 						lattice.s.percentHeight=100;
 						lattice.s.doPositionLatticeXAxis(oldXAxisLatticePosition);
@@ -949,6 +1005,7 @@
 						contable.percentHeight=100;
 						PopUpManager.removePopUp(panel);
 					});
+				
 				panel.jpgButton.addEventListener(MouseEvent.CLICK,
 					function (event:Event): void {
 						bd.draw(contable);
@@ -964,6 +1021,14 @@
 						bd.draw(contable);
 						var ba:ByteArray = pngEnc.encode(bd);
 						fr.save(ba, "context.png");
+						contable.percentWidth=100;
+						contable.percentHeight=100;
+						PopUpManager.removePopUp(panel);
+					});
+				
+				panel.txtButton.addEventListener(MouseEvent.CLICK,
+					function (event:Event): void {
+						txtSave();
 						contable.percentWidth=100;
 						contable.percentHeight=100;
 						PopUpManager.removePopUp(panel);
@@ -1002,6 +1067,7 @@
 						newContextPanel.initialContext.width=487;
 						PopUpManager.removePopUp(panel);
 					});
+				
 				panel.jpgButton.addEventListener(MouseEvent.CLICK,
 					function (event:Event): void {
 						bd.draw(newContextPanel.initialContext);
@@ -1016,6 +1082,13 @@
 						bd.draw(newContextPanel.initialContext);
 						var ba:ByteArray = pngEnc.encode(bd);
 						fr.save(ba, "context.png");
+						newContextPanel.initialContext.width=487;
+						PopUpManager.removePopUp(panel);
+					});
+				
+				panel.txtButton.addEventListener(MouseEvent.CLICK,
+					function (event:Event): void {
+						txtSave();
 						newContextPanel.initialContext.width=487;
 						PopUpManager.removePopUp(panel);
 					});
