@@ -47,8 +47,9 @@
 		panel.dataButton.addEventListener(MouseEvent.CLICK,
 			function (event:Event): void {
 				var out:ByteArray = new ByteArray();
+				out.writeUTFBytes("Nr <Number of objects> Premise ==> Conclusion;\n");
 				for (var i:int=0;i<implItems.length;i++) {
-					out.writeUTFBytes(implItems.list.getItemAt(i).premise+"->"+implItems.list.getItemAt(i).conclusion+"\n");
+					out.writeUTFBytes(i+1 +" <" + implItems.list.getItemAt(i).objects + "> " + implItems.list.getItemAt(i).premise+" ==> "+implItems.list.getItemAt(i).conclusion+";\n");
 				}
 				fr.save(out, "implications.txt");
 				implGrid.percentWidth=100;
@@ -102,7 +103,7 @@
 						 dataProvider="{implItems}" editable="false">
 		<mx:columns>
 			<mx:DataGridColumn headerText="Nr." width="40" labelFunction="rowNum" sortable="false"/>
-			<mx:DataGridColumn dataField="objects" headerText="Objects" width="70"/>
+			<mx:DataGridColumn dataField="objects" headerText="Objects" width="57"/>
             <mx:DataGridColumn dataField="premise" headerText="Premise" width="400"/>
             <mx:DataGridColumn dataField="conclusion" headerText="Conclusion"/>
         </mx:columns>
