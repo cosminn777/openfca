@@ -7,8 +7,19 @@
 				verticalAlign="top" 
 >
 	<mx:Style source="styles.css"/>
+	<mx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+
+			protected function contextGrid_creationCompleteHandler(event:FlexEvent):void
+			{
+				contextGrid.loadData("\n");
+			}
+
+		]]>
+	</mx:Script>
 	<mx:Image  source="data/logo.PNG" />
-	<components:ContextGrid id="contextGrid" minWidth="640" width="95%" height="100%" />
+	<components:ContextGrid id="contextGrid" minWidth="640" width="95%" height="100%" creationComplete="contextGrid_creationCompleteHandler(event)"/>
 	<mx:Spacer height="2%" />
 	<mx:HBox width="100%">
 		<mx:Label color="#AAAAAA" text="© 2009-2010 Paul-Valentin Borza, Ovidiu Sabou, Cosmin Coman" width="100%" textAlign="right" fontWeight="bold"/>
