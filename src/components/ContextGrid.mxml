@@ -866,7 +866,7 @@
 				} else {
 					out.writeUTFBytes("Nr. of attributes: "+ attributes.length + "\n" + "Nr. of objects: "+ objects.length + "\n\n"); 
 					if (viewStack.selectedChild == lattice)	
-						out.writeUTFBytes("Nr. of lattice concepts: "+ lattice.getConcepts().length + "\n" + "Nr. of lattice edges: "+ lattice.getGraph().edges.length + "\n\n");
+						out.writeUTFBytes("Nr. of lattice nodes: "+ lattice.getConcepts().length + "\n" + "Nr. of lattice edges: "+ lattice.getGraph().edges.length + "\n\n");
 					out.writeUTFBytes("Attributes: " + attributes.join(", ")+"\n");
 					out.writeUTFBytes("Objects: " + objects.join(", ")+"\n\n");
 					out.writeUTFBytes("\tContext:\n\n");

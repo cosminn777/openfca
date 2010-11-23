@@ -37,6 +37,7 @@
 					setLists(_concepts[0]);
 				}
 				loadNodesPositions();
+				this.latticeInfo.text="Nr. of lattice nodes: "+ this.getConcepts().length + "   Nr. of lattice edges: "+ this.getGraph().edges.length;
 				//adds event for mouse wheel scrolling
 				//systemManager.addEventListener(MouseEvent.MOUSE_WHEEL, doMouseWheel); //what's happening at scrolling  
 			}
@@ -402,6 +403,7 @@
 					</mx:Component>
 				</fc:itemRenderer>
 			</fc:Roamer>
+			<mx:Text id="latticeInfo" text="" textAlign="right"/>
 		</mx:VBox>
 	</mx:HDividedBox>
 </mx:VBox>
