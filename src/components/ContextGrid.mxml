@@ -638,7 +638,7 @@
 				fileReference.load();
 			}
 			
-			private function loadData(data:String): void
+			public function loadData(data:String): void
 			{
 				var lines:Array = data.split("\n");
 				if (lines.length==2) {
