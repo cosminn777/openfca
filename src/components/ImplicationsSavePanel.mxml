@@ -8,8 +8,8 @@
 		  paddingTop="20" 
 		  paddingBottom="20">
 	<mx:HBox>
-		<mx:Text id="textTitle" text="Text:" textAlign="left" width="37"/>
-		<mx:Text id="textDetails" text="saves the implications in a text file. Recommended program for opening: Windows WordPad or something similar." textAlign="left" width="340"/>
+		<mx:Text text="Text:" textAlign="left" width="37"/>
+		<mx:Text text="saves the implications in a text file. Recommended program for opening the file: Windows WordPad or something similar." textAlign="left" width="340"/>
 	</mx:HBox>
 	<mx:HBox>
 		<mx:Text text="PNG:" textAlign="left" width="37"/>
