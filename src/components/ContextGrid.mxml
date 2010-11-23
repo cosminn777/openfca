@@ -12,6 +12,7 @@
 			import com.adobe.flex.extras.controls.springgraph.SpringGraph;
 			
 			import components.SavePanel;
+			
 			import events.NewContextEvent;
 			
 			import flash.geom.Rectangle;
@@ -140,23 +141,29 @@
 					else
 					{
 						var item: Object = new Object();
-						item = ({premise: 
-							implProcessor.getAttrSetAsString(
-								implProcessor.fromBitSetToAttributeSet(
-									bsPremise, 
-								attributes), 
-							attributes), 
-								conclusion:
-							implProcessor.getAttrSetAsString(
-								implProcessor.fromBitSetToAttributeSet(
-									implProcessor.getBitSetDifference(
-										bsPremise, 
-										bsConclusion), 
-									attributes), 
-								attributes)});
-						implications.addItem(item);
+						item = ({
+							premise: 
+							implProcessor.getAttrSetAsString(implProcessor.fromBitSetToAttributeSet(bsPremise, attributes), attributes), 
+							conclusion:
+							implProcessor.getAttrSetAsString(implProcessor.fromBitSetToAttributeSet(implProcessor.getBitSetDifference(bsPremise, bsConclusion), attributes), attributes)
+						});
+						//var nrObjects: int = getNrOfObjects(item.premise, item.conclusion);
+						var itemToAdd: Object = new Object();
+						itemToAdd = ({							
+							objects:
+							getNrOfObjects(item.premise, item.conclusion),
+							premise: 
+							item.premise, 
+							conclusion:
+							item.conclusion
+						});
+						///////////////////////////////////////if (bsPremise[j] bsConclusion[j]) {}
+						//if (contable[Latin America][Caribbean].){}
+						implications.addItem(itemToAdd);
 					}		
 				}
+				//private function continueExploreAttr(all: Boolean): Boolean
+				//private function createAttributeColumn(attrIndex:String, attr:String): void
 				
 				PopUpManager.addPopUp(panel, this, true);
 				PopUpManager.centerPopUp(panel);
@@ -169,6 +176,47 @@
 				
 			}
 			
+			private function getNrOfObjects(premise: String, conclusion: String): int
+			{
+				//tokenizing the premises and concusions
+				var p:Array = premise.split(",").map(
+					function(s:String, i:int, o:Array): String {
+						return mx.utils.StringUtil.trim(s);
+					});
+				var c:Array = conclusion.split(",").map(
+					function(s:String, i:int, o:Array): String {
+						return mx.utils.StringUtil.trim(s);
+					});
+				var valuesArray:Array = new Array();
+				var i: int = 0;
+				var j: int = 0;
+				var commonObjects: int = 0;
+				
+				for (i=1;i<contable.columns.length;i++) {
+					for (j=0;j<p.length;j++)
+						if (p[j]==contable.columns[i].headerText)
+							//retain the i in an array so that we have all the attributes that we need to check
+							valuesArray.push(i-1);//we count from 0, not 1, that's why we make -1
+					
+					for (j=0;j<c.length;j++)
+						if (c[j]==contable.columns[i].headerText)
+							//retain the i in an array so that we have all the attributes that we need to check
+							valuesArray.push(i-1);//we count from 0, not 1, that's why we make -1
+					
+				}
+				//we verify the nr of common objects
+				for (i=0;i<contable.dataProvider.length;i++){
+					//we assume that the object contable.dataProvider[i] is common
+					var common: Boolean = true;
+					for (j=0;j<valuesArray.length;j++)
+						if (contable.dataProvider[i][valuesArray[j]]==false)
+							common=false;
+					if (common==true) commonObjects ++;
+				}
+				
+				return commonObjects;
+			}
+
 			private var explorer: AttributeExplorer = new AttributeExplorer();
 			private var kExplore: int = 1; // step
 			private var kClosure: Array = new Array();
