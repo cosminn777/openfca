@@ -11,6 +11,6 @@
 	<components:ContextGrid id="contextGrid" minWidth="640" width="95%" height="100%"/>
 	<mx:Spacer height="2%" />
 	<mx:HBox width="100%">
-		<mx:Label color="#AAAAAA" text="© 2009-2010 Paul-Valentin Borza, Ovidiu Sabou, Cosmin Coman" width="100%" textAlign="right" fontWeight="bold"/>
+		<mx:Label color="#AAAAAA" text="© 2009-2011 Paul-Valentin Borza, Ovidiu Sabou, Cosmin Coman" width="100%" textAlign="right" fontWeight="bold"/>
 	</mx:HBox>
 </mx:Application>

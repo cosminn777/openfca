@@ -51,8 +51,8 @@
 			import mx.utils.ObjectProxy;
 			import mx.utils.StringUtil;
 			
-			private var objects:Array;
-			private var attributes:Array;
+			public var objects:Array;
+			public var attributes:Array;
 			
 			[Bindable]
 			private var rows:ArrayCollection;
@@ -490,6 +490,8 @@
 				if (viewStack.selectedChild == contextCanvas) {
 					infoLabel.visible = false;
 					infoLabel.includeInLayout = false;
+					resetButton.visible = false;
+					resetButton.includeInLayout = false;					
 					backButton.visible = false;
 					backButton.includeInLayout = false;
 					freePositioningButton.visible = false;
@@ -513,6 +515,8 @@
 					
 					infoLabel.includeInLayout = true;
 					infoLabel.visible = true;
+					resetButton.includeInLayout = true;
+					resetButton.visible = true;					
 					backButton.includeInLayout = true;
 					backButton.visible = true;
 					freePositioningButton.includeInLayout = true;
@@ -556,6 +560,13 @@
 					lattice.setContext(objects, attributes, rows);
 				}
 				setLatticeVisibility();
+				showLatticeInfo();
+
+			}
+			
+			public function showLatticeInfo():void {
+				if (lattice != null && lattice.latticeInfo != null && lattice.getConcepts() != null && lattice.getGraph() != null && attributes != null && objects != null)
+					lattice.latticeInfo.text="Nr. of lattice nodes: "+ lattice.getConcepts().length  +  "   Nr. of lattice edges: "+ lattice.getGraph().edges.length + "   Nr. of attributes: " + attributes.length + "   Nr. of objects: " + objects.length;
 			}
 			
 			private function setLatticeVisibility(): void
@@ -565,6 +576,7 @@
 				
 				//backButton.includeInLayout = true;
 				//backButton.visible = true;
+				//resetButton.visible = true;
 				//freePositioningButton.includeInLayout=true;
 				//freePositioningButton.visible=true;
 				//infoLabel.includeInLayout=true;
@@ -885,8 +897,8 @@
 						}
 						out.writeUTFBytes("\n"); 
 					}
-					out.writeUTFBytes("\n\tRemember: - attributes are on column, objects are on row;\n");
-					out.writeUTFBytes("\t          - 1 means that grid cell is checked, 0 means that grid cell is unchecked.\n");
+					out.writeUTFBytes("\n\tNote: - attributes are on column, objects are on row;\n");
+					out.writeUTFBytes("\t      - 1 means that grid cell is checked, 0 means that grid cell is unchecked.\n");
 				}
 				fileReference.save(out, "context.txt");
 			}
@@ -1146,6 +1158,15 @@
 				enableLatticeControls();
 			}
 			
+			private function resetLatticeHandler():void {
+				//cursorManager.setBusyCursor();
+				if (rows.length > 0)
+				{
+					lattice.setContext(objects, attributes, rows);
+				}
+				//cursorManager.removeBusyCursor();
+			}
+			
 		]]>
 	</mx:Script>
 	
@@ -1155,6 +1176,7 @@
 			<mx:Button id="newContextButton" visible="false" includeInLayout="false" label="New Context" click="showCreateContext()" showEffect="{fadeIn}" hideEffect="{fadeOut}"/>
 			<mx:Button id="viewLatticeButton" visible="false" includeInLayout="false" label="View Lattice" click="showLattice()" showEffect="{fadeIn}" hideEffect="{fadeOut}"/>
 			<mx:Button id="backButton" visible="false" includeInLayout="false" label="Back" click="backToContextHandler()" showEffect="{fadeIn}" hideEffect="{fadeOut}"/>
+			<mx:Button id="resetButton" visible="false" includeInLayout="false" label="Reset Lattice" click="resetLatticeHandler()" showEffect="{fadeIn}" hideEffect="{fadeOut}"/>
 			<mx:Button id="viewImplicationsButton" visible="false" includeInLayout="false" label="View Implications" click="showImplications()" showEffect="{fadeIn}" hideEffect="{fadeOut}"/>
 			<mx:Button id="freePositioningButton" visible="false" includeInLayout="false" click="positioningHandler()" label="Enable free positioning" showEffect="{fadeIn}" hideEffect="{fadeOut}"/>
 			<mx:Label id="infoLabel" text="Free node positioning disabled" color="#ffffff" textAlign="left" visible="false" fontWeight="bold" showEffect="{fadeIn}" hideEffect="{fadeOut}" />
