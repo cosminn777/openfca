@@ -15,6 +15,8 @@
 			import logic.NaiveConceptProcessor;
 			
 			import mx.collections.ArrayCollection;
+			import mx.core.FlexGlobals;
+			
 			import renderers.ConceptEdgeRenderer;
 
 			private var _g: Graph = new Graph();
@@ -37,7 +39,8 @@
 					setLists(_concepts[0]);
 				}
 				loadNodesPositions();
-				this.latticeInfo.text="Nr. of lattice nodes: "+ this.getConcepts().length + "   Nr. of lattice edges: "+ this.getGraph().edges.length;
+				FlexGlobals.topLevelApplication.contextGrid.showLatticeInfo();
+				//this.latticeInfo.text="Nr. of lattice nodes: "+ this.getConcepts().length  + attributes.length + objects.length+ "   Nr. of lattice edges: "+ this.getGraph().edges.length;
 				//adds event for mouse wheel scrolling
 				//systemManager.addEventListener(MouseEvent.MOUSE_WHEEL, doMouseWheel); //what's happening at scrolling  
 			}
@@ -336,7 +339,7 @@
 			<mx:List id="objectsList" width="100%" height="100%">
 			</mx:List>
 		</mx:VBox>
-		<mx:VBox id="latticeContainer" verticalScrollPolicy="off" horizontalScrollPolicy="off" width="100%" height="100%">
+		<mx:VBox id="latticeContainer" verticalScrollPolicy="auto" horizontalScrollPolicy="auto" width="100%" height="100%">
 			<fc:Roamer id="s" width="100%" height="100%" verticalScrollPolicy="auto" horizontalScrollPolicy="auto"
 				lineColor="#8888ff" 
 				repulsionFactor="{repulsionSlider.value}"
