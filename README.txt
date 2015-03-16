@@ -13,10 +13,6 @@ This project contains three modules:
  * Conexplore, a C#/.NET set of tools for computing concepts and links between them on large datasets.
 Conflexplore and the modified version of SpringGraph are Flash Builder 4 projects based on Flex 4.0 SDK: [ScreenShots screenshots.]
 
-
-
-
-[]
 =Documentation=
 [Guide This page] contains a simple user guide for the _Conflexplore_ application.
 =13.04.2010 Release video sample:=
@@ -28,8 +24,5 @@ Conflexplore and the modified version of SpringGraph are Flash Builder 4 project
 2010 Release radically changed the visualization style of the lattice, you are welcome to check the previous release:
 
 [http://www.youtube.com/watch?v=661qwLaAqBs 2009 Release - Video sample]
-
-
-
 
 [http://files.getdropbox.com/u/14664/FCA/Conflexplore.html 2009 Release - Live demo]
